@@ -1,0 +1,11 @@
+body {
+    margin: 0px;
+}
+
+#title {
+    color: blue;
+}
+
+#main-canvas {
+    background-color: black;
+}
