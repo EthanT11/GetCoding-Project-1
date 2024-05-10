@@ -17,27 +17,51 @@ function dropDown() {
     }
   }
 
-
-function getHit() {
-    var hp = 10;
-    while (hp > 0) {
-        hp -= 1;
-        console.log("Ouch!" + "\n HP: " + hp);
+class Player {
+    constructor(hp, damage) {
+        this.hp = hp;
+        this.damage = damage;
     }
 }
 
-class Player {
-    constructor(hp, xp) {
-        this.hp = hp
-        this.xp = xp
+
+class Enemy {
+    constructor(hp, damage) {
+        this.hp = hp;
+        this.damage = damage;
     }
 }
 
 async function gameStart(bool) {
     var gameStart = bool;
-    var playerHp = 10;
-    var enemyHp = 10;
-    var filler = "\n-------------\n"
+    var enemy = new Enemy(10, 1);
+    var player = new Player(10, 1);
+    var playerHp = player.hp;
+    var enemyHp = enemy.hp;
+
+    function updateAction(player, enemy) {
+        var getPlayerAction = document.getElementById("player-action")
+        var getEnemyAction = document.getElementById("enemy-action")
+
+        getPlayerAction.innerHTML = player
+        getEnemyAction.innerHTML = enemy
+    }
+
+    function update() {
+        var getPlayerHp = document.getElementById("player-hp");
+        var getEnemyHp = document.getElementById("enemy-hp");
+
+        getPlayerHp.innerHTML = playerHp;
+        getEnemyHp.innerHTML = enemyHp;
+    }
+
+    function playerAttack() {
+        enemyHp -= player.damage;
+    }
+
+    function enemyAttack() {
+        playerHp -= enemy.damage;
+    }
 
     function dice(max) {
         return Math.floor(Math.random() * max);
@@ -47,42 +71,30 @@ async function gameStart(bool) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    async function playerAttack() {
-        console.log(filler)
-        console.log("Player attacks Monster!");
-        console.log(filler)
-        await sleep(1000)
-        console.log("You hit!\n " + playerDice + " VS " + enemyDice);
-        enemyHp -= 1;
-        console.log("Enemy\nHP: " + enemyHp);
-    }
-
-    async function enemyAttack() {
-        console.log(filler)
-        console.log("Monster attacks Player!");
-        console.log(filler)
-        await sleep(1000)
-        console.log("It hit!\nPlayerDice: " + playerDice + " VS EnemyDice: " + enemyDice);
-        playerHp -= 1;
-        console.log("Player\nHP: " + playerHp);
-    }
-
-    while (gameStart == false) {
+    while (gameStart == true) {
         if (playerHp > 0) {
             if (enemyHp > 0) {
+                update();
                 playerDice = dice(10);
                 enemyDice = dice(10);
                 if (playerDice > enemyDice) {
-                    playerAttack()
+                    var pStatus = "Attacking"
+                    var eStatus = "Defending"
+                    updateAction(pStatus, eStatus)
+                    playerAttack();
+                    await sleep(1000);
+                    
                 }
                 if (playerDice < enemyDice) {
-                    enemyAttack()
+                    var pStatus = "Defending"
+                    var eStatus = "Attacking"
+                    updateAction(pStatus, eStatus)
+                    enemyAttack();
+                    await sleep(1000);
                 } 
                 if (playerDice == enemyDice) {
-                    console.log(filler)
-                    console.log("You both missed...");
-                    console.log(filler)
-                    await sleep(1000)
+                    updateAction("Missing", "Missing")
+                    await sleep(1000);
                 }
             } else 
             {
@@ -97,4 +109,4 @@ async function gameStart(bool) {
     }
 }
 
-gameStart(false)
+gameStart(true)
