@@ -8,8 +8,24 @@
     </head>
 
     <body>
-        <h1 id="title">Title of Game</h1>
-        <canvas id="main-canvas"></canvas>
-        <script src="./main.js"></script>
+        <div id="header">
+            <h1 id="title">Title of Game</h1>
+            <div id="dropdown">
+                <button onclick="dropDown()" class="dropbtn">???</button>
+                <div id="myDropdown" class="dropdown-content">
+                    <a>New Game</a>
+                    <a>Help</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="main">
+            <div id="hpContainer">
+                <h2 id="hp">HP: 9999</h2>
+                <h2 id="xp">XP: 9999</h2>
+            </div>
+        </div>
+        
+        <script defer src="./index.js"></script>
     </body>
 </html>
