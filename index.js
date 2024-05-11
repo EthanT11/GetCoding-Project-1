@@ -17,54 +17,52 @@ function dropDown() {
     }
   }
 
-class Player {
-    constructor(hp, damage) {
-        this.hp = hp;
-        this.damage = damage;
-    }
-}
-
-
+  
+  
 class Enemy {
-    constructor(hp, damage) {
+    constructor(hp, damage, dice, name) {
         this.hp = hp;
         this.damage = damage;
+        this.dice = dice;
+        this.name = name;
     }
-}
-
-async function gameStart(bool) {
-    var gameStart = bool;
-    var enemy = new Enemy(10, 1);
-    var player = new Player(10, 1);
-    var playerHp = player.hp;
-    var enemyHp = enemy.hp;
-
-    function updateAction(player, enemy) {
-        var getPlayerAction = document.getElementById("player-action")
-        var getEnemyAction = document.getElementById("enemy-action")
-
-        getPlayerAction.innerHTML = player
-        getEnemyAction.innerHTML = enemy
-    }
-
-    function update() {
-        var getPlayerHp = document.getElementById("player-hp");
+    update(enemyAction = "Action") {
+        var getEnemyAction = document.getElementById("enemy-action");
         var getEnemyHp = document.getElementById("enemy-hp");
 
-        getPlayerHp.innerHTML = playerHp;
-        getEnemyHp.innerHTML = enemyHp;
+        getEnemyAction.innerHTML = enemyAction;
+        getEnemyHp.innerHTML = this.hp;
     }
+    attack(player){
+        return player -= this.damage;
+    }
+}
+class Player {
+    constructor(hp, damage, dice, name) {
+        this.hp = hp;
+        this.damage = damage;
+        this.dice = dice;
+        this.name = name;
+    }
+    update(playerAction = "Action") {
+        var getPlayerAction = document.getElementById("player-action");
+        var getPlayerHp = document.getElementById("player-hp");
 
-    function playerAttack() {
-        enemyHp -= player.damage;
+        getPlayerAction.innerHTML = playerAction;
+        getPlayerHp.innerHTML = this.hp;
     }
+    attack(enemy){
+        return enemy -= this.damage;
+    }
+}
 
-    function enemyAttack() {
-        playerHp -= enemy.damage;
-    }
+async function gameStart() {
+    var gameStart = true;
+    var player = new Player(10, 1, 9, "Player"); // Player(HP, Damage, Dice, Name)
+    var enemy = new Enemy(10, 1, 9, "Enemy"); // Enemy(HP, Damage, Dice, Name)
 
     function dice(max) {
-        return Math.floor(Math.random() * max);
+        return Math.floor(Math.random() * max + 1);
     }
 
     function sleep(ms) {
@@ -72,41 +70,49 @@ async function gameStart(bool) {
     }
 
     while (gameStart == true) {
-        if (playerHp > 0) {
-            if (enemyHp > 0) {
-                update();
-                playerDice = dice(10);
-                enemyDice = dice(10);
+        // time in ms
+        const waitTime = 500;
+
+        player.update("Ready");
+        enemy.update("Ready");
+        if (player.hp > 0) {
+            if (enemy.hp > 0) {
+                player.update();
+                enemy.update();
+                playerDice = dice(player.dice);
+                enemyDice = dice(enemy.dice);
+
                 if (playerDice > enemyDice) {
-                    var pStatus = "Attacking"
-                    var eStatus = "Defending"
-                    updateAction(pStatus, eStatus)
-                    playerAttack();
-                    await sleep(1000);
+                    player.update("Attacking");
+                    enemy.update("Defending");
+                    enemy.hp = player.attack(enemy.hp);
+                    await sleep(waitTime);
                     
                 }
                 if (playerDice < enemyDice) {
-                    var pStatus = "Defending"
-                    var eStatus = "Attacking"
-                    updateAction(pStatus, eStatus)
-                    enemyAttack();
-                    await sleep(1000);
+                    player.update("Defending");
+                    enemy.update("Attacking");
+                    player.hp = enemy.attack(player.hp);
+                    await sleep(waitTime);
                 } 
                 if (playerDice == enemyDice) {
-                    updateAction("Missing", "Missing")
-                    await sleep(1000);
+                    player.update("Missing");
+                    enemy.update("Missing");
+                    await sleep(waitTime);
                 }
             } else 
             {
-                console.log("You did it!");
+                player.update("Victorious");
+                enemy.update("Dead");
+                sleep(1500);
                 return gameOver = true;
             }
         } else 
         {
-            console.log("You are dead");
+            player.update("Dead");
+            enemy.update("Victorious");
+            sleep(1500);
             return gameOver = true;
         }
     }
 }
-
-gameStart(true)

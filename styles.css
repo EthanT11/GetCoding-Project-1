@@ -3,6 +3,9 @@
 /* TODO
 - Make everything look *good* in both mobile and web
 - Fix placement of button and drop down menu
+- Fix resizing of containers when numbers change
+- Definitely pick a better colour pallet or maybe on screen graphics?
+- Change units to vh/vw when it makes sense
 */
 
 * {
