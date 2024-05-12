@@ -22,19 +22,25 @@
         <!-- TODO: look into using div classes for repeating styles -->
         <div id="main">
             <div id="containers">
+                <div id="classContainer">
+                    <h2 id="class">Class</h2>
+                    <button id="fight-button", onclick="setClass(this.id)">Fighter</button>
+                    <button id="range-button", onclick="setClass(this.id)">Ranger</button>
+                    <button id="mage-button", onclick="setClass(this.id)">Mage</button>
+                </div>
                 <div id="menuContainer">
                     <h2 id="menu">Menu</h2>
-                    <button id="fight-button">Fight</button>
-                    <button id="block-button">Block</button>
-                    <button id="stun-button">Stun</button>
+                    <button id="fight-button", onclick="fight()">Attack</button>
+                    <button id="range-button", onclick="block()">Block</button>
+                    <button id="mage-button", onclick="stun()">Stun</button>
                 </div>
                 <div id="hpContainer">
-                    <h2 id="stats">Player</h2>
+                    <h2 id="player-name">Player</h2>
                     <h2 id="player-hp">HP: 9999</h2>
                     <h2 id="player-action">Action</h2>
                 </div>
                 <div id="enemyContainer">
-                    <h2 id="stats">Enemy</h2>
+                    <h2 id="enemy-name">Enemy</h2>
                     <h2 id="enemy-hp">HP: 9999</h2>
                     <h2 id="enemy-action">Action</h2>
                 </div>
