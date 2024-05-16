@@ -195,42 +195,6 @@ function newGame() {
 // starts new game on page load
 newGame();
 
-
-
-// var player = new Player(10, 10, 10, 10, "PLayer")
-// // create player object based on class picked
-
-
-
-
-
-// function fight() {
-//     enemy.hp = player.attack(enemy.hp)
-//     updateCharacters("Slashing", "Grunts")
-//     if (enemy.hp <= 0) {
-//     console.log("You win!")
-//     } else 
-//     {
-//         player.hp = enemy.attack(player.hp)
-//         updateCharacters("Stumbles", "Bites")
-//         if (player.hp <= 0) {
-//             console.log("You died!")
-//         }
-//     }
-// }
-
-  
-// gameStart = false
-// var enemy = new Enemy(10, 5, 9, "Goblin"); // Enemy(HP, Damage, Dice, Name)
-// enemy.update("Ready")
-
-// // TODO: Use classes for gameStart = true
-// // Add randomization to starting stats?
-
-
-
-
-
 // function block () {
 //     updateCharacters("Blocking", "Biting")
 //     var blocked = player.block - enemy.damage
@@ -252,30 +216,9 @@ newGame();
 // }
 
 
-// function gameStart(clicked_id) {
-//     var clicked_id = clicked_id
-//     var MAX_HP = [12, 10, 8]
-//     var DAMAGE = [2, 3, 4]
-//     var BLOCK = [4, 3, 2]
-//     var NAME = ["Fighter", "Ranger", "Mage"]
-//     var player = new Player(10, 10, 0, 0, 'Null')
-
-//     function printClass(player) {
-//         console.log(player)
-
-//     }
-//     printClass(setClass(clicked_id))
-
-// }
-// main loop
+// OLD MAINLOOP - For reference
 // async function gameStart() {
 //     var gameStart = true;
-
-
-
-
-
-
 
     // while (gameStart == true) {
     //     // time in ms
