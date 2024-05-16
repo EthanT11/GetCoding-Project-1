@@ -17,11 +17,6 @@ function dropDown() {
     }
 }
 
-function disableButtons(state) {
-    document.getElementById("attack-button").disabled = state;
-    document.getElementById("block-button").disabled = state;
-    document.getElementById("stun-button").disabled = state;
-}
 
 // -- Game Functions --
 
@@ -31,6 +26,7 @@ var player;
 var enemy;
 var chooseClass = false;
 var winCounter = 0;
+var winsNeeded = 2;
 
 class Player {
     constructor(max_hp, hp, damage, block, name) {
@@ -48,10 +44,10 @@ class Player {
         
         getPlayerAction.innerHTML = playerAction;
         getPlayerHp.innerHTML = this.hp;
-        getPlayerName = this.name;
+        getPlayerName.innerHTML = this.name;
     }
     attack(enemyHp) {
-        return enemyHp -= this.damage; // returns new enemy hp value
+        return enemyHp -= this.damage; // returns enemy hp value
     }
 }
 
@@ -72,8 +68,21 @@ class Enemy {
         getEnemyName.innerHTML = this.name;
     }
     attack(playerHp){
-        return playerHp -= this.damage; // returns new player hp value
+        return playerHp -= this.damage; // returns player hp value
     }
+}
+
+// switches active buttons between class and fight menu; boolean
+function buttonState(classState, actionState, chooseClass) {
+    document.getElementById("fight-button").disabled = classState;
+    document.getElementById("range-button").disabled = classState;
+    document.getElementById("mage-button").disabled = classState;
+
+    document.getElementById("attack-button").disabled = actionState;
+    document.getElementById("block-button").disabled = actionState;
+    document.getElementById("stun-button").disabled = actionState;
+
+    chooseClass = chooseClass;
 }
 
 // generate random number between 1 and x
@@ -81,12 +90,18 @@ function dice(max) {
     return Math.floor(Math.random() * max);
 }
 
+// adds delay
+// note: function must be async to use; await sleep(1000)
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // generate random enemy
 // TODO: Add variety for different levels and different names
 // idea: use winCounter to adjust "difficulty"
 function genEnemy() {
     var HP = dice(10) + 4
-    var DAM = dice(4) + 2
+    var DAM = dice(3) + 1
     var NAME = "Goblin"
     enemy = new Enemy(HP, DAM, NAME)
 }
@@ -100,24 +115,21 @@ function setClass(clicked_id) {
     
     if (chooseClass == false) {
         if (clicked_id == "fight-button") {
-            chooseClass = true;
             player = new Player(MAX_HP[0], MAX_HP[0], DAMAGE[0], BLOCK[0], NAME[0]); // Player(HP, Damage, Block, Dice, Name)
             genEnemy();
-            disableButtons(false);
+            buttonState(true, false, true);
             updateCharacters("Ready", "Ready");
         }
         if (clicked_id == "range-button") {
-            chooseClass = true;
             player = new Player(MAX_HP[1], MAX_HP[1], DAMAGE[1], BLOCK[1], NAME[1]); // Player(HP, Damage, Block, Dice, Name)
             genEnemy();
-            disableButtons(false);
+            buttonState(true, false, true);
             updateCharacters("Ready", "Ready");
         }
         if (clicked_id == "mage-button") {
-            chooseClass = true;
             player = new Player(MAX_HP[2], MAX_HP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(HP, Damage, Block, Dice, Name)
             genEnemy();
-            disableButtons(false);
+            buttonState(true, false, true);
             updateCharacters("Ready", "Ready");
         }
     } else {
@@ -131,16 +143,10 @@ function updateCharacters(p_action, e_action) {
     enemy.update(e_action);
 }
 
-// for testing; set on new game button in drop down
-function checkPlayer() {
-    console.log(player)
-    console.log(enemy)
-}
-
 // attack button; increments winCounter each win
 // win condition for testing is getting 10 wins
 // TODO: add reset function? 
-function attackEnemy() {
+async function attackEnemy() {
     if (enemy.hp > 0) {
         enemy.hp = player.attack(enemy.hp);
         updateCharacters("Slashes", "Stumbles");
@@ -152,42 +158,44 @@ function attackEnemy() {
             updateCharacters("Piles of bones", "Victory laugh");
             console.log("The player has vanquished...");
             winCounter = 0;
-            disableButtons(true);
+            chooseClass = false;
+            buttonState(false, true);
         }
 
     }
     if (enemy.hp <= 0) {
+        buttonState(true, true, true)
         updateCharacters("Victory Dance", "Pile of bones");
         console.log("The enemy has vanquished...");
-        if (winCounter < 10) {
+        if (winCounter <= winsNeeded) {
             winCounter ++;
             console.log(winCounter);
+            await sleep(3000);
+            updateCharacters("Searching for foes...", "...")
             genEnemy();
-            disableButtons(false);
+            await sleep(5000);
+            updateCharacters("Ready", "Ready")
+            buttonState(true, false, true)
         }
-        else {
+        if (winCounter == winsNeeded) {
             console.log("You beat the game!");
             console.log(winCounter);
-            disableButtons(false);
+            buttonState(false, true, false);
         }
     }
 }
 
-/* TODO:
-    Add newGame function
-*\
+function newGame() {
+    player = new Player(10, 10, 10, 10, "...")
+    enemy = new Enemy(10, 10, "...")
+    updateCharacters("Choose Class", "Awaiting player choice")
+    buttonState(false, true, false)
+}
+
+// starts new game on page load
+newGame();
 
 
-
-
-
-// // reset player to default
-// function newGame() {
-//     // var defPlayer = new Player(10, 10, 2, 2, "Player")
-//     var defEnemy = new Enemy(10, 2, "Monster")
-//     defPlayer.update("Choose Class")
-//     defEnemy.update("Awaiting Player Choice")
-// }
 
 // var player = new Player(10, 10, 10, 10, "PLayer")
 // // create player object based on class picked
@@ -263,9 +271,6 @@ function attackEnemy() {
 // async function gameStart() {
 //     var gameStart = true;
 
-//     function sleep(ms) {
-//         return new Promise(resolve => setTimeout(resolve, ms));
-//     }
 
 
 
