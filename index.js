@@ -41,10 +41,21 @@ class Player {
         var getPlayerAction = document.getElementById("player-action");
         var getPlayerHp = document.getElementById("player-hp");
         var getPlayerName = document.getElementById("player-name");
+
+        var getPlayerSClass = document.getElementById("s-class");
+        var getPlayerSHp = document.getElementById("s-hp");
+        var getPlayerSDamage = document.getElementById("s-dam");
+        var getPlayerSBlock = document.getElementById("s-block");
         
         getPlayerAction.innerHTML = playerAction;
         getPlayerHp.innerHTML = this.hp;
         getPlayerName.innerHTML = this.name;
+
+        getPlayerSClass.innerHTML = "Class: " + this.name;
+        getPlayerSHp.innerHTML = "Max HP: " + this.max_hp;
+        getPlayerSDamage.innerHTML = "Damage: " + this.damage;
+        getPlayerSBlock.innerHTML = "Block: " + this.block;
+
     }
     attack(enemyHp) {
         return enemyHp -= this.damage; // returns enemy hp value
@@ -100,18 +111,18 @@ function sleep(ms) {
 // TODO: Add variety for different levels and different names
 // idea: use winCounter to adjust "difficulty"
 function genEnemy() {
-    var HP = dice(10) + 4
-    var DAM = dice(3) + 1
-    var NAME = "Goblin"
-    enemy = new Enemy(HP, DAM, NAME)
+    var HP = dice(10) + 4;
+    var DAM = dice(3) + 4;
+    var NAME = "Goblin";
+    enemy = new Enemy(HP, DAM, NAME);
 }
 
 // choose class based on button clicked and generates first enemy
 function setClass(clicked_id) {
-    var MAX_HP = [12, 10, 8]
-    var DAMAGE = [2, 3, 4]
-    var BLOCK = [4, 3, 2]
-    var NAME = ["Fighter", "Ranger", "Mage"]
+    var MAX_HP = [12, 10, 8];
+    var DAMAGE = [2, 3, 4];
+    var BLOCK = [4, 3, 2];
+    var NAME = ["Fighter", "Ranger", "Mage"];
     
     if (chooseClass == false) {
         if (clicked_id == "fight-button") {
@@ -133,7 +144,7 @@ function setClass(clicked_id) {
             updateCharacters("Ready", "Ready");
         }
     } else {
-        return console.log("Already picked a class")
+        return console.log("Already picked a class");
     }
 }
 
@@ -171,11 +182,11 @@ async function attackEnemy() {
             winCounter ++;
             console.log(winCounter);
             await sleep(3000);
-            updateCharacters("Searching for foes...", "...")
+            updateCharacters("Searching for foes...", "...");
             genEnemy();
             await sleep(5000);
-            updateCharacters("Ready", "Ready")
-            buttonState(true, false, true)
+            updateCharacters("Ready", "Ready");
+            buttonState(true, false, true);
         }
         if (winCounter == winsNeeded) {
             console.log("You beat the game!");
@@ -185,51 +196,23 @@ async function attackEnemy() {
     }
 }
 
-function newGame() {
-    player = new Player(10, 10, 10, 10, "...")
-    enemy = new Enemy(10, 10, "...")
-    updateCharacters("Choose Class", "Awaiting player choice")
-    buttonState(false, true, false)
-}
-
-// starts new game on page load
-newGame();
-
-
-
-// var player = new Player(10, 10, 10, 10, "PLayer")
-// // create player object based on class picked
-
-
-
-
-
-// function fight() {
-//     enemy.hp = player.attack(enemy.hp)
-//     updateCharacters("Slashing", "Grunts")
-//     if (enemy.hp <= 0) {
-//     console.log("You win!")
-//     } else 
-//     {
-//         player.hp = enemy.attack(player.hp)
-//         updateCharacters("Stumbles", "Bites")
-//         if (player.hp <= 0) {
-//             console.log("You died!")
-//         }
+// function blockEnemy() {
+//     var blocked = player.block - enemy.damage
+//     if (blocked >= 0) {
+//         console.log("Fully Blocked\n Damage Blocked: " + enemy.damage)
 //     }
+//     if (blocked < 0 && player.hp > 0) {
+//         console.log("Partially Blocked\n Damage Taken: " + blocked)
+//         player.hp = enemy.attack(player.hp + player.block)
+//         if (player.hp <= 0) {
+//             updateCharacters("Piles of bones", "Victory laugh");
+//             console.log("The player has vanquished...");
+//             winCounter = 0;
+//             chooseClass = false;
+//             buttonState(false, true);
+//         }
+//     } 
 // }
-
-  
-// gameStart = false
-// var enemy = new Enemy(10, 5, 9, "Goblin"); // Enemy(HP, Damage, Dice, Name)
-// enemy.update("Ready")
-
-// // TODO: Use classes for gameStart = true
-// // Add randomization to starting stats?
-
-
-
-
 
 // function block () {
 //     updateCharacters("Blocking", "Biting")
@@ -244,38 +227,28 @@ newGame();
 //     {
 //         console.log("You're dead")
 //     }
+function stunEnemy() {
+    console.log("Stunned ya!");
+}
+
+function newGame() {
+    player = new Player(10, 10, 10, 10, "...");
+    enemy = new Enemy(10, 10, "...");
+    updateCharacters("Choose Class", "Awaiting player choice");
+    buttonState(false, true, false);
+}
+
+// starts new game on page load
+newGame();
+
 
 // }
 
-// function stun () {
-//     console.log("Stunned ya!")
-// }
 
 
-// function gameStart(clicked_id) {
-//     var clicked_id = clicked_id
-//     var MAX_HP = [12, 10, 8]
-//     var DAMAGE = [2, 3, 4]
-//     var BLOCK = [4, 3, 2]
-//     var NAME = ["Fighter", "Ranger", "Mage"]
-//     var player = new Player(10, 10, 0, 0, 'Null')
-
-//     function printClass(player) {
-//         console.log(player)
-
-//     }
-//     printClass(setClass(clicked_id))
-
-// }
-// main loop
+// OLD MAINLOOP - For reference
 // async function gameStart() {
 //     var gameStart = true;
-
-
-
-
-
-
 
     // while (gameStart == true) {
     //     // time in ms
