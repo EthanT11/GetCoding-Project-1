@@ -26,7 +26,7 @@ var player;
 var enemy;
 var chooseClass = false;
 var winCounter = 0;
-var winsNeeded = 2;
+var winsNeeded = 10;
 
 class Player {
     constructor(max_hp, hp, damage, block, name) {
@@ -37,7 +37,7 @@ class Player {
         this.name = name;
     }
     // Update HP and Action on UI
-    update(playerAction = "Action") {
+    update(playerAction) {
         var getPlayerAction = document.getElementById("player-action");
         var getPlayerHp = document.getElementById("player-hp");
         var getPlayerName = document.getElementById("player-name");
@@ -60,6 +60,26 @@ class Player {
     attack(enemyHp) {
         return enemyHp -= this.damage; // returns enemy hp value
     }
+
+}
+
+// add randomness to amounts dependent on difficulty?
+// amounts dependent on class?
+function levelUp(clicked_id) {
+    var getLevelUp = document.getElementById("levelContainer");
+    console.log("Level Up!")
+    if (clicked_id == "firstChoice") {
+        getLevelUp.hidden = true;
+        player.max_hp += 2;
+        player.damage += 2;
+        player.block += 2;
+        player.update("I'm feeling strong!")
+    }
+    if (clicked_id == "secondChoice") {
+        getLevelUp.hidden = true;
+        player.hp = player.max_hp;
+        player.update("I'm feeling healthy!")
+    }
 }
 
 class Enemy {
@@ -78,7 +98,7 @@ class Enemy {
         getEnemyHp.innerHTML = this.hp;
         getEnemyName.innerHTML = this.name;
     }
-    attack(playerHp){
+    attack(playerHp) {
         return playerHp -= this.damage; // returns player hp value
     }
 }
@@ -112,7 +132,7 @@ function sleep(ms) {
 // idea: use winCounter to adjust "difficulty"
 function genEnemy() {
     var HP = dice(10) + 4;
-    var DAM = dice(3) + 4;
+    var DAM = 1;
     var NAME = "Goblin";
     enemy = new Enemy(HP, DAM, NAME);
 }
@@ -179,6 +199,9 @@ async function attackEnemy() {
         updateCharacters("Victory Dance", "Pile of bones");
         console.log("The enemy has vanquished...");
         if (winCounter <= winsNeeded) {
+            var getLevelUp = document.getElementById("levelContainer");
+            getLevelUp.hidden = false;
+
             winCounter ++;
             console.log(winCounter);
             await sleep(3000);

@@ -57,6 +57,12 @@ body {
 }
 
 #enemyContainer {
+  margin-bottom: 4px;
+  padding: 10px 4px 10px 2px;
+  border: 1px solid black;
+}
+
+#levelContainer {
   padding: 10px 4px 10px 2px;
   border: 1px solid black;
 }
@@ -75,6 +81,7 @@ body {
   text-align: center;
   padding-bottom: 4px;
 }
+
 
 /* ---------- START DROPDOWN ----------- */
 
