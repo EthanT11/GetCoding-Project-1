@@ -37,8 +37,12 @@ function buttonState(classState, actionState, chooseClass) {
 var player;
 var enemy;
 var chooseClass = false;
+
 var winCounter = 0;
 var winsNeeded = 10;
+
+var stunCounter = 0;
+var stunned = false;
 
 class Player {
     constructor(max_hp, hp, damage, block, name) {
@@ -137,7 +141,7 @@ async function levelUp(clicked_id) {
 
 // generate random number between 1 and x
 function dice(max) {
-    return Math.floor(Math.random() * max);
+    return Math.floor(Math.random() * max) + 1;
 }
 
 // adds delay
@@ -166,19 +170,19 @@ function setClass(clicked_id) {
     
     if (chooseClass == false) {
         if (clicked_id == "fight-button") {
-            player = new Player(MAX_HP[0], MAX_HP[0], DAMAGE[0], BLOCK[0], NAME[0]); // Player(HP, Damage, Block, Dice, Name)
+            player = new Player(MAX_HP[0], MAX_HP[0], DAMAGE[0], BLOCK[0], NAME[0]); // Player(MAX-HP, HP, Damage, Block, Name)
             genEnemy();
             buttonState(true, false, true);
             updateCharacters("Ready", "Ready");
         }
         if (clicked_id == "range-button") {
-            player = new Player(MAX_HP[1], MAX_HP[1], DAMAGE[1], BLOCK[1], NAME[1]); // Player(HP, Damage, Block, Dice, Name)
+            player = new Player(MAX_HP[1], MAX_HP[1], DAMAGE[1], BLOCK[1], NAME[1]); // Player(MAX-HP, HP, Damage, Block, Name)
             genEnemy();
             buttonState(true, false, true);
             updateCharacters("Ready", "Ready");
         }
         if (clicked_id == "mage-button") {
-            player = new Player(MAX_HP[2], MAX_HP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(HP, Damage, Block, Dice, Name)
+            player = new Player(MAX_HP[2], MAX_HP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
             genEnemy();
             buttonState(true, false, true);
             updateCharacters("Ready", "Ready");
@@ -201,7 +205,18 @@ async function attackEnemy() {
     if (enemy.hp > 0) {
         enemy.hp = player.attack(enemy.hp);
         updateCharacters("Slashes", "Stumbles");
-        if (player.hp > 0 && enemy.hp > 0) {
+
+        if (stunned == true) { // check if enemy is stunned
+            stunCounter ++;
+
+            if (stunCounter == 3) {
+                stunned = false;
+                stunCounter = 0;
+                console.log("No longer stunned")
+            }
+        }
+
+        if (player.hp > 0 && enemy.hp > 0 && stunned == false) {
             player.hp = enemy.attack(player.hp);
             updateCharacters("Bites", "Flinches in pain");
         } 
@@ -238,11 +253,11 @@ async function attackEnemy() {
     }
 }
 
+// heal off extra blocked dam * probably change
+// TODO: Stop healing at max hp
 function blockEnemy() {
     var blocked = player.blockAttack(enemy.damage)
     
-    // heal off extra blocked dam * probably change
-    // TODO: Stop healing at max hp
     if (blocked >= 0) {
         console.log("Fully Blocked\n Damage Blocked: " + enemy.damage)
         console.log("blockedvar: " + blocked)
@@ -264,8 +279,18 @@ function blockEnemy() {
     }
 }
 
+
 function stunEnemy() {
-    console.log("Stunned ya!");
+    var check = dice(4);
+    if (check >= 3) {
+        stunned = true;
+        console.log("Stunned ya!")
+    }
+    if (check <= 2) {
+        player.hp = enemy.attack(player.hp)
+        player.update("Stun Failed!")
+    }
+
 }
 
 function newGame() {
@@ -277,57 +302,3 @@ function newGame() {
 
 // starts new game on page load
 newGame();
-
-
-// OLD MAINLOOP - For reference
-// async function gameStart() {
-//     var gameStart = true;
-
-    // while (gameStart == true) {
-    //     // time in ms
-    //     const waitTime = 500;
-    
-    //     player.update("Ready");
-    //     enemy.update("Ready");
-    //     gameStart = false;
-        // if (player.hp > 0) {
-        //     if (enemy.hp > 0) {
-        //         player.update();
-        //         enemy.update();
-        //         playerDice = dice(player.dice);
-        //         enemyDice = dice(enemy.dice);
-
-        //         if (playerDice > enemyDice) {
-        //             player.update("Attacking");
-        //             enemy.update("Defending");
-        //             enemy.hp = player.attack(enemy.hp);
-        //             await sleep(waitTime);
-                    
-        //         }
-        //         if (playerDice < enemyDice) {
-        //             player.update("Defending");
-        //             enemy.update("Attacking");
-        //             player.hp = enemy.attack(player.hp);
-        //             await sleep(waitTime);
-        //         } 
-        //         if (playerDice == enemyDice) {
-        //             player.update("Missing");
-        //             enemy.update("Missing");
-        //             await sleep(waitTime);
-        //         }
-        //     } else 
-        //     {
-        //         player.update("Victorious");
-        //         enemy.update("Dead");
-        //         sleep(1500);
-        //         return gameOver = true;
-        //     }
-        // } else 
-        // {
-        //     player.update("Dead");
-        //     enemy.update("Victorious");
-        //     sleep(1500);
-        //     return gameOver = true;
-        // }
-    // }
-// }
