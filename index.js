@@ -17,6 +17,18 @@ function dropDown() {
     }
 }
 
+// switches active buttons between class and fight menu; boolean
+function buttonState(classState, actionState, chooseClass) {
+    document.getElementById("fight-button").disabled = classState;
+    document.getElementById("range-button").disabled = classState;
+    document.getElementById("mage-button").disabled = classState;
+
+    document.getElementById("attack-button").disabled = actionState;
+    document.getElementById("block-button").disabled = actionState;
+    document.getElementById("stun-button").disabled = actionState;
+
+    chooseClass = chooseClass;
+}
 
 // -- Game Functions --
 
@@ -36,6 +48,7 @@ class Player {
         this.block = block;
         this.name = name;
     }
+
     // Update HP and Action on UI
     update(playerAction) {
         var getPlayerAction = document.getElementById("player-action");
@@ -57,33 +70,20 @@ class Player {
         getPlayerSBlock.innerHTML = "Block: " + this.block;
 
     }
+
     attack(enemyHp) {
         return enemyHp -= this.damage; // returns enemy hp value
     }
 
-}
+    blockAttack(enemyDam) {
+        return this.block - enemyDam;
+    }
 
-// add randomness to amounts dependent on difficulty?
-// amounts dependent on class?
-function levelUp(clicked_id) {
-    var getLevelUp = document.getElementById("levelContainer");
-    console.log("Level Up!")
-    if (clicked_id == "firstChoice") {
-        getLevelUp.hidden = true;
-        player.max_hp += 2;
-        player.damage += 2;
-        player.block += 2;
-        player.update("I'm feeling strong!")
-    }
-    if (clicked_id == "secondChoice") {
-        getLevelUp.hidden = true;
-        player.hp = player.max_hp;
-        player.update("I'm feeling healthy!")
-    }
 }
 
 class Enemy {
-    constructor(hp, damage, name) {
+    constructor(max_hp, hp, damage, name) {
+        this.max_hp = max_hp;
         this.hp = hp;
         this.damage = damage;
         this.name = name;
@@ -93,27 +93,46 @@ class Enemy {
         var getEnemyAction = document.getElementById("enemy-action");
         var getEnemyHp = document.getElementById("enemy-hp");
         var getEnemyName = document.getElementById("enemy-name");
+
+        var getEnemySName = document.getElementById("e-class");
+        var getEnemySHp = document.getElementById("e-hp")
+        var getEmemySDam = document.getElementById("e-dam")
         
         getEnemyAction.innerHTML = enemyAction;
         getEnemyHp.innerHTML = this.hp;
         getEnemyName.innerHTML = this.name;
+
+        getEnemySName.innerHTML = "Class: " + this.name;
+        getEnemySHp.innerHTML = "Max HP: " + this.max_hp;
+        getEmemySDam.innerHTML = "Damage: " + this.damage;
+
     }
     attack(playerHp) {
         return playerHp -= this.damage; // returns player hp value
     }
 }
 
-// switches active buttons between class and fight menu; boolean
-function buttonState(classState, actionState, chooseClass) {
-    document.getElementById("fight-button").disabled = classState;
-    document.getElementById("range-button").disabled = classState;
-    document.getElementById("mage-button").disabled = classState;
-
-    document.getElementById("attack-button").disabled = actionState;
-    document.getElementById("block-button").disabled = actionState;
-    document.getElementById("stun-button").disabled = actionState;
-
-    chooseClass = chooseClass;
+// add randomness to amounts dependent on difficulty?
+// amounts dependent on class?
+async function levelUp(clicked_id) {
+    var getLevelUp = document.getElementById("levelContainer");
+    console.log("Level Up!")
+    if (clicked_id == "firstChoice") {
+        getLevelUp.hidden = true;
+        player.max_hp += 2;
+        player.damage += 2;
+        player.block += 2;
+        player.update("I'm feeling strong!")
+        await sleep(1000)
+        player.update("Ready")
+    }
+    if (clicked_id == "secondChoice") {
+        getLevelUp.hidden = true;
+        player.hp = player.max_hp;
+        player.update("I'm feeling healthy!")
+        await sleep(1000)
+        player.update("Ready")
+    }
 }
 
 // generate random number between 1 and x
@@ -131,10 +150,11 @@ function sleep(ms) {
 // TODO: Add variety for different levels and different names
 // idea: use winCounter to adjust "difficulty"
 function genEnemy() {
-    var HP = dice(10) + 4;
-    var DAM = 1;
+    var MAX_HP = dice(10) + 4;
+    var HP = MAX_HP;
+    var DAM = dice(2) + dice(2) + 1;
     var NAME = "Goblin";
-    enemy = new Enemy(HP, DAM, NAME);
+    enemy = new Enemy(MAX_HP, HP, DAM, NAME);
 }
 
 // choose class based on button clicked and generates first enemy
@@ -189,8 +209,7 @@ async function attackEnemy() {
             updateCharacters("Piles of bones", "Victory laugh");
             console.log("The player has vanquished...");
             winCounter = 0;
-            chooseClass = false;
-            buttonState(false, true);
+            buttonState(false, true, false);
         }
 
     }
@@ -219,54 +238,45 @@ async function attackEnemy() {
     }
 }
 
-// function blockEnemy() {
-//     var blocked = player.block - enemy.damage
-//     if (blocked >= 0) {
-//         console.log("Fully Blocked\n Damage Blocked: " + enemy.damage)
-//     }
-//     if (blocked < 0 && player.hp > 0) {
-//         console.log("Partially Blocked\n Damage Taken: " + blocked)
-//         player.hp = enemy.attack(player.hp + player.block)
-//         if (player.hp <= 0) {
-//             updateCharacters("Piles of bones", "Victory laugh");
-//             console.log("The player has vanquished...");
-//             winCounter = 0;
-//             chooseClass = false;
-//             buttonState(false, true);
-//         }
-//     } 
-// }
+function blockEnemy() {
+    var blocked = player.blockAttack(enemy.damage)
+    
+    // heal off extra blocked dam * probably change
+    // TODO: Stop healing at max hp
+    if (blocked >= 0) {
+        console.log("Fully Blocked\n Damage Blocked: " + enemy.damage)
+        console.log("blockedvar: " + blocked)
+        player.hp += blocked
+        player.update("Blocked " + enemy.damage + " Damage")
 
-// function block () {
-//     updateCharacters("Blocking", "Biting")
-//     var blocked = player.block - enemy.damage
-//     if(blocked >= 0) {
-//         console.log("Fully Blocked\n Damage Blocked: " + enemy.damage)
-//     }
-//     if(blocked < 0 && player.hp > 0) {
-//         console.log("Partially Blocked\n Damage Taken: " + blocked)
-//         player.hp = enemy.attack(player.hp + player.block)
-//     } else
-//     {
-//         console.log("You're dead")
-//     }
+    }
+    if (blocked < 0 && player.hp > 0) {
+        console.log("Partially Blocked\n Damage Taken: " + blocked)
+        player.hp += blocked
+        player.update("Blocked " + enemy.damage + " Damage")
+        player.update("Took " + blocked * -1 + " Damage")
+        if (player.hp <= 0) {
+            updateCharacters("Piles of bones", "Victory laugh");
+            console.log("The player has vanquished...");
+            winCounter = 0;
+            buttonState(false, true, false);
+        }
+    }
+}
+
 function stunEnemy() {
     console.log("Stunned ya!");
 }
 
 function newGame() {
     player = new Player(10, 10, 10, 10, "...");
-    enemy = new Enemy(10, 10, "...");
+    enemy = new Enemy(10, 10, 10, "...");
     updateCharacters("Choose Class", "Awaiting player choice");
     buttonState(false, true, false);
 }
 
 // starts new game on page load
 newGame();
-
-
-// }
-
 
 
 // OLD MAINLOOP - For reference
