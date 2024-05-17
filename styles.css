@@ -67,10 +67,19 @@ body {
   border: 1px solid black;
 }
 
-#statsContainer {
+#pStatsContainer {
   position: absolute;
   top: 4px;
   right:4px;
+
+  border: 1px solid black;
+  padding: 10px 4px 10px 4px;
+}
+
+#eStatsContainer {
+  position: absolute;
+  top: 200px;
+  right: 4px;
 
   border: 1px solid black;
   padding: 10px 4px 10px 4px;
