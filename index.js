@@ -156,7 +156,8 @@ function sleep(ms) {
 function genEnemy() {
     var MAX_HP = dice(10) + 4;
     var HP = MAX_HP;
-    var DAM = dice(2) + dice(2) + 1;
+    // var DAM = dice(2) + dice(2) + 1;
+    var DAM = 2; // no randomized for testing
     var NAME = "Goblin";
     enemy = new Enemy(MAX_HP, HP, DAM, NAME);
 }
@@ -207,13 +208,11 @@ async function attackEnemy() {
         if (stunned == false) {
             updateCharacters("Slashes", "Stumbles");
         }
-        if (stunned == true) {
-            updateCharacters("Slashes", "*Stunned* (" + (stunCounter - 1) + ")");
-        }
-
+        
         if (stunned == true) { // check if enemy is stunned
             stunCounter --;
             console.log(stunCounter)
+            updateCharacters("Slashes", "*Stunned* (" + (stunCounter - 1) + ")");
 
             if (stunCounter == 0) {
                 stunned = false;
@@ -295,7 +294,7 @@ function stunEnemy() {
     if (check >= 3) { // pass check
         stunned = true;
         stunCounter = 3;
-        updateCharacters("*Shield bashes*", "*Stunned* (" + stunCounter + ")")
+        updateCharacters("*Shield bashes*", "*Stunned* (" + (stunCounter - 1) + ")")
     }
     if (check <= 2) { // fail check
         player.hp = enemy.attack(player.hp);
