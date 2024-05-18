@@ -204,31 +204,41 @@ function updateCharacters(p_action, e_action) {
 async function attackEnemy() {
     if (enemy.hp > 0) {
         enemy.hp = player.attack(enemy.hp);
-        updateCharacters("Slashes", "Stumbles");
+        if (stunned == false) {
+            updateCharacters("Slashes", "Stumbles");
+        }
+        if (stunned == true) {
+            updateCharacters("Slashes", "*Stunned* (" + (stunCounter - 1) + ")");
+        }
 
         if (stunned == true) { // check if enemy is stunned
-            stunCounter ++;
+            stunCounter --;
+            console.log(stunCounter)
 
-            if (stunCounter == 3) {
+            if (stunCounter == 0) {
                 stunned = false;
                 stunCounter = 0;
                 console.log("No longer stunned")
             }
         }
 
-        if (player.hp > 0 && enemy.hp > 0 && stunned == false) {
+        if (player.hp > 0 && enemy.hp > 0 && stunned == false) { // enemy attack
             player.hp = enemy.attack(player.hp);
-            updateCharacters("Bites", "Flinches in pain");
+            updateCharacters("Flinches in pain", "Bites");
         } 
-        if (player.hp <= 0) {
-            updateCharacters("Piles of bones", "Victory laugh");
-            console.log("The player has vanquished...");
+        if (player.hp <= 0) { // player death
+            var getLevelUp = document.getElementById("levelContainer");
+            getLevelUp.hidden = true;
             winCounter = 0;
-            buttonState(false, true, false);
+
+            updateCharacters("Piles of bones", "Victory laugh");
+            buttonState(true, true, false);
+            await sleep(4000);
+            newGame();
         }
 
     }
-    if (enemy.hp <= 0) {
+    if (enemy.hp <= 0) { // check if enemyhp is 0. Level up & load next enemy
         buttonState(true, true, true)
         updateCharacters("Victory Dance", "Pile of bones");
         console.log("The enemy has vanquished...");
@@ -245,7 +255,7 @@ async function attackEnemy() {
             updateCharacters("Ready", "Ready");
             buttonState(true, false, true);
         }
-        if (winCounter == winsNeeded) {
+        if (winCounter == winsNeeded) { // victory condition
             console.log("You beat the game!");
             console.log(winCounter);
             buttonState(false, true, false);
@@ -279,21 +289,23 @@ function blockEnemy() {
     }
 }
 
-
+// TODO: hit enemy for half damage on success & 1.5 of gob damage to player on fail?
 function stunEnemy() {
     var check = dice(4);
-    if (check >= 3) {
+    if (check >= 3) { // pass check
         stunned = true;
-        console.log("Stunned ya!")
+        stunCounter = 3;
+        updateCharacters("*Shield bashes*", "*Stunned* (" + stunCounter + ")")
     }
-    if (check <= 2) {
-        player.hp = enemy.attack(player.hp)
-        player.update("Stun Failed!")
+    if (check <= 2) { // fail check
+        player.hp = enemy.attack(player.hp);
+        updateCharacters("Miss!", "Bites")
     }
-
 }
 
-function newGame() {
+function newGame() { // reset game state
+    winCounter = 0;
+    stunCounter = 0;
     player = new Player(10, 10, 10, 10, "...");
     enemy = new Enemy(10, 10, 10, "...");
     updateCharacters("Choose Class", "Awaiting player choice");
