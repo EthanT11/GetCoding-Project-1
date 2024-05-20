@@ -153,7 +153,7 @@ async function genEnemy() {
     var MAX_HP = dice(10) + 4;
     var HP = MAX_HP;
     // var DAM = dice(2) + dice(2) + 1;
-    var DAM = 2; // randomized for testing
+    var DAM = 6; // randomized for testing
     var NAME = "Goblin";
 
     buttonState(true, true, true)
@@ -193,9 +193,7 @@ function updateCharacters(p_action, e_action) {
     enemy.update(e_action);
 }
 
-
 // attack button; increments winCounter each win
-// win condition for testing is getting 10 wins
 async function attackEnemy() {
     var getLevelUp = document.getElementById("levelContainer");
     if (enemy.hp > 0) {
@@ -207,11 +205,7 @@ async function attackEnemy() {
             updateCharacters("Flinches in pain", "Bites");
         } 
         if (player.hp <= 0) { // player death
-            getLevelUp.hidden = true;
-            updateCharacters("Piles of bones", "Victory laugh");
-            buttonState(true, true, false);
-            await sleep(4000);
-            newGame();
+            playerDeath();
         }
         
     }
@@ -236,30 +230,26 @@ async function attackEnemy() {
 }
 
 // heal off extra blocked dam * probably change
-// TODO: Stop healing at max hp
-function blockEnemy() {
-    var blocked = player.blockAttack(enemy.damage);
-    
-    if (blocked >= 0) {
-        console.log("Fully Blocked\n Damage Blocked: " + enemy.damage)
-        console.log("blockedvar: " + blocked)
-        player.hp += blocked
+async function blockEnemy() {
+    var blocked = player.blockAttack(enemy.damage); // player.block - enemy.damage -> 4 - 2
+    var healCheck = player.hp + blocked;
+
+    if (blocked >= 0) { // if greater than 0 heal for the amount
+        if (healCheck >= player.max_hp) { // check if hp would be greater then max
+            player.hp = player.max_hp;
+        } else {
+            player.hp += blocked;
+        }
         player.update("Blocked " + enemy.damage + " Damage")
-        
     }
-    if (blocked < 0 && player.hp > 0) {
-        console.log("Partially Blocked\n Damage Taken: " + blocked)
+    if (player.hp > 0) {
         player.hp += blocked
-        player.update("Blocked " + enemy.damage + " Damage")
-        player.update("Took " + blocked * - 1 + " Damage")
         if (player.hp <= 0) {
-            updateCharacters("Piles of bones", "Victory laugh");
-            console.log("The player has vanquished...");
-            winCounter = 0;
-            buttonState(false, true, false);
+            playerDeath()
         }
     }
 }
+
 
 // TODO: hit enemy for half damage on success & 1.5 of gob damage to player on fail?
 function stunEnemy() {
@@ -293,6 +283,16 @@ function checkStun() {
         }
     }
 }
+
+async function playerDeath() {
+    var getLevelUp = document.getElementById("levelContainer");
+    getLevelUp.hidden = true;
+    updateCharacters("Piles of bones", "Victory laugh");
+    buttonState(true, true, false);
+    await sleep(4000);
+    newGame();
+}
+
 function newGame() { // reset game state
     winCounter = 0;
     stunCounter = 0;
