@@ -44,6 +44,8 @@ var winsNeeded = 3;
 var stunCounter = 0;
 var stunned = false;
 
+var ENEMYDAM = 2; // for testing; enemy damage
+
 class Player {
     constructor(max_hp, hp, damage, block, name) {
         this.max_hp = max_hp;
@@ -153,15 +155,15 @@ async function genEnemy() {
     var MAX_HP = dice(10) + 4;
     var HP = MAX_HP;
     // var DAM = dice(2) + dice(2) + 1;
-    var DAM = 6; // randomized for testing
+    var DAM = ENEMYDAM; // for testing
     var NAME = "Goblin";
 
-    buttonState(true, true, true)
-    updateCharacters("Ready", "Searching for foes...")
+    buttonState(true, true, true);
+    updateCharacters("Ready", "Searching for foes...");
     await sleep(5000);
     enemy = new Enemy(MAX_HP, HP, DAM, NAME);
     updateCharacters("Ready", "Ready");
-    buttonState(true, false, true)
+    buttonState(true, false, true);
 }
 
 // choose class based on button clicked and generates first enemy
@@ -237,15 +239,16 @@ async function blockEnemy() {
     if (blocked >= 0) { // if greater than 0 heal for the amount
         if (healCheck >= player.max_hp) { // check if hp would be greater then max
             player.hp = player.max_hp;
-        } else {
+        } 
+        else {
             player.hp += blocked;
         }
-        player.update("Blocked " + enemy.damage + " Damage")
-    }
-    if (player.hp > 0) {
-        player.hp += blocked
+        player.update(`You blocked all damage`)
+    } else if (blocked < 0) {
+        player.hp += blocked;
+        player.update(`Blocked ${enemy.damage} Damage`);
         if (player.hp <= 0) {
-            playerDeath()
+            playerDeath();
         }
     }
 }
@@ -286,6 +289,7 @@ function checkStun() {
 
 async function playerDeath() {
     var getLevelUp = document.getElementById("levelContainer");
+
     getLevelUp.hidden = true;
     updateCharacters("Piles of bones", "Victory laugh");
     buttonState(true, true, false);
