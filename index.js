@@ -44,6 +44,8 @@ var winsNeeded = 3;
 var stunCounter = 0;
 var stunned = false;
 
+var blockCounter = 0;
+
 var ENEMYDAM = 2; // for testing; enemy damage
 
 class Player {
@@ -122,6 +124,7 @@ class Enemy {
 // amounts dependent on class?
 async function levelUp(clicked_id) {
     var getLevelUp = document.getElementById("levelContainer");
+    var getBlockButton = document.getElementById("block-button");
     console.log("Level Up!");
     getLevelUp.hidden = true;
 
@@ -133,6 +136,10 @@ async function levelUp(clicked_id) {
     } else if (clicked_id == "secondChoice") {
         player.hp = player.max_hp;
         player.update("I'm feeling healthy!")
+    } else if (clicked_id == "thirdChoice") {
+        getBlockButton.innerText = "Block"
+        blockCounter = 5;
+        player.update("Neat! A shield!")
     }
     await sleep(2000)
     player.update("Ready")
@@ -233,23 +240,31 @@ async function attackEnemy() {
 
 // heal off extra blocked dam * probably change
 async function blockEnemy() {
+    var getBlockButton = document.getElementById("block-button");
     var blocked = player.blockAttack(enemy.damage); // player.block - enemy.damage -> 4 - 2
     var healCheck = player.hp + blocked;
-
-    if (blocked >= 0) { // if greater than 0 heal for the amount
-        if (healCheck >= player.max_hp) { // check if hp would be greater then max
-            player.hp = player.max_hp;
-        } 
-        else {
+    if (blockCounter > 0) {
+        if (blocked >= 0) { // if greater than 0 heal for the amount
+            if (healCheck >= player.max_hp) { // check if hp would be greater then max
+                player.hp = player.max_hp;
+            } 
+            else {
+                player.hp += blocked;
+            }
+            player.update(`You blocked all damage`)
+        } else if (blocked < 0) {
             player.hp += blocked;
+            player.update(`Blocked ${enemy.damage} Damage`);
+            if (player.hp <= 0) {
+                playerDeath();
+            }
         }
-        player.update(`You blocked all damage`)
-    } else if (blocked < 0) {
-        player.hp += blocked;
-        player.update(`Blocked ${enemy.damage} Damage`);
-        if (player.hp <= 0) {
-            playerDeath();
-        }
+        blockCounter --;
+        getBlockButton.innerText = `Block (${blockCounter + 1})`
+    } else {
+        player.update("Your shield is broke!")
+        getBlockButton.innerText = "*Broken*"
+        getBlockButton.disabled = true;
     }
 }
 
@@ -300,6 +315,7 @@ async function playerDeath() {
 function newGame() { // reset game state
     winCounter = 0;
     stunCounter = 0;
+    blockCounter = 5;
     player = new Player(10, 10, 10, 10, "...");
     enemy = new Enemy(10, 10, 10, "...");
     updateCharacters("Choose Class", "Awaiting player choice");
