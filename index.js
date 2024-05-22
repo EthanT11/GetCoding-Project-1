@@ -18,19 +18,17 @@ function dropDown() {
 }
 
 // switches active buttons between class and fight menu; boolean
-function buttonState(actionState, chooseClass) {
+function buttonState(actionState, chooseClass, blockState) {
     var classState;
-    if (!chooseClass) {
-        classState = false;
-    } else {
-        classState = true;
-    }
+
+    classState = !chooseClass ? false : true;
     document.getElementById("fight-button").disabled = classState;
     document.getElementById("range-button").disabled = classState;
     document.getElementById("mage-button").disabled = classState;
-    
+
+    blockFlag = blockState;
     document.getElementById("attack-button").disabled = actionState;
-    document.getElementById("block-button").disabled = actionState;
+    document.getElementById("block-button").disabled = blockFlag;
     document.getElementById("stun-button").disabled = actionState;
     
 }
@@ -185,12 +183,11 @@ async function genEnemy() {
     var DAM = ENEMYDAM; // for testing
     var NAME = "Goblin";
 
-    buttonState(true, true);
+    buttonState(true, true, true);
     updateCharacters("Ready", "Searching for foes...");
     await sleep(5000);
     enemy = new Enemy(MAX_HP, HP, DAM, NAME);
-    buttonState(false, true);
-    blockFlag = false;
+    buttonState(false, true, false);
     updateCharacters("Ready", "Ready");
 }
 
@@ -225,7 +222,6 @@ function updateCharacters(p_action, e_action) {
 
 // attack button; increments winCounter each win
 async function attackEnemy() {
-    var getLevelUp = document.getElementById("levelContainer");
     if (enemy.hp > 0) {
         enemy.hp = player.attack(enemy.hp);
         checkStun(); // check if stunned, change text depending
@@ -240,8 +236,9 @@ async function attackEnemy() {
         
     }
     if (enemy.hp <= 0) { // check if enemyhp is 0. Level up & load next enemy
-        buttonState(true, true)
-        blockFlag = true;
+        var getLevelUp = document.getElementById("levelContainer");
+
+        buttonState(true, true, true)
         updateCharacters("Victory Dance", "Pile of bones");
         console.log("The enemy has vanquished...");
         if (winCounter < winsNeeded) {
@@ -252,8 +249,9 @@ async function attackEnemy() {
             await sleep(3000)
             genEnemy();
         } else { // victory condition
-            console.log("You beat the game!");
-            buttonState(true, false);
+            player.update("I win!!")
+            getLevelUp.hidden = true;
+            buttonState(true, false, true);
             await sleep(6000);
             newGame();
         }
@@ -341,7 +339,7 @@ function newGame() { // reset game state
     player = new Player("?", "?", "?", "?", "...");
     enemy = new Enemy("?", "?", "?", "...");
     updateCharacters("Choose Class", "Awaiting player choice");
-    buttonState(true, false);
+    buttonState(true, false, true);
 }
 
 // starts new game on page load
