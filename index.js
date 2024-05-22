@@ -26,8 +26,9 @@ function buttonState(classState, actionState, chooseClass) {
     document.getElementById("attack-button").disabled = actionState;
     document.getElementById("block-button").disabled = actionState;
     document.getElementById("stun-button").disabled = actionState;
-
+    
     chooseClass = chooseClass;
+
 }
 
 // -- Game Functions --
@@ -45,6 +46,7 @@ var stunCounter = 0;
 var stunned = false;
 
 var blockCounter = 0;
+var blockFlag = false;
 
 var ENEMYDAM = 2; // for testing; enemy damage
 
@@ -56,29 +58,43 @@ class Player {
         this.block = block;
         this.name = name;
     }
-
+    
     // Update HP and Action on UI
     update(playerAction) {
+        // get player container elements
         var getPlayerAction = document.getElementById("player-action");
         var getPlayerHp = document.getElementById("player-hp");
         var getPlayerName = document.getElementById("player-name");
-
+        
+        // get player stats container elements
         var getPlayerSClass = document.getElementById("s-class");
         var getPlayerSHp = document.getElementById("s-hp");
         var getPlayerSDamage = document.getElementById("s-dam");
         var getPlayerSBlock = document.getElementById("s-block");
         var getPlayerSWins = document.getElementById("s-wins");
         
+        var getBlockButton = document.getElementById("block-button");
+        
+        // set player container elements
         getPlayerAction.innerHTML = playerAction;
         getPlayerHp.innerHTML = this.hp;
         getPlayerName.innerHTML = this.name;
-
+        
+        // set player stats container elements
         getPlayerSClass.innerHTML = `Class: ${this.name}`;
         getPlayerSHp.innerHTML = `Max HP: ${this.max_hp}`;
         getPlayerSDamage.innerHTML = `Damage: ${this.damage}`;
         getPlayerSBlock.innerHTML = `Block: ${this.block}`;
         getPlayerSWins.innerHTML = `Wins: ${winCounter}`;
-
+        
+        // check if block button should be active based on hp
+        if (blockFlag == false) {
+            if (player.hp < player.max_hp && blockCounter > 0) {
+                    getBlockButton.disabled = false;
+            } else {
+                getBlockButton.disabled = true;
+            }
+        }
     }
     attack(enemyHp) {
         return enemyHp -= this.damage; // returns enemy hp value
@@ -169,8 +185,9 @@ async function genEnemy() {
     updateCharacters("Ready", "Searching for foes...");
     await sleep(5000);
     enemy = new Enemy(MAX_HP, HP, DAM, NAME);
-    updateCharacters("Ready", "Ready");
     buttonState(true, false, true);
+    blockFlag = false;
+    updateCharacters("Ready", "Ready");
 }
 
 // choose class based on button clicked and generates first enemy
@@ -220,6 +237,7 @@ async function attackEnemy() {
     }
     if (enemy.hp <= 0) { // check if enemyhp is 0. Level up & load next enemy
         buttonState(true, true, true)
+        blockFlag = true;
         updateCharacters("Victory Dance", "Pile of bones");
         console.log("The enemy has vanquished...");
         if (winCounter < winsNeeded) {
@@ -260,7 +278,7 @@ async function blockEnemy() {
             }
         }
         blockCounter --;
-        getBlockButton.innerText = `Block (${blockCounter + 1})`
+        getBlockButton.innerText = `Block (${blockCounter})`
     } else {
         player.update("Your shield is broke!")
         getBlockButton.innerText = "*Broken*"
