@@ -67,6 +67,11 @@ body {
   border: 1px solid black;
 }
 
+#spellContainer {
+  padding: 10px 4px 10px 2px;
+  border: 1px solid black;
+}
+
 #pStatsContainer {
   position: absolute;
   top: 4px;
