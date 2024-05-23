@@ -56,9 +56,11 @@ var ENEMYDAM = 2; // for testing; enemy damage
 
 // TODO: Maybe add the flags to the player constructor?? Might cause a lot of issues
 class Player {
-    constructor(max_hp, hp, damage, block, name) {
+    constructor(max_hp, hp, max_mp, mp, damage, block, name) {
         this.max_hp = max_hp;
         this.hp = hp;
+        this.max_mp = max_mp;
+        this.mp = mp;
         this.damage = damage;
         this.block = block;
         this.name = name;
@@ -72,11 +74,13 @@ class Player {
         // get player container elements
         var getPlayerAction = document.getElementById("player-action");
         var getPlayerHp = document.getElementById("player-hp");
+        var getPlayerMp = document.getElementById("player-mp");
         var getPlayerName = document.getElementById("player-name");
         
         // get player stats container elements
         var getPlayerSClass = document.getElementById("s-class");
         var getPlayerSHp = document.getElementById("s-hp");
+        var getPlayerSMp = document.getElementById("s-mp");
         var getPlayerSDamage = document.getElementById("s-dam");
         var getPlayerSBlock = document.getElementById("s-block");
         var getPlayerSWins = document.getElementById("s-wins");
@@ -86,13 +90,15 @@ class Player {
         var getSpellButton = document.getElementById("spell-book");
         
         // set player container elements
-        getPlayerAction.innerHTML = playerAction;
-        getPlayerHp.innerHTML = `HP: ${this.hp} / ${this.max_hp}`;
         getPlayerName.innerHTML = this.name;
+        getPlayerHp.innerHTML = `HP: ${this.hp} / ${this.max_hp}`;
+        getPlayerMp.innerHTML = `MP: ${this.mp} / ${this.max_mp}`;
+        getPlayerAction.innerHTML = playerAction;
         
         // set player stats container elements
         getPlayerSClass.innerHTML = `Class: ${this.name}`;
         getPlayerSHp.innerHTML = `Max HP: ${this.max_hp}`;
+        getPlayerSMp.innerHTML = `Max MP: ${this.max_mp}`;
         getPlayerSDamage.innerHTML = `Damage: ${this.damage}`;
         getPlayerSBlock.innerHTML = `Block: ${this.block}`;
         getPlayerSWins.innerHTML = `Wins: ${winCounter}`;
@@ -147,24 +153,24 @@ class Spell {
     }
 }
 
-// spell testing
+var fireSpell = new Spell("Fire", 4)
+var iceSpell = new Spell("Ice", 2)
+var earthSpell = new Spell("Earth", 6)
+
+// main spell function
 function spellAttack(clicked_id) {
     clicked_id = clicked_id.srcElement.id;
-    if (clicked_id == "Fire") {
-        console.log("FIRE!")
-    } else if (clicked_id == "Ice") {
-        console.log("ICE!")
-    } else if (clicked_id == "Earth") {
-        console.log("EARTH!")
+    if (clicked_id == "Fire") { // Maybe burning effect?
+        enemy.hp -= fireSpell.damage;
+        updateCharacters("Fire!", "Set ablaze");
+    } else if (clicked_id == "Ice") { // maybe reduce damage?
+        enemy.hp -= iceSpell.damage;
+        updateCharacters("Ice!", "*Chilled*");
+    } else if (clicked_id == "Earth") { // maybe stun effect?
+        enemy.hp -= earthSpell.damage;
+        updateCharacters("Earth!", "*Knocked down*");
     }
 }
-
-var fireSpell = new Spell("Fire", 4)
-fireButton = fireSpell.update()
-var iceSpell = new Spell("Ice", 2)
-var earthSpell = new Spell("Earth", 3)
-
-
 
 class Enemy {
     constructor(max_hp, hp, damage, name) {
@@ -251,22 +257,23 @@ async function genEnemy() {
     updateCharacters("Ready", "Ready");
 }
 
-// choose class based on button clicked and generates first enemy
+// choose class based on button clicked
 function setClass(clicked_id) {
     var MAX_HP = [12, 10, 8];
+    var MAX_MP = [8, 10, 12];
     var DAMAGE = [2, 3, 4];
     var BLOCK = [4, 3, 2];
     var NAME = ["Fighter", "Ranger", "Mage"];
     
     if (!chooseClass) {
         if (clicked_id == "fight-button") {
-            player = new Player(MAX_HP[0], MAX_HP[0], DAMAGE[0], BLOCK[0], NAME[0]); // Player(MAX-HP, HP, Damage, Block, Name)
+            player = new Player(MAX_HP[0], MAX_HP[0], MAX_MP[0], MAX_MP[0], DAMAGE[0], BLOCK[0], NAME[0]); // Player(MAX-HP, HP, Damage, Block, Name)
         }
         if (clicked_id == "range-button") {
-            player = new Player(MAX_HP[1], MAX_HP[1], DAMAGE[1], BLOCK[1], NAME[1]); // Player(MAX-HP, HP, Damage, Block, Name)
+            player = new Player(MAX_HP[1], MAX_HP[1], MAX_MP[1], MAX_MP[1], DAMAGE[1], BLOCK[1], NAME[1]); // Player(MAX-HP, HP, Damage, Block, Name)
         }
         if (clicked_id == "mage-button") {
-            player = new Player(MAX_HP[2], MAX_HP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
+            player = new Player(MAX_HP[2], MAX_HP[2], MAX_MP[2], MAX_MP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
             spellFlag = true;
         }
         genEnemy();
@@ -395,7 +402,7 @@ function newGame() { // reset game state
     winCounter = 0;
     stunCounter = 0;
     blockCounter = 5;
-    player = new Player("?", "?", "?", "?", "...");
+    player = new Player("?", "?", "?", "?", "?", "?", "...");
     enemy = new Enemy("?", "?", "?", "...");
     updateCharacters("Choose Class", "Awaiting player choice");
     buttonState(true, false, true);
