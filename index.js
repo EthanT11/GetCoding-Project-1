@@ -132,32 +132,35 @@ function openSpellBook() {
 
 // Class for spell creation; takes name and damage
 // Creates a button and places in spell menu
-// note for myself, this is where i left off *trying to figure out onclick*
 class Spell {
     constructor(name, damage) {
         this.name = name;
         this.damage = damage;
 
         // create button
-        var createButton = document.createElement("button")
-        createButton.innerText = this.name;
-        createButton.id = this.name;
-        createButton.onclick = spellAttack();
-
-        document.getElementById("spellContainer").appendChild(createButton)
-
-    }
-    update() {
-    
+        var spellButton = document.createElement("button")
+        spellButton.innerText = this.name;
+        spellButton.id = this.name;
+        spellButton.onclick = spellAttack
+        document.getElementById("spellContainer").appendChild(spellButton)
+        
     }
 }
 
 // spell testing
-function spellAttack() {
-    console.log("Pew pew")
+function spellAttack(clicked_id) {
+    clicked_id = clicked_id.srcElement.id;
+    if (clicked_id == "Fire") {
+        console.log("FIRE!")
+    } else if (clicked_id == "Ice") {
+        console.log("ICE!")
+    } else if (clicked_id == "Earth") {
+        console.log("EARTH!")
+    }
 }
 
 var fireSpell = new Spell("Fire", 4)
+fireButton = fireSpell.update()
 var iceSpell = new Spell("Ice", 2)
 var earthSpell = new Spell("Earth", 3)
 
