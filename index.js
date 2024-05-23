@@ -33,6 +33,16 @@ function buttonState(actionState, chooseClass, blockState) {
     
 }
 
+// toggles spell book visibility
+function openSpellBook() {
+    var getSpellbook = document.getElementById("spellContainer");
+    if (getSpellbook.hidden) {
+        getSpellbook.hidden = false;
+    } else {
+        getSpellbook.hidden = true;
+    }
+}
+
 // -- Game Functions --
 
 
@@ -126,22 +136,13 @@ class Player {
 
 }
 
-// toggles spell book visibility
-function openSpellBook() {
-    var getSpellbook = document.getElementById("spellContainer");
-    if (getSpellbook.hidden) {
-        getSpellbook.hidden = false;
-    } else {
-        getSpellbook.hidden = true;
-    }
-}
-
-// Class for spell creation; takes name and damage
+// Class for spell creation; takes name, damage, and cost
 // Creates a button and places in spell menu
 class Spell {
-    constructor(name, damage) {
+    constructor(name, damage, cost) {
         this.name = name;
         this.damage = damage;
+        this.cost = cost;
 
         // create button
         var spellButton = document.createElement("button")
@@ -153,9 +154,11 @@ class Spell {
     }
 }
 
-var fireSpell = new Spell("Fire", 4)
-var iceSpell = new Spell("Ice", 2)
-var earthSpell = new Spell("Earth", 6)
+// spell list
+// TODO: find better place for them, maybe put in a list?
+var fireSpell = new Spell("Fire", 4, 2)
+var iceSpell = new Spell("Ice", 2, 2)
+var earthSpell = new Spell("Earth", 6, 2)
 
 // main spell function
 function spellAttack(clicked_id) {
@@ -214,15 +217,17 @@ async function levelUp(clicked_id) {
 
     if (clicked_id == "first-choice") {
         player.max_hp += 2;
+        player.max_mp += 2;
         player.damage += 2;
         player.block += 2;
         player.update("I'm feeling strong!")
     } else if (clicked_id == "second-choice") {
         player.hp = player.max_hp;
+        player.mp = player.max_mp;
         player.update("I'm feeling healthy!")
     } else if (clicked_id == "third-choice") {
-        getBlockButton.innerText = "Block"
         blockCounter = 5;
+        getBlockButton.innerText = `Block (${blockCounter})`
         player.update("Neat! A shield!")
     }
     await sleep(2000)
