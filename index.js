@@ -56,10 +56,10 @@ var enemy;
 var chooseClass = false;
 
 var winCounter = 0;
-var winsNeeded = 1;
+var winsNeeded = 3;
 
 var stunCounter = 0;
-var stunned = false;
+var stunFlag = false;
 
 var blockCounter = 0;
 var blockFlag = false;
@@ -166,24 +166,31 @@ class Spell {
 
 // spell list
 // TODO: find better place for them, maybe put in a list?
-var fireSpell = new Spell("Fire", 4, 2)
-var iceSpell = new Spell("Ice", 2, 2)
-var earthSpell = new Spell("Earth", 6, 2)
+var fireSpell = new Spell("Fire", 4, 2);
+var iceSpell = new Spell("Ice", 2, 2);
+var earthSpell = new Spell("Earth", 1, 2);
 
 // main spell function
-function spellAttack(clicked_id) {
+async function spellAttack(clicked_id) {
     clicked_id = clicked_id.srcElement.id;
     if (clicked_id == "Fire") { // Maybe burning effect?
         enemy.hp -= fireSpell.damage;
-        updateCharacters("Fire!", "Set ablaze");
+        player.mp -= fireSpell.cost;
     } else if (clicked_id == "Ice") { // maybe reduce damage?
         enemy.hp -= iceSpell.damage;
-        stunCounter += 1;
-        updateCharacters("Ice!", "*Chilled*");
-    } else if (clicked_id == "Earth") { // maybe stun effect?
+        player.mp -= iceSpell.cost;
+    } else if (clicked_id == "Earth") { // Damages & chance to stun
         enemy.hp -= earthSpell.damage;
-        updateCharacters("Earth!", "*Knocked down*");
+        player.mp -= earthSpell.cost;
+        stunEnemy()
     }
+    if (!stunFlag) {
+        updateCharacters(`${clicked_id}!`, "Ouch!");
+    } else {
+        updateCharacters(`${clicked_id}!`, `*Stunned* (${stunCounter})`);
+    }
+    enemyAttack();
+    checkVictory();
 }
 
 class Enemy {
@@ -259,7 +266,7 @@ function sleep(ms) {
 // TODO: Add variety for different levels and different names
 // idea: use winCounter to adjust "difficulty"
 async function genEnemy() {
-    var MAX_HP = dice(10) + 4;
+    var MAX_HP = dice(10) + 10;
     var HP = MAX_HP;
     // var DAM = dice(2) + dice(2) + 1;
     var DAM = ENEMYDAM; // for testing
@@ -307,21 +314,72 @@ function updateCharacters(p_action, e_action) {
     enemy.update(e_action);
 }
 
+// TODO: hit enemy for half damage on success & 1.5 of gob damage to player on fail?
+function stunEnemy() {
+    var getStunButton = document.getElementById("stun-button");
+    var d4 = dice(4);
+    var d2 = dice(2) + 1;
+    
+    if (d4 >= 3) { // pass check
+        stunFlag = true;
+        stunCounter = d2;
+        getStunButton.disabled = true;
+        getStunButton.innerHTML = `Stun (${stunCounter})`
+        enemy.update(`*Stunned* (${stunCounter})`)
+    } else if (d4 <= 2) { // fail check
+        enemyAttack();
+        console.log("Failed Stun")
+    }
+}
+
+function checkStun() {
+    var getStunButton = document.getElementById("stun-button");
+    if (!stunFlag) {
+        console.log(`Not Stunned ${stunFlag}`)
+    } else {
+        stunCounter --;
+        console.log(`Stun Counter: ${stunCounter}`)
+        getStunButton.innerHTML = `Stun (${stunCounter})`
+        enemy.update(`*Stunned* (${stunCounter})`)
+        if (stunCounter == 0) {
+            stunFlag = false;
+            getStunButton.disabled = false;
+            getStunButton.innerHTML = "Stun";
+        }
+    }
+}
+// enemy attack
+function enemyAttack() {
+    if (player.hp > 0 && enemy.hp > 0 && !stunFlag) {
+        player.hp = enemy.attack(player.hp);
+        updateCharacters("Flinches in pain", "Bites");
+    } 
+    if (player.hp <= 0) {
+        playerDeath();
+    }
+    checkStun();
+    
+    async function playerDeath() { // as of now the enemy attacking is the only way to die
+        var getLevelUp = document.getElementById("levelContainer");
+    
+        getLevelUp.hidden = true;
+        updateCharacters("Piles of bones", "Victory laugh");
+        buttonState(true, true, true);
+        await sleep(4000);
+        newGame();
+    }
+}
+
 // attack button; increments winCounter each win
-async function attackEnemy() {
+function attackEnemy() {
     if (enemy.hp > 0) {
         enemy.hp = player.attack(enemy.hp);
-        checkStun(); // check if stunned, change text depending
-        
-        if (player.hp > 0 && enemy.hp > 0 && !stunned) { // enemy attack
-            player.hp = enemy.attack(player.hp);
-            updateCharacters("Flinches in pain", "Bites");
-        } 
-        if (player.hp <= 0) { // player death
-            playerDeath();
-        }
-        
-    }
+        enemyAttack();
+    } 
+    checkVictory();
+}
+
+async function checkVictory() {
     if (enemy.hp <= 0) { // check if enemyhp is 0. Level up & load next enemy
         var getLevelUp = document.getElementById("levelContainer");
         winCounter ++;
@@ -374,54 +432,11 @@ async function blockEnemy() {
     }
 }
 
-// TODO: hit enemy for half damage on success & 1.5 of gob damage to player on fail?
-function stunEnemy() {
-    var check = dice(4);
-    var getStunButton = document.getElementById("stun-button");
-    
-    if (check >= 3) { // pass check
-        stunned = true;
-        stunCounter = 3;
-        getStunButton.disabled = true;
-        getStunButton.innerHTML = `Stun (${stunCounter - 1})`
-        updateCharacters("*Shield bashes*", `*Stunned* (${stunCounter - 1})`)
-    } else if (check <= 2) { // fail check
-        player.hp = enemy.attack(player.hp);
-        updateCharacters("Miss!", "Bites")
-    }
-}
-
-function checkStun() {
-    var getStunButton = document.getElementById("stun-button");
-    if (!stunned) {
-        updateCharacters("Slashes", "Stumbles");
-    } else {
-        stunCounter --;
-        getStunButton.innerHTML = `Stun (${stunCounter - 1})`
-        updateCharacters("Slashes", `*Stunned* (${stunCounter - 1})`);
-        if (stunCounter == 0) {
-            stunned = false;
-            getStunButton.disabled = false;
-            getStunButton.innerHTML = "Stun"
-        }
-    }
-}
-
-async function playerDeath() {
-    var getLevelUp = document.getElementById("levelContainer");
-
-    getLevelUp.hidden = true;
-    updateCharacters("Piles of bones", "Victory laugh");
-    buttonState(true, true, true);
-    await sleep(4000);
-    newGame();
-}
-
 function newGame() { // reset game state
     winCounter = 0;
     stunCounter = 0;
     blockCounter = 5;
-    stunned = false;
+    stunFlag = false;
     mageFlag = false;
     player = new Player("?", "?", "?", "?", "?", "?", "...");
     enemy = new Enemy("?", "?", "?", "...");
