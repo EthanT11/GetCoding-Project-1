@@ -199,6 +199,7 @@ function updateCharacters(p_action, e_action) {
     enemy.update(e_action);
 }
 
+
 // attack button; increments winCounter each win
 // win condition for testing is getting 10 wins
 // TODO: add reset function? 
