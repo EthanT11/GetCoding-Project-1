@@ -39,10 +39,14 @@ var enemy;
 var chooseClass = false;
 
 var winCounter = 0;
-var winsNeeded = 10;
+var winsNeeded = 3;
 
 var stunCounter = 0;
 var stunned = false;
+
+var blockCounter = 0;
+
+var ENEMYDAM = 2; // for testing; enemy damage
 
 class Player {
     constructor(max_hp, hp, damage, block, name) {
@@ -63,6 +67,7 @@ class Player {
         var getPlayerSHp = document.getElementById("s-hp");
         var getPlayerSDamage = document.getElementById("s-dam");
         var getPlayerSBlock = document.getElementById("s-block");
+        var getPlayerSWins = document.getElementById("s-wins");
         
         getPlayerAction.innerHTML = playerAction;
         getPlayerHp.innerHTML = this.hp;
@@ -72,6 +77,7 @@ class Player {
         getPlayerSHp.innerHTML = `Max HP: ${this.max_hp}`;
         getPlayerSDamage.innerHTML = `Damage: ${this.damage}`;
         getPlayerSBlock.innerHTML = `Block: ${this.block}`;
+        getPlayerSWins.innerHTML = `Wins: ${winCounter}`;
 
     }
     attack(enemyHp) {
@@ -118,6 +124,7 @@ class Enemy {
 // amounts dependent on class?
 async function levelUp(clicked_id) {
     var getLevelUp = document.getElementById("levelContainer");
+    var getBlockButton = document.getElementById("block-button");
     console.log("Level Up!");
     getLevelUp.hidden = true;
 
@@ -129,6 +136,10 @@ async function levelUp(clicked_id) {
     } else if (clicked_id == "secondChoice") {
         player.hp = player.max_hp;
         player.update("I'm feeling healthy!")
+    } else if (clicked_id == "thirdChoice") {
+        getBlockButton.innerText = "Block"
+        blockCounter = 5;
+        player.update("Neat! A shield!")
     }
     await sleep(2000)
     player.update("Ready")
@@ -151,13 +162,15 @@ async function genEnemy() {
     var MAX_HP = dice(10) + 4;
     var HP = MAX_HP;
     // var DAM = dice(2) + dice(2) + 1;
-    var DAM = 2; // randomized for testing
+    var DAM = ENEMYDAM; // for testing
     var NAME = "Goblin";
-    
-    updateCharacters("Ready", "Searching for foes...")
+
+    buttonState(true, true, true);
+    updateCharacters("Ready", "Searching for foes...");
     await sleep(5000);
     enemy = new Enemy(MAX_HP, HP, DAM, NAME);
     updateCharacters("Ready", "Ready");
+    buttonState(true, false, true);
 }
 
 // choose class based on button clicked and generates first enemy
@@ -178,7 +191,6 @@ function setClass(clicked_id) {
             player = new Player(MAX_HP[2], MAX_HP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
         }
         genEnemy();
-        buttonState(true, false, true);
     } else {
         return console.log("Already picked a class");
     }
@@ -190,92 +202,83 @@ function updateCharacters(p_action, e_action) {
     enemy.update(e_action);
 }
 
-function checkStun() {
-    if (!stunned) {
-        updateCharacters("Slashes", "Stumbles");
-    } else {
-        stunCounter --;
-        updateCharacters("Slashes", `*Stunned* (${stunCounter - 1})`);
-        if (stunCounter == 0) {
-            stunned = false;
-        }
-    }
-}
-
 // attack button; increments winCounter each win
-// win condition for testing is getting 10 wins
 async function attackEnemy() {
     var getLevelUp = document.getElementById("levelContainer");
     if (enemy.hp > 0) {
         enemy.hp = player.attack(enemy.hp);
         checkStun(); // check if stunned, change text depending
-
+        
         if (player.hp > 0 && enemy.hp > 0 && !stunned) { // enemy attack
             player.hp = enemy.attack(player.hp);
             updateCharacters("Flinches in pain", "Bites");
         } 
         if (player.hp <= 0) { // player death
-            getLevelUp.hidden = true;
-            updateCharacters("Piles of bones", "Victory laugh");
-            buttonState(true, true, false);
-            await sleep(4000);
-            newGame();
+            playerDeath();
         }
-
+        
     }
     if (enemy.hp <= 0) { // check if enemyhp is 0. Level up & load next enemy
         buttonState(true, true, true)
         updateCharacters("Victory Dance", "Pile of bones");
         console.log("The enemy has vanquished...");
-        if (winCounter <= winsNeeded) {
+        if (winCounter < winsNeeded) {
             getLevelUp.hidden = false;
-
+            
             winCounter ++;
             console.log(winCounter);
             await sleep(3000)
             genEnemy();
-            buttonState(true, false, true);
-        }
-        if (winCounter == winsNeeded) { // victory condition
+        } else { // victory condition
             console.log("You beat the game!");
-            console.log(winCounter);
-            buttonState(false, true, false);
+            buttonState(true, true, false);
+            await sleep(6000);
+            newGame();
         }
     }
 }
 
 // heal off extra blocked dam * probably change
-// TODO: Stop healing at max hp
-function blockEnemy() {
-    var blocked = player.blockAttack(enemy.damage)
-    
-    if (blocked >= 0) {
-        console.log("Fully Blocked\n Damage Blocked: " + enemy.damage)
-        console.log("blockedvar: " + blocked)
-        player.hp += blocked
-        player.update("Blocked " + enemy.damage + " Damage")
-
-    }
-    if (blocked < 0 && player.hp > 0) {
-        console.log("Partially Blocked\n Damage Taken: " + blocked)
-        player.hp += blocked
-        player.update("Blocked " + enemy.damage + " Damage")
-        player.update("Took " + blocked * -1 + " Damage")
-        if (player.hp <= 0) {
-            updateCharacters("Piles of bones", "Victory laugh");
-            console.log("The player has vanquished...");
-            winCounter = 0;
-            buttonState(false, true, false);
+async function blockEnemy() {
+    var getBlockButton = document.getElementById("block-button");
+    var blocked = player.blockAttack(enemy.damage); // player.block - enemy.damage -> 4 - 2
+    var healCheck = player.hp + blocked;
+    if (blockCounter > 0) {
+        if (blocked >= 0) { // if greater than 0 heal for the amount
+            if (healCheck >= player.max_hp) { // check if hp would be greater then max
+                player.hp = player.max_hp;
+            } 
+            else {
+                player.hp += blocked;
+            }
+            player.update(`You blocked all damage`)
+        } else if (blocked < 0) {
+            player.hp += blocked;
+            player.update(`Blocked ${enemy.damage} Damage`);
+            if (player.hp <= 0) {
+                playerDeath();
+            }
         }
+        blockCounter --;
+        getBlockButton.innerText = `Block (${blockCounter + 1})`
+    } else {
+        player.update("Your shield is broke!")
+        getBlockButton.innerText = "*Broken*"
+        getBlockButton.disabled = true;
     }
 }
+
 
 // TODO: hit enemy for half damage on success & 1.5 of gob damage to player on fail?
 function stunEnemy() {
     var check = dice(4);
+    var getStunButton = document.getElementById("stun-button");
+    
     if (check >= 3) { // pass check
         stunned = true;
         stunCounter = 3;
+        getStunButton.disabled = true;
+        getStunButton.innerHTML = `Stun (${stunCounter - 1})`
         updateCharacters("*Shield bashes*", `*Stunned* (${stunCounter - 1})`)
     } else if (check <= 2) { // fail check
         player.hp = enemy.attack(player.hp);
@@ -283,9 +286,36 @@ function stunEnemy() {
     }
 }
 
+function checkStun() {
+    var getStunButton = document.getElementById("stun-button");
+    if (!stunned) {
+        updateCharacters("Slashes", "Stumbles");
+    } else {
+        stunCounter --;
+        getStunButton.innerHTML = `Stun (${stunCounter - 1})`
+        updateCharacters("Slashes", `*Stunned* (${stunCounter - 1})`);
+        if (stunCounter == 0) {
+            stunned = false;
+            getStunButton.disabled = false;
+            getStunButton.innerHTML = "Stun"
+        }
+    }
+}
+
+async function playerDeath() {
+    var getLevelUp = document.getElementById("levelContainer");
+
+    getLevelUp.hidden = true;
+    updateCharacters("Piles of bones", "Victory laugh");
+    buttonState(true, true, false);
+    await sleep(4000);
+    newGame();
+}
+
 function newGame() { // reset game state
     winCounter = 0;
     stunCounter = 0;
+    blockCounter = 5;
     player = new Player(10, 10, 10, 10, "...");
     enemy = new Enemy(10, 10, 10, "...");
     updateCharacters("Choose Class", "Awaiting player choice");
