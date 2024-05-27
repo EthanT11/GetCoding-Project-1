@@ -18,17 +18,19 @@ function dropDown() {
 }
 
 // switches active buttons between class and fight menu; boolean
-function buttonState(classState, actionState, chooseClass) {
+function buttonState(actionState, chooseClass, blockState) {
+    var classState;
+
+    classState = !chooseClass ? false : true;
     document.getElementById("fight-button").disabled = classState;
     document.getElementById("range-button").disabled = classState;
     document.getElementById("mage-button").disabled = classState;
 
+    blockFlag = blockState;
     document.getElementById("attack-button").disabled = actionState;
-    document.getElementById("block-button").disabled = actionState;
+    document.getElementById("block-button").disabled = blockFlag;
     document.getElementById("stun-button").disabled = actionState;
     
-    chooseClass = chooseClass;
-
 }
 
 // -- Game Functions --
@@ -48,8 +50,11 @@ var stunned = false;
 var blockCounter = 0;
 var blockFlag = false;
 
+var spellFlag = false;
+
 var ENEMYDAM = 2; // for testing; enemy damage
 
+// TODO: Maybe add the flags to the player constructor?? Might cause a lot of issues
 class Player {
     constructor(max_hp, hp, damage, block, name) {
         this.max_hp = max_hp;
@@ -60,6 +65,9 @@ class Player {
     }
     
     // Update HP and Action on UI
+    // TODO: Since the function is getting huge and probably bigger, break it down
+    // maybe updateClassMenu*probably something less wordy but updateClass sounds like a different function*
+    // updateMenu?
     update(playerAction) {
         // get player container elements
         var getPlayerAction = document.getElementById("player-action");
@@ -73,11 +81,13 @@ class Player {
         var getPlayerSBlock = document.getElementById("s-block");
         var getPlayerSWins = document.getElementById("s-wins");
         
+        // gt player menu container elements
         var getBlockButton = document.getElementById("block-button");
+        var getSpellButton = document.getElementById("spell-book");
         
         // set player container elements
         getPlayerAction.innerHTML = playerAction;
-        getPlayerHp.innerHTML = this.hp;
+        getPlayerHp.innerHTML = `HP: ${this.hp} / ${this.max_hp}`;
         getPlayerName.innerHTML = this.name;
         
         // set player stats container elements
@@ -87,8 +97,13 @@ class Player {
         getPlayerSBlock.innerHTML = `Block: ${this.block}`;
         getPlayerSWins.innerHTML = `Wins: ${winCounter}`;
         
+        // show spellbook
+        if (spellFlag) {
+            getSpellButton.disabled = false;
+        }
+
         // check if block button should be active based on hp
-        if (blockFlag == false) {
+        if (!blockFlag) {
             if (player.hp < player.max_hp && blockCounter > 0) {
                     getBlockButton.disabled = false;
             } else {
@@ -104,6 +119,49 @@ class Player {
     }
 
 }
+
+// toggles spell book visibility
+function openSpellBook() {
+    var getSpellbook = document.getElementById("spellContainer");
+    if (getSpellbook.hidden) {
+        getSpellbook.hidden = false;
+    } else {
+        getSpellbook.hidden = true;
+    }
+}
+
+// Class for spell creation; takes name and damage
+// Creates a button and places in spell menu
+// note for myself, this is where i left off *trying to figure out onclick*
+class Spell {
+    constructor(name, damage) {
+        this.name = name;
+        this.damage = damage;
+
+        // create button
+        var createButton = document.createElement("button")
+        createButton.innerText = this.name;
+        createButton.id = this.name;
+        createButton.onclick = spellAttack();
+
+        document.getElementById("spellContainer").appendChild(createButton)
+
+    }
+    update() {
+    
+    }
+}
+
+// spell testing
+function spellAttack() {
+    console.log("Pew pew")
+}
+
+var fireSpell = new Spell("Fire", 4)
+var iceSpell = new Spell("Ice", 2)
+var earthSpell = new Spell("Earth", 3)
+
+
 
 class Enemy {
     constructor(max_hp, hp, damage, name) {
@@ -123,7 +181,7 @@ class Enemy {
         var getEmemySDam = document.getElementById("e-dam")
         
         getEnemyAction.innerHTML = enemyAction;
-        getEnemyHp.innerHTML = this.hp;
+        getEnemyHp.innerHTML = `HP: ${this.hp} / ${this.max_hp}`;
         getEnemyName.innerHTML = this.name;
 
         getEnemySName.innerHTML = `Class: ${this.name}`;
@@ -138,21 +196,22 @@ class Enemy {
 
 // add randomness to amounts dependent on difficulty?
 // amounts dependent on class?
+// TODO: Accumulate levels if never choosen? OR disable menu buttons until a choice is made
 async function levelUp(clicked_id) {
     var getLevelUp = document.getElementById("levelContainer");
     var getBlockButton = document.getElementById("block-button");
     console.log("Level Up!");
     getLevelUp.hidden = true;
 
-    if (clicked_id == "firstChoice") {
+    if (clicked_id == "first-choice") {
         player.max_hp += 2;
         player.damage += 2;
         player.block += 2;
         player.update("I'm feeling strong!")
-    } else if (clicked_id == "secondChoice") {
+    } else if (clicked_id == "second-choice") {
         player.hp = player.max_hp;
         player.update("I'm feeling healthy!")
-    } else if (clicked_id == "thirdChoice") {
+    } else if (clicked_id == "third-choice") {
         getBlockButton.innerText = "Block"
         blockCounter = 5;
         player.update("Neat! A shield!")
@@ -185,8 +244,7 @@ async function genEnemy() {
     updateCharacters("Ready", "Searching for foes...");
     await sleep(5000);
     enemy = new Enemy(MAX_HP, HP, DAM, NAME);
-    buttonState(true, false, true);
-    blockFlag = false;
+    buttonState(false, true, false);
     updateCharacters("Ready", "Ready");
 }
 
@@ -206,6 +264,7 @@ function setClass(clicked_id) {
         }
         if (clicked_id == "mage-button") {
             player = new Player(MAX_HP[2], MAX_HP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
+            spellFlag = true;
         }
         genEnemy();
     } else {
@@ -221,7 +280,6 @@ function updateCharacters(p_action, e_action) {
 
 // attack button; increments winCounter each win
 async function attackEnemy() {
-    var getLevelUp = document.getElementById("levelContainer");
     if (enemy.hp > 0) {
         enemy.hp = player.attack(enemy.hp);
         checkStun(); // check if stunned, change text depending
@@ -236,8 +294,9 @@ async function attackEnemy() {
         
     }
     if (enemy.hp <= 0) { // check if enemyhp is 0. Level up & load next enemy
+        var getLevelUp = document.getElementById("levelContainer");
+
         buttonState(true, true, true)
-        blockFlag = true;
         updateCharacters("Victory Dance", "Pile of bones");
         console.log("The enemy has vanquished...");
         if (winCounter < winsNeeded) {
@@ -248,15 +307,15 @@ async function attackEnemy() {
             await sleep(3000)
             genEnemy();
         } else { // victory condition
-            console.log("You beat the game!");
-            buttonState(true, true, false);
+            player.update("I win!!")
+            getLevelUp.hidden = true;
+            buttonState(true, false, true);
             await sleep(6000);
             newGame();
         }
     }
 }
 
-// heal off extra blocked dam * probably change
 async function blockEnemy() {
     var getBlockButton = document.getElementById("block-button");
     var blocked = player.blockAttack(enemy.damage); // player.block - enemy.damage -> 4 - 2
@@ -269,7 +328,7 @@ async function blockEnemy() {
             else {
                 player.hp += blocked;
             }
-            player.update(`You blocked all damage`)
+            player.update(`You blocked all damage`);
         } else if (blocked < 0) {
             player.hp += blocked;
             player.update(`Blocked ${enemy.damage} Damage`);
@@ -278,14 +337,13 @@ async function blockEnemy() {
             }
         }
         blockCounter --;
-        getBlockButton.innerText = `Block (${blockCounter})`
+        getBlockButton.innerText = `Block (${blockCounter})`;
     } else {
-        player.update("Your shield is broke!")
-        getBlockButton.innerText = "*Broken*"
+        player.update("Your shield is broke!");
+        getBlockButton.innerText = "*Broken*";
         getBlockButton.disabled = true;
     }
 }
-
 
 // TODO: hit enemy for half damage on success & 1.5 of gob damage to player on fail?
 function stunEnemy() {
@@ -325,7 +383,7 @@ async function playerDeath() {
 
     getLevelUp.hidden = true;
     updateCharacters("Piles of bones", "Victory laugh");
-    buttonState(true, true, false);
+    buttonState(true, true);
     await sleep(4000);
     newGame();
 }
@@ -334,10 +392,10 @@ function newGame() { // reset game state
     winCounter = 0;
     stunCounter = 0;
     blockCounter = 5;
-    player = new Player(10, 10, 10, 10, "...");
-    enemy = new Enemy(10, 10, 10, "...");
+    player = new Player("?", "?", "?", "?", "...");
+    enemy = new Enemy("?", "?", "?", "...");
     updateCharacters("Choose Class", "Awaiting player choice");
-    buttonState(false, true, false);
+    buttonState(true, false, true);
 }
 
 // starts new game on page load
