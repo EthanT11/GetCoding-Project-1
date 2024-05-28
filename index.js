@@ -65,6 +65,7 @@ var blockCounter = 0;
 var blockFlag = false;
 
 var mageFlag = false;
+var spellData = [];
 
 var ENEMYDAM = 2; // for testing; enemy damage
 
@@ -158,39 +159,83 @@ class Spell {
         var spellButton = document.createElement("button")
         spellButton.innerText = this.name;
         spellButton.id = this.name;
-        spellButton.onclick = spellAttack
-        document.getElementById("spellContainer").appendChild(spellButton)
+        spellButton.onclick = spellAttack;
+        document.getElementById("spellContainer").appendChild(spellButton);
         
+    }
+    attack(enemyHp, playerMp) { // returns spelldata[hp, mpleft] 
+        var hpLeft = enemyHp -= this.damage;
+        var mpLeft = playerMp -= this.cost;
+        spellData.push(hpLeft, mpLeft)
+
+        return spellData;
+    }
+    heal(playerHp, playerMp) {
+        var hpLeft = playerHp += this.damage;
+        var mpLeft = playerMp -= this.cost;
+        spellData.push(hpLeft, mpLeft)
+
+        return spellData;
+    }
+    checkCost(playerMp) {
+        return playerMp >= this.cost;
     }
 }
 
 // spell list
 // TODO: find better place for them, maybe put in a list?
-var fireSpell = new Spell("Fire", 4, 2);
+var fireSpell = new Spell("Fire", 4, 4);
 var iceSpell = new Spell("Ice", 2, 2);
 var earthSpell = new Spell("Earth", 1, 2);
+var healSpell = new Spell("Heal", -4, 0); // negative damage for healing
 
 // main spell function
 async function spellAttack(clicked_id) {
+    canUse = false;
+    spellData = []; // NOTE: Already set as list in global scope but use this to keep it clear
     clicked_id = clicked_id.srcElement.id;
-    if (clicked_id == "Fire") { // Maybe burning effect?
-        enemy.hp -= fireSpell.damage;
-        player.mp -= fireSpell.cost;
-    } else if (clicked_id == "Ice") { // maybe reduce damage?
-        enemy.hp -= iceSpell.damage;
-        player.mp -= iceSpell.cost;
-    } else if (clicked_id == "Earth") { // Damages & chance to stun
-        enemy.hp -= earthSpell.damage;
-        player.mp -= earthSpell.cost;
-        stunEnemy()
+    
+    function checkCost(spell, hp, mp) {
+        var check = spell.checkCost(player.mp);
+        if (check) {
+            canUse = true;
+            spell.attack(hp, mp)
+        }
     }
-    if (!stunFlag) {
+
+    if (clicked_id == "Fire") { // Maybe burning effect?
+        checkCost(fireSpell, enemy.hp, player.mp);
+    } else if (clicked_id == "Ice") { // maybe reduce damage?
+        checkCost(iceSpell, enemy.hp, player.mp);
+    } else if (clicked_id == "Earth") { // Damages & chance to stun
+        checkCost(earthSpell, enemy.hp, player.mp)
+        stunEnemy()
+    } else if (clicked_id == "Heal") {
+        canUse = true;
+        checkCost(healSpell, player.hp, player.mp);
+    }
+
+    if (!stunFlag) { // TODO: figure out something better, probably in the update rework
         updateCharacters(`${clicked_id}!`, "Ouch!");
     } else {
         updateCharacters(`${clicked_id}!`, `*Stunned* (${stunCounter})`);
     }
-    enemyAttack();
-    checkVictory();
+
+    if (!canUse) { // check if player has enough mp
+        console.log("not enough mp")
+    } else {
+        if (clicked_id == "Heal"){ // TODO: rework heal, quickly threw it together to help testing
+            player.hp = spellData[0]
+            player.mp = spellData[1];
+            enemyAttack();
+            checkVictory();
+        } else {
+            enemy.hp = spellData[0];
+            player.mp = spellData[1];
+            enemyAttack();
+            checkVictory();
+        }
+    }
 }
 
 class Enemy {
