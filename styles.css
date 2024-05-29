@@ -23,7 +23,7 @@ body {
 
 }
 
-#header {
+/* #header {
     background-color: #5D5323;
     margin: 0;
     padding-top: 2vh;
@@ -37,9 +37,9 @@ body {
     color: black;
     text-align: center;
     
-  }
+  } */
   
-#main {
+/* #main {
     background-color: #4A5D23;
     height: 100%;
     position: relative;
@@ -95,7 +95,7 @@ body {
   text-decoration: underline;
   text-align: center;
   padding-bottom: 4px;
-}
+} */
 
 
 /* ---------- START DROPDOWN ----------- */
@@ -158,18 +158,40 @@ body {
 
 @media only screen and (max-width:600px) {
   html {
-    background-color: blue;
+    background-color: #5D5323;
   }
   body {
-    background-color: green;
+    height: auto;
   }
   #header {
+    background-color: #5D5323;
+    padding-top: 2vh;
+    padding-bottom: 2vh;
     position: sticky;
     top: 0;
   }
   #title {
     color: black;
     text-align: center;
+  }
+  #main {
+    background-color: #4A5D23;
+    height: auto;
+  }
+  #footer {
+    background-color: #5D5323;
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    justify-content: space-around;
+  }
+  .btn {
+    background-color: gray;
+    border-radius: 50%;
+    border: none;
+    padding: 2vh;
   }
 
 }
