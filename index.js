@@ -64,8 +64,11 @@ var stunFlag = false;
 var blockCounter = 0;
 var blockFlag = false;
 
-var mageFlag = false;
 var spellData = {};
+var mageFlag = false;
+
+var turnCounter = 0;
+var rangerFlag = false;
 
 var ENEMYDAM = 2; // for testing; enemy damage
 var WAITTIME = 1000; // change enemy gen time
@@ -82,6 +85,7 @@ class Player {
         this.name = name;
 
         this.mage = mageFlag;
+        this.ranger = rangerFlag;
     }
     
     // Update HP and Action on UI
@@ -104,9 +108,10 @@ class Player {
         var getPlayerSWins = document.getElementById("s-wins");
         
         // get player menu container elements
+        var getAttackButton = document.getElementById("attack-button");
         var getBlockButton = document.getElementById("block-button");
         var getSpellButton = document.getElementById("spell-book");
-        var getSpellContainer = document.getElementById("spellContainer")
+        var getSpellContainer = document.getElementById("spellContainer");
         
         // set player container elements
         getPlayerName.innerHTML = this.name;
@@ -129,6 +134,13 @@ class Player {
             getSpellButton.disabled = true;
             getSpellContainer.hidden = true;
         }
+        
+        // set amount of actions to 2
+        // TODO: try and use turnCounter for stun instead? 
+        if (this.ranger && this.name == "Ranger") {
+            getAttackButton.innerHTML = "Quick Atk";
+            turnCounter = 1;
+        }
 
         // check if block button should be active based on hp
         if (!blockFlag) {
@@ -140,7 +152,17 @@ class Player {
         }
     }
     attack(enemyHp) {
-        return enemyHp -= this.damage; // returns enemy hp value
+        if (this.ranger) {
+            var dblDam = dice(2); // TODO: Probably make the chances lower...
+            if (dblDam == 2) {
+                console.log("DOUBLE DAMAGE!!!!")
+                return enemyHp -= this.damage * 2;
+            } else {
+                return enemyHp -= this.damage;
+            }
+        } else {
+            return enemyHp -= this.damage; // returns enemy hp value
+        }
     }
     blockAttack(enemyDam) {
         return this.block - enemyDam;
@@ -243,12 +265,6 @@ async function spellAttack(clicked_id) {
         }
     }
 }
-// spellData [] name, damage, cost, canStun?, 
-
-
-
-
-
 
 
 class Enemy {
@@ -354,6 +370,7 @@ function setClass(clicked_id) {
             player = new Player(MAX_HP[0], MAX_HP[0], MAX_MP[0], MAX_MP[0], DAMAGE[0], BLOCK[0], NAME[0]); // Player(MAX-HP, HP, Damage, Block, Name)
         }
         if (clicked_id == "range-button") {
+            rangerFlag = true;
             player = new Player(MAX_HP[1], MAX_HP[1], MAX_MP[1], MAX_MP[1], DAMAGE[1], BLOCK[1], NAME[1]); // Player(MAX-HP, HP, Damage, Block, Name)
         }
         if (clicked_id == "mage-button") {
@@ -432,7 +449,12 @@ function enemyAttack() {
 function attackEnemy() {
     if (enemy.hp > 0) {
         enemy.hp = player.attack(enemy.hp);
-        enemyAttack();
+        enemy.update("*Winces*")
+        if (turnCounter > 0) {
+            turnCounter --;
+        } else {
+            enemyAttack();
+        }
     } 
     checkVictory();
 }
