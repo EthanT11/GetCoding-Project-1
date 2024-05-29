@@ -32,6 +32,7 @@ body {
 
 }
 
+
 #title {
     color: black;
     text-align: center;
@@ -154,3 +155,21 @@ body {
 .show {display:block;}
 
 /* ----------- END DROPDOWN ------------ */
+
+@media only screen and (max-width:600px) {
+  html {
+    background-color: blue;
+  }
+  body {
+    background-color: green;
+  }
+  #header {
+    position: sticky;
+    top: 0;
+  }
+  #title {
+    color: black;
+    text-align: center;
+  }
+
+}
