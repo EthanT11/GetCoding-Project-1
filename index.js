@@ -17,6 +17,13 @@ function dropDown() {
     }
 }
 
+// popup
+function popUp() {
+    var popup = document.getElementById("myPopup");
+    popup.classList.toggle("show");
+}
+
+
 // switches active buttons between class and fight menu; boolean
 // TODO: try and remove block flag and chooseClass flag
 function buttonState(actionState, chooseClass, blockState = blockFlag) {

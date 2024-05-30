@@ -21,6 +21,18 @@
         
         <!-- TODO: look into using div classes for repeating styles -->
         <div id="main">
+            <div class="popup">
+                <span class="popuptext" id="myPopup">
+                    <h2>Stats</h2>
+                    <h3 id="s-class">
+                    <h3 id="s-hp">max_hp</h2>
+                    <h3 id="s-mp">max_mp</h2>
+                    <h3 id="s-dam">damage</h2>
+                    <h3 id="s-block">block</h2>
+                    <h3 id="s-wins">wins</h2>
+                </span>
+            </div>
+
             <div id="containers">
                 <div id="classContainer">
                     <h2 id="class">Class</h2>
@@ -56,7 +68,7 @@
                 </div>
             </div>
 
-            <div id="pStatsContainer">
+            <!-- <div id="pStatsContainer">
                 <h2 id="stats">Stats</h2>
                 <h2 id="s-class">class</h2>
                 <h2 id="s-hp">max_hp</h2>
@@ -64,7 +76,7 @@
                 <h2 id="s-dam">damage</h2>
                 <h2 id="s-block">block</h2>
                 <h2 id="s-wins">wins</h2>
-            </div>
+            </div> -->
 
             <div id="eStatsContainer">
                 <h2 id="stats">Enemy Stats</h2>
@@ -73,9 +85,9 @@
                 <h2 id="e-dam">damage</h2>
             </div>
             <div id="footer">
-                <button id="attack-button" class="btn" onclick=attackEnemy()>Atk</button>
+                <button id="attack-button" class="btn" onclick="attackEnemy()">Atk</button>
                 <button id="abilities-button" class="btn">S/A</button>
-                <button id="stats-button" class="btn">Sts</button>
+                <button id="stats-button" class="btn" onclick="popUp()">Sts</button>
             </div>
         </div>
         
