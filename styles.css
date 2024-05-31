@@ -222,6 +222,8 @@ not ID's
 
   /* Popup */
   .popup .popuptext {
+    display: flex;
+    flex-direction: column;
     visibility: hidden;
     width: 160px;
     background-color: #555;

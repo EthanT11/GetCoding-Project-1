@@ -224,12 +224,7 @@ class Spell {
         this.cost = cost;
         this.stun = canStun;
 
-        // create button
-        var spellButton = document.createElement("button")
-        spellButton.innerText = this.name;
-        spellButton.id = this.name;
-        spellButton.onclick = spellAttack;
-        document.getElementById("spellPopup").appendChild(spellButton);
+        this._createButton();
         
     }
     attack(hp, playerMp) { // returns spelldata[hp, mpleft]
@@ -246,7 +241,17 @@ class Spell {
     checkCost(playerMp) {
         return playerMp >= this.cost;
     }
+    _createButton() {
+        // create button
+        var spellButton = document.createElement("button")
+        spellButton.innerText = this.name;
+        spellButton.id = this.name;
+        spellButton.onclick = spellAttack;
+        document.getElementById("spellPopup").appendChild(spellButton);
+        
+    }
 }
+
 
 // spell list
 let spells = {
