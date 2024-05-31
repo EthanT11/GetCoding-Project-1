@@ -17,10 +17,17 @@ function dropDown() {
     }
 }
 
-// popup
+// popups
+// TODO: Maybe merge into one and pass id as arg
 function popUp() {
-    var popup = document.getElementById("myPopup");
+    var popup = document.getElementById("statsPopup");
     popup.classList.toggle("show");
+}
+
+function classPopup() {
+    var popup = document.getElementById("classPopup");
+    popup.classList.toggle("show");
+    console.log("ChooseClass");
 }
 
 
@@ -401,6 +408,7 @@ function setClass(clicked_id) {
             player = new Player(MAX_HP[2], MAX_HP[2], MAX_MP[2], MAX_MP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
         }
         genEnemy();
+        classPopup();
     } else {
         return console.log("Already picked a class");
     }
@@ -564,6 +572,7 @@ function newGame() { // reset game state
     enemy = new Enemy("?", "?", "?", "...");
     updateCharacters("Choose Class", "Awaiting player choice");
     buttonState(true, false, true);
+    classPopup();
 }
 
 // starts new game on page load

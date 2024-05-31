@@ -1,13 +1,5 @@
 /* Color Pallet - Main: #4A5D23 - Accents: #678231, #5D5323 */
 
-/* TODO
-- Make everything look *good* in both mobile and web
-- Fix placement of button and drop down menu
-- Fix resizing of containers when numbers change
-- Definitely pick a better colour pallet or maybe on screen graphics?
-- Change units to vh/vw when it makes sense
-*/
-
 * {
   margin: 0;
   padding: 0;
@@ -176,7 +168,6 @@ body {
   }
   #main {
     background-color: #4A5D23;
-    height: auto;
   }
   #footer {
     background-color: #5D5323;
