@@ -191,8 +191,8 @@ class Player {
 
         // set player container elements
         getPlayerName.innerHTML = this.name;
-        getPlayerHp.innerHTML = `HP: ${this.hp} / ${this.max_hp}`;
-        getPlayerMp.innerHTML = `MP: ${this.mp} / ${this.max_mp}`;
+        getPlayerHp.innerHTML = `${this.hp} / ${this.max_hp}`;
+        getPlayerMp.innerHTML = `${this.mp} / ${this.max_mp}`;
         getPlayerAction.innerHTML = playerAction;
     }
     _updateStats() {
@@ -330,7 +330,7 @@ class Enemy {
         var getEmemySDam = document.getElementById("e-dam")
         
         getEnemyAction.innerHTML = enemyAction;
-        getEnemyHp.innerHTML = `HP: ${this.hp} / ${this.max_hp}`;
+        getEnemyHp.innerHTML = `${this.hp} / ${this.max_hp}`;
         getEnemyName.innerHTML = this.name;
 
         getEnemySName.innerHTML = `Class: ${this.name}`;

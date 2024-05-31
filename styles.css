@@ -148,6 +148,10 @@ body {
 
 /* ----------- END DROPDOWN ------------ */
 
+/* TODO: ground stylings together and style based on class
+not ID's
+*/
+
 @media only screen and (max-width:600px) {
   html {
     background-color: #5D5323;
@@ -169,6 +173,26 @@ body {
   #main {
     background-color: #4A5D23;
     height: 79%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  #containers {
+    display: flex;
+    justify-content: space-between;
+    background-color: gray;
+    position: relative;
+
+    border-style: double;
+  }
+  #hpContainer {
+    width: 50%;
+    text-align: center;
+    border-style: hidden dashed hidden hidden;
+  }
+  #enemyContainer {
+    width: 50%;
+    text-align: center;
   }
   #footer {
     background-color: #5D5323;
