@@ -40,6 +40,11 @@ function saPopup() {
     popup.classList.toggle("show");
 }
 
+function levelPopup() {
+    var popup = document.getElementById("levelPopup");
+    popup.classList.toggle("show");
+    console.log("Level up!")
+}
 
 // switches active buttons between class and fight menu; boolean
 // TODO: try and remove block flag and chooseClass flag
@@ -362,6 +367,7 @@ async function levelUp(clicked_id) {
         getBlockButton.innerText = `Block (${blockCounter})`
         player.update("Neat! A shield!")
     }
+    levelPopup();
     buttonSwitch(2000);
     player.update("Ready")
 }
@@ -529,6 +535,7 @@ async function checkVictory() {
         updateCharacters("Victory Dance", "Pile of bones");
         if (winCounter < winsNeeded) {
             getLevelUp.hidden = false;
+            levelPopup();
             
             await sleep(3000)
             genEnemy();

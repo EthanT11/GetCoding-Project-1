@@ -23,6 +23,7 @@
         <!-- TODO: look into generating the elements through js rather then fixed
         Will probably work better to use the same popout and change information depending
         on the button or action required -->
+        <!-- TODO: Try and generate the elements to clean up html? -->
         <div id="main">
             <div class="popup">
                 <span class="popuptext" id="statsPopup">
@@ -39,16 +40,12 @@
                     <h3 id="e-hp">max_hp</h2>
                     <h3 id="e-dam">damage</h2>
                 </span>
-            </div>
-            <div class="popup">
                 <span class="popuptext" id="classPopup">
                     <h2 id="class">Choose Class</h2>
                     <button id="fight-button", onclick="setClass(this.id)">Fighter</button>
                     <button id="range-button", onclick="setClass(this.id)">Ranger</button>
                     <button id="mage-button", onclick="setClass(this.id)">Mage</button>
                 </span>
-            </div>
-            <div class="popup">
                 <span class="popuptext" id="abilPopup">
                     <h2 id="class">Abilities</h2>
                     <button id="block-button", disabled = true, onclick="blockEnemy()">Block</button>
@@ -57,8 +54,13 @@
                 <span class="popuptext" id="spellPopup">
                     <h2 id="class">Spellbook</h2>
                 </span>
+                <span class="popuptext" id="levelPopup">
+                    <h2 id="class">Level Up!</h2>
+                    <button id="first-choice", onclick="levelUp(this.id)">Stats Level Up</button>
+                    <button id="second-choice", onclick="levelUp(this.id)">Heal HP/MP</button>
+                    <button id="third-choice", onclick="levelUp(this.id)">Repair Shield</button>
+                </span>
             </div>
-
             <div id="containers">
                 <!-- <div id="classContainer">
                     <h2 id="class">Class</h2>
@@ -67,11 +69,11 @@
                     <button id="mage-button", onclick="setClass(this.id)">Mage</button>
                 </div> -->
                 <div id="menuContainer">
-                    <h2 id="menu">Menu</h2>
+                    <!-- <h2 id="menu">Menu</h2> -->
                     <!-- <button id="attack-button", disabled = true, onclick="attackEnemy()">Attack</button> -->
                     <!-- <button id="block-button", disabled = true, onclick="blockEnemy()">Block</button> -->
                     <!-- <button id="stun-button", disabled = true, onclick="stunEnemy()">Stun</button> -->
-                    <button id="spell-book", disabled = true, onclick="openSpellBook()">Spells</button>
+                    <button id="spell-book", disabled = true, hidden="true", onclick="openSpellBook()">Spells</button>
                 </div>
                 <div id="hpContainer">
                     <h2 id="player-name">Player</h2>
@@ -85,9 +87,9 @@
                     <h2 id="enemy-action">Action</h2>
                 </div>
                 <div id="levelContainer", hidden="true">
-                    <button id="first-choice", onclick="levelUp(this.id)">Stats Level Up</button>
+                    <!-- <button id="first-choice", onclick="levelUp(this.id)">Stats Level Up</button>
                     <button id="second-choice", onclick="levelUp(this.id)">Heal HP/MP</button>
-                    <button id="third-choice", onclick="levelUp(this.id)">Repair Shield</button>
+                    <button id="third-choice", onclick="levelUp(this.id)">Repair Shield</button> -->
                 </div>
                 <div id="spellContainer", hidden=""true>
                     <h2>Spellbook</h2>
