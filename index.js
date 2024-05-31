@@ -30,6 +30,16 @@ function classPopup() {
     console.log("ChooseClass");
 }
 
+function saPopup() {
+    var popup = document.getElementById("abilPopup");
+    if (player.name == "Mage") {
+        popup = document.getElementById("spellPopup");
+        console.log("SpellBook");
+    } 
+    console.log("Abilities");
+    popup.classList.toggle("show");
+}
+
 
 // switches active buttons between class and fight menu; boolean
 // TODO: try and remove block flag and chooseClass flag
@@ -214,7 +224,7 @@ class Spell {
         spellButton.innerText = this.name;
         spellButton.id = this.name;
         spellButton.onclick = spellAttack;
-        document.getElementById("spellContainer").appendChild(spellButton);
+        document.getElementById("spellPopup").appendChild(spellButton);
         
     }
     attack(hp, playerMp) { // returns spelldata[hp, mpleft]

@@ -48,6 +48,16 @@
                     <button id="mage-button", onclick="setClass(this.id)">Mage</button>
                 </span>
             </div>
+            <div class="popup">
+                <span class="popuptext" id="abilPopup">
+                    <h2 id="class">Abilities</h2>
+                    <button id="block-button", disabled = true, onclick="blockEnemy()">Block</button>
+                    <button id="stun-button", disabled = true, onclick="stunEnemy()">Stun</button>
+                </span>
+                <span class="popuptext" id="spellPopup">
+                    <h2 id="class">Spellbook</h2>
+                </span>
+            </div>
 
             <div id="containers">
                 <!-- <div id="classContainer">
@@ -58,9 +68,9 @@
                 </div> -->
                 <div id="menuContainer">
                     <h2 id="menu">Menu</h2>
-                    <button id="attack-button", disabled = true, onclick="attackEnemy()">Attack</button>
-                    <button id="block-button", disabled = true, onclick="blockEnemy()">Block</button>
-                    <button id="stun-button", disabled = true, onclick="stunEnemy()">Stun</button>
+                    <!-- <button id="attack-button", disabled = true, onclick="attackEnemy()">Attack</button> -->
+                    <!-- <button id="block-button", disabled = true, onclick="blockEnemy()">Block</button> -->
+                    <!-- <button id="stun-button", disabled = true, onclick="stunEnemy()">Stun</button> -->
                     <button id="spell-book", disabled = true, onclick="openSpellBook()">Spells</button>
                 </div>
                 <div id="hpContainer">
@@ -105,7 +115,7 @@
         </div>
         <div id="footer">
             <button id="attack-button" class="btn" onclick="attackEnemy()">Atk</button>
-            <button id="abilities-button" class="btn">S/A</button>
+            <button id="abilities-button" class="btn" onclick="saPopup()">S/A</button>
             <button id="stats-button" class="btn" onclick="popUp()">Sts</button>
         </div>
         
