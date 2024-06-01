@@ -239,15 +239,6 @@ class Spell {
     checkCost(playerMp) {
         return playerMp >= this.cost;
     }
-    _createButton() {
-
-        // create button
-        var spellButton = document.createElement("button")
-        spellButton.innerText = this.name;
-        spellButton.id = this.name;
-        spellButton.onclick = spellAttack;
-        return spellButton;       
-    }
 }
 
 // spell information: name, damage, cost, info, canStun
@@ -280,6 +271,7 @@ let spellInfo = {
     }
 }
 
+// shorten call
 let fData = spellInfo.fireData;
 let iData = spellInfo.iceData;
 let eData = spellInfo.earthData;
@@ -315,7 +307,11 @@ async function _createSpellBook() {
         for (let j = 0; j < 4; j++) {
             const td = tr.insertCell(j);
             if (j == 0) {
-                td.appendChild(document.createTextNode(`${_spell.name}`))
+                spellButt = document.createElement("button")
+                spellButt.id = _spell.name
+                spellButt.innerHTML = _spell.name
+                spellButt.onclick = spellAttack
+                td.appendChild(spellButt)
             }
             if (j == 1) {
                 td.appendChild(document.createTextNode(`${_spell.damage}`))
@@ -324,13 +320,10 @@ async function _createSpellBook() {
                 td.appendChild(document.createTextNode(`${_spell.cost}`))
             }
             if (j == 3) {
-                td.setAttribute('width', '800')
                 td.appendChild(document.createTextNode(`${_spell.info}`))
             }
         }
     }
-    // const td = tr.insertCell();
-
 
 }
 
