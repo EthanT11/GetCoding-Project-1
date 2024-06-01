@@ -283,6 +283,8 @@ let spells = {
     earthSpell: new Spell(eData._name, eData._dam, eData._cost, eData._info, eData._canStun),
     healSpell: new Spell(hData._name, hData._dam, hData._cost, hData._info), // negative damage for healing
 }
+
+// TODO: Clean up the code, VERY messy from all the trial and error
 _createSpellBook()
 async function _createSpellBook() {
     const spellPopup = document.getElementById("spellPopup");
