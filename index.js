@@ -27,7 +27,6 @@ function popUp() {
 function classPopup() {
     var popup = document.getElementById("classPopup");
     popup.classList.toggle("show");
-    console.log("ChooseClass");
 }
 
 function saPopup() {
@@ -74,17 +73,16 @@ async function buttonSwitch(time) { // disables buttons then enables them after 
 }
 
 // toggles spell book visibility
-function openSpellBook() {
-    var getSpellbook = document.getElementById("spellContainer");
-    if (getSpellbook.hidden) {
-        getSpellbook.hidden = false;
-    } else {
-        getSpellbook.hidden = true;
-    }
-}
+// function openSpellBook() {
+//     var getSpellbook = document.getElementById("spellContainer");
+//     if (getSpellbook.hidden) {
+//         getSpellbook.hidden = false;
+//     } else {
+//         getSpellbook.hidden = true;
+//     }
+// }
 
 // -- Game Functions --
-
 
 // init
 var player;
@@ -101,6 +99,8 @@ var blockCounter = 0;
 var blockFlag = false;
 
 var spellData = {};
+var spellCount;
+var spellBookFlag;
 var mageFlag = false;
 
 var turnCounter = 0;
@@ -218,14 +218,12 @@ class Player {
 // Class for spell creation; takes name, damage, and cost
 // Creates a button and places in spell menu
 class Spell {
-    constructor(name, damage, cost, canStun = false) {
+    constructor(name, damage, cost, info, canStun = false) {
         this.name = name;
         this.damage = damage;
         this.cost = cost;
-        this.stun = canStun;
-
-        this._createButton();
-        
+        this.info = info;
+        this.stun = canStun;  
     }
     attack(hp, playerMp) { // returns spelldata[hp, mpleft]
         var hpLeft = hp -= this.damage;
@@ -242,23 +240,98 @@ class Spell {
         return playerMp >= this.cost;
     }
     _createButton() {
+
         // create button
         var spellButton = document.createElement("button")
         spellButton.innerText = this.name;
         spellButton.id = this.name;
         spellButton.onclick = spellAttack;
-        document.getElementById("spellPopup").appendChild(spellButton);
-        
+        return spellButton;       
     }
 }
 
+// spell information: name, damage, cost, info, canStun
+// may be redundent but helps me keep it a bit organized
+let spellInfo = {
+    fireData: {
+        _name: "Fire",
+        _dam: 4,
+        _cost: 3,
+        _info: "Hurl a fireball!"
+    },
+    iceData: {
+        _name: "Ice",
+        _dam: 2,
+        _cost: 1,
+        _info: "Freeze the enemy!"
+    },
+    earthData: {
+        _name: "Earth",
+        _dam: 4,
+        _cost: 3,
+        _info: "Entomb enemy in stone!",
+        _canStun: true
+    },
+    healData: {
+        _name: "Heal",
+        _dam: -4,
+        _cost: 0,
+        _info: "Cure wounds!"
+    }
+}
 
+let fData = spellInfo.fireData;
+let iData = spellInfo.iceData;
+let eData = spellInfo.earthData;
+let hData = spellInfo.healData;
 // spell list
 let spells = {
-    fireSpell: new Spell("Fire", 4, 4),
-    iceSpell: new Spell("Ice", 2, 2),
-    earthSpell: new Spell("Earth", 1, 2, true),
-    healSpell: new Spell("Heal", -4, 0), // negative damage for healing
+    fireSpell: new Spell(fData._name, fData._dam, fData._cost, fData._info),
+    iceSpell: new Spell(iData._name, iData._dam, iData._cost, iData._info),
+    earthSpell: new Spell(eData._name, eData._dam, eData._cost, eData._info, eData._canStun),
+    healSpell: new Spell(hData._name, hData._dam, hData._cost, hData._info), // negative damage for healing
+}
+_createSpellBook()
+async function _createSpellBook() {
+    const spellPopup = document.getElementById("spellPopup");
+    const tabel = document.createElement("table");
+    spellPopup.appendChild(tabel)
+
+    const header = tabel.createTHead();
+    let nameList = ["Name", "Damage", "Cost", "Info"]
+
+    for (let i = 0; i < nameList.length; i++) {
+        header.appendChild(document.createElement("th")).appendChild(document.createTextNode(nameList[i]))
+    }
+
+
+    let spellList = [spells.fireSpell, spells.iceSpell, spells.earthSpell, spells.healSpell];
+
+
+    for (let i = 0; i < spellList.length; i++) {
+        const tr = tabel.insertRow();
+        let _spell = spellList[i]
+        
+        for (let j = 0; j < 4; j++) {
+            const td = tr.insertCell(j);
+            if (j == 0) {
+                td.appendChild(document.createTextNode(`${_spell.name}`))
+            }
+            if (j == 1) {
+                td.appendChild(document.createTextNode(`${_spell.damage}`))
+            }
+            if (j == 2) {
+                td.appendChild(document.createTextNode(`${_spell.cost}`))
+            }
+            if (j == 3) {
+                td.setAttribute('width', '800')
+                td.appendChild(document.createTextNode(`${_spell.info}`))
+            }
+        }
+    }
+    // const td = tr.insertCell();
+
+
 }
 
 // main spell function
@@ -291,6 +364,7 @@ async function spellAttack(clicked_id) {
     }
     // helper funcs
     function _castSpell() {
+        saPopup() // close popup
         if (clicked_id == "Heal"){ // TODO: rework heal, quickly threw it together to help testing
             player.hp = spellData.hpDam;
             player.mp = spellData.mpDam;
