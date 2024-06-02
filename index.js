@@ -17,10 +17,39 @@ function dropDown() {
     }
 }
 
-// switches active buttons between class and fight menu; boolean
-function buttonState(actionState, chooseClass, blockState) {
-    var classState;
+// popups
+// TODO: Maybe merge into one and pass id as arg
+function popUp() {
+    var popup = document.getElementById("statsPopup");
+    popup.classList.toggle("show");
+}
 
+function classPopup() {
+    var popup = document.getElementById("classPopup");
+    popup.classList.toggle("show");
+}
+
+function saPopup() {
+    var popup;
+    if (player.name == "Mage") {
+        popup = document.getElementById("spellPopup");
+    } else {
+        popup = document.getElementById("abilPopup");
+    }
+    popup.classList.toggle("show");
+}
+
+function levelPopup() {
+    var popup = document.getElementById("levelPopup");
+    popup.classList.toggle("show");
+    console.log("Level up!")
+}
+
+// switches active buttons between class and fight menu; boolean
+// TODO: try and remove block flag and chooseClass flag
+function buttonState(actionState, chooseClass, blockState = blockFlag) {
+    var classState;
+    
     classState = !chooseClass ? false : true;
     document.getElementById("fight-button").disabled = classState;
     document.getElementById("range-button").disabled = classState;
@@ -30,25 +59,20 @@ function buttonState(actionState, chooseClass, blockState) {
     document.getElementById("attack-button").disabled = actionState;
     document.getElementById("block-button").disabled = blockFlag;
     document.getElementById("stun-button").disabled = actionState;
-
+    
     if (stunCounter == 0) {
         document.getElementById("stun-button").innerText = "Stun";
     }
     
 }
 
-// toggles spell book visibility
-function openSpellBook() {
-    var getSpellbook = document.getElementById("spellContainer");
-    if (getSpellbook.hidden) {
-        getSpellbook.hidden = false;
-    } else {
-        getSpellbook.hidden = true;
-    }
+async function buttonSwitch(time) { // disables buttons then enables them after x time.
+    buttonState(true, true, true);
+    await sleep(1250)
+    buttonState(false, true, false);
 }
 
 // -- Game Functions --
-
 
 // init
 var player;
@@ -64,9 +88,17 @@ var stunFlag = false;
 var blockCounter = 0;
 var blockFlag = false;
 
+var spellData = {};
+var spellCount;
+var spellBookFlag;
 var mageFlag = false;
 
+var turnCounter = 0;
+var rangerFlag = false;
+var setRanger;
+
 var ENEMYDAM = 2; // for testing; enemy damage
+var WAITTIME = 1000; // change enemy gen time
 
 // TODO: Maybe add the flags to the player constructor?? Might cause a lot of issues
 class Player {
@@ -78,21 +110,75 @@ class Player {
         this.damage = damage;
         this.block = block;
         this.name = name;
-
+        
         this.mage = mageFlag;
+        this.ranger = rangerFlag;
+
+        if (this.ranger) {
+            setRanger = true;
+        }
     }
     
     // Update HP and Action on UI
-    // TODO: Since the function is getting huge and probably bigger, break it down
-    // maybe updateClassMenu*probably something less wordy but updateClass sounds like a different function*
-    // updateMenu?
     update(playerAction) {
+        // get player menu container elements
+        var getAttackButton = document.getElementById("attack-button");
+        var getBlockButton = document.getElementById("block-button");
+        var getSpellButton = document.getElementById("spell-book");
+        var getSpellContainer = document.getElementById("spellContainer");
+        
+        this._updateContainer(playerAction);
+        this._updateStats();
+        
+        // set amount of actions to 2
+        // TODO: try and use turnCounter for stun instead? 
+        if (this.ranger && this.name == "Ranger") {
+            if (setRanger) {
+                getAttackButton.innerHTML = "Quick Atk";
+                turnCounter = 1;
+                setRanger = false;
+            }
+        }
+        
+        // check if block button should be active based on hp
+        if (!blockFlag) {
+            if (player.hp < player.max_hp && blockCounter > 0) {
+                getBlockButton.disabled = false;
+            } else {
+                getBlockButton.disabled = true;
+            }
+        }
+    }
+    attack(enemyHp) {
+        if (this.ranger) {
+            var dblDam = dice(2); // TODO: Probably make the chances lower...
+            if (dblDam == 2) {
+                console.log("DOUBLE DAMAGE!!!!")
+                return enemyHp -= this.damage * 2;
+            } else {
+                return enemyHp -= this.damage;
+            }
+        } else {
+            return enemyHp -= this.damage; // returns enemy hp value
+        }
+    }
+    blockAttack(enemyDam) {
+        return this.block - enemyDam;
+    }
+    _updateContainer(playerAction) {
         // get player container elements
         var getPlayerAction = document.getElementById("player-action");
         var getPlayerHp = document.getElementById("player-hp");
         var getPlayerMp = document.getElementById("player-mp");
         var getPlayerName = document.getElementById("player-name");
-        
+
+        // set player container elements
+        getPlayerName.innerHTML = this.name;
+        getPlayerHp.innerHTML = `${this.hp} / ${this.max_hp}`;
+        getPlayerMp.innerHTML = `${this.mp} / ${this.max_mp}`;
+        getPlayerAction.innerHTML = playerAction;
+    }
+    _updateStats() {
         // get player stats container elements
         var getPlayerSClass = document.getElementById("s-class");
         var getPlayerSHp = document.getElementById("s-hp");
@@ -101,17 +187,6 @@ class Player {
         var getPlayerSBlock = document.getElementById("s-block");
         var getPlayerSWins = document.getElementById("s-wins");
         
-        // get player menu container elements
-        var getBlockButton = document.getElementById("block-button");
-        var getSpellButton = document.getElementById("spell-book");
-        var getSpellContainer = document.getElementById("spellContainer")
-        
-        // set player container elements
-        getPlayerName.innerHTML = this.name;
-        getPlayerHp.innerHTML = `HP: ${this.hp} / ${this.max_hp}`;
-        getPlayerMp.innerHTML = `MP: ${this.mp} / ${this.max_mp}`;
-        getPlayerAction.innerHTML = playerAction;
-        
         // set player stats container elements
         getPlayerSClass.innerHTML = `Class: ${this.name}`;
         getPlayerSHp.innerHTML = `Max HP: ${this.max_hp}`;
@@ -119,79 +194,180 @@ class Player {
         getPlayerSDamage.innerHTML = `Damage: ${this.damage}`;
         getPlayerSBlock.innerHTML = `Block: ${this.block}`;
         getPlayerSWins.innerHTML = `Wins: ${winCounter}`;
-        
-        // show spellbook if mage is true
-        if (this.mage && this.name == "Mage") {
-            getSpellButton.disabled = false;
-        } else {
-            getSpellButton.disabled = true;
-            getSpellContainer.hidden = true;
-        }
-
-        // check if block button should be active based on hp
-        if (!blockFlag) {
-            if (player.hp < player.max_hp && blockCounter > 0) {
-                    getBlockButton.disabled = false;
-            } else {
-                getBlockButton.disabled = true;
-            }
-        }
     }
-    attack(enemyHp) {
-        return enemyHp -= this.damage; // returns enemy hp value
-    }
-    blockAttack(enemyDam) {
-        return this.block - enemyDam;
-    }
-
+    
 }
 
 // Class for spell creation; takes name, damage, and cost
 // Creates a button and places in spell menu
 class Spell {
-    constructor(name, damage, cost) {
+    constructor(name, damage, cost, info, canStun = false) {
         this.name = name;
         this.damage = damage;
         this.cost = cost;
-
-        // create button
-        var spellButton = document.createElement("button")
-        spellButton.innerText = this.name;
-        spellButton.id = this.name;
-        spellButton.onclick = spellAttack
-        document.getElementById("spellContainer").appendChild(spellButton)
-        
+        this.info = info;
+        this.stun = canStun;  
+    }
+    attack(hp, playerMp) { // returns spelldata[hp, mpleft]
+        var hpLeft = hp -= this.damage;
+        var mpLeft = playerMp -= this.cost;
+        spellData = {
+            sname: this.name,
+            hpDam: hpLeft,
+            mpDam: mpLeft,
+            canStun: this.stun,
+        };
+        return spellData;
+    }
+    checkCost(playerMp) {
+        return playerMp >= this.cost;
     }
 }
 
+// spell information: name, damage, cost, info, canStun
+// may be redundent but helps me keep it a bit organized
+let spellInfo = {
+    fireData: {
+        _name: "Fire",
+        _dam: 4,
+        _cost: 3,
+        _info: "Hurl a fireball!"
+    },
+    iceData: {
+        _name: "Ice",
+        _dam: 2,
+        _cost: 1,
+        _info: "Freeze the enemy!"
+    },
+    earthData: {
+        _name: "Earth",
+        _dam: 4,
+        _cost: 3,
+        _info: "Entomb enemy in stone!",
+        _canStun: true
+    },
+    healData: {
+        _name: "Heal",
+        _dam: -4,
+        _cost: 0,
+        _info: "Cure wounds!"
+    }
+}
+
+// shorten call
+let fData = spellInfo.fireData;
+let iData = spellInfo.iceData;
+let eData = spellInfo.earthData;
+let hData = spellInfo.healData;
 // spell list
-// TODO: find better place for them, maybe put in a list?
-var fireSpell = new Spell("Fire", 4, 2);
-var iceSpell = new Spell("Ice", 2, 2);
-var earthSpell = new Spell("Earth", 1, 2);
+let spells = {
+    fireSpell: new Spell(fData._name, fData._dam, fData._cost, fData._info),
+    iceSpell: new Spell(iData._name, iData._dam, iData._cost, iData._info),
+    earthSpell: new Spell(eData._name, eData._dam, eData._cost, eData._info, eData._canStun),
+    healSpell: new Spell(hData._name, hData._dam, hData._cost, hData._info), // negative damage for healing
+}
+
+// TODO: Clean up the code, VERY messy from all the trial and error
+_createSpellBook()
+async function _createSpellBook() {
+    const spellPopup = document.getElementById("spellPopup");
+    const tabel = document.createElement("table");
+    spellPopup.appendChild(tabel)
+
+    const header = tabel.createTHead();
+    let nameList = ["Name", "Damage", "Cost", "Info"]
+
+    for (let i = 0; i < nameList.length; i++) {
+        header.appendChild(document.createElement("th")).appendChild(document.createTextNode(nameList[i]))
+    }
+
+
+    let spellList = [spells.fireSpell, spells.iceSpell, spells.earthSpell, spells.healSpell];
+
+
+    for (let i = 0; i < spellList.length; i++) {
+        const tr = tabel.insertRow();
+        let _spell = spellList[i]
+        
+        for (let j = 0; j < 4; j++) {
+            const td = tr.insertCell(j);
+            if (j == 0) {
+                spellButt = document.createElement("button")
+                spellButt.id = _spell.name
+                spellButt.innerHTML = _spell.name
+                spellButt.onclick = spellAttack
+                td.appendChild(spellButt)
+            }
+            if (j == 1) {
+                td.appendChild(document.createTextNode(`${_spell.damage}`))
+            }
+            if (j == 2) {
+                td.appendChild(document.createTextNode(`${_spell.cost}`))
+            }
+            if (j == 3) {
+                td.appendChild(document.createTextNode(`${_spell.info}`))
+            }
+        }
+    }
+
+}
 
 // main spell function
 async function spellAttack(clicked_id) {
+    canUse = false;
+    spellData = {}; // NOTE: Already set as list in global scope but use this to keep it clear
     clicked_id = clicked_id.srcElement.id;
+    
     if (clicked_id == "Fire") { // Maybe burning effect?
-        enemy.hp -= fireSpell.damage;
-        player.mp -= fireSpell.cost;
+        _checkCost(spells.fireSpell, enemy.hp, player.mp);
     } else if (clicked_id == "Ice") { // maybe reduce damage?
-        enemy.hp -= iceSpell.damage;
-        player.mp -= iceSpell.cost;
+        _checkCost(spells.iceSpell, enemy.hp, player.mp);
     } else if (clicked_id == "Earth") { // Damages & chance to stun
-        enemy.hp -= earthSpell.damage;
-        player.mp -= earthSpell.cost;
-        stunEnemy()
+        _checkCost(spells.earthSpell, enemy.hp, player.mp)
+    } else if (clicked_id == "Heal") {  // Heals player
+        canUse = true; // NOTE: leave for testing
+        _checkCost(spells.healSpell, player.hp, player.mp);
     }
-    if (!stunFlag) {
+    
+    if (!stunFlag) { // TODO: figure out something better, probably in the update rework
         updateCharacters(`${clicked_id}!`, "Ouch!");
     } else {
         updateCharacters(`${clicked_id}!`, `*Stunned* (${stunCounter})`);
     }
-    enemyAttack();
-    checkVictory();
+    
+    if (!canUse) { // check if player has enough mp
+        console.log("not enough mp")
+    } else {
+        _castSpell();
+    }
+    // helper funcs
+    function _castSpell() {
+        saPopup() // close popup
+        if (clicked_id == "Heal"){ // TODO: rework heal, quickly threw it together to help testing
+            player.hp = spellData.hpDam;
+            player.mp = spellData.mpDam;
+            enemyAttack();
+            checkVictory();
+        } else {
+            if (spellData.canStun == true) { // check if spell can stun
+                stunEnemy();
+            }
+            enemy.hp = spellData.hpDam;
+            player.mp = spellData.mpDam;
+            enemyAttack();
+            checkVictory();
+        }
+    }
+    function _checkCost(spell, hp, mp) {  // check if spell can be used
+        var check = spell.checkCost(player.mp);
+        if (check) {
+            canUse = true;
+            spell.attack(hp, mp);
+            console.log(spellData)
+        }
+    }
 }
+
 
 class Enemy {
     constructor(max_hp, hp, damage, name) {
@@ -211,7 +387,7 @@ class Enemy {
         var getEmemySDam = document.getElementById("e-dam")
         
         getEnemyAction.innerHTML = enemyAction;
-        getEnemyHp.innerHTML = `HP: ${this.hp} / ${this.max_hp}`;
+        getEnemyHp.innerHTML = `${this.hp} / ${this.max_hp}`;
         getEnemyName.innerHTML = this.name;
 
         getEnemySName.innerHTML = `Class: ${this.name}`;
@@ -248,7 +424,8 @@ async function levelUp(clicked_id) {
         getBlockButton.innerText = `Block (${blockCounter})`
         player.update("Neat! A shield!")
     }
-    await sleep(2000)
+    levelPopup();
+    buttonSwitch(2000);
     player.update("Ready")
 }
 
@@ -273,13 +450,13 @@ async function genEnemy() {
     var NAME = "Goblin";
 
     buttonState(true, true, true);
-    player.mage = false;
+    player.mage = false; // turn off spellbook; figure out something better
     
     updateCharacters("Ready", "Searching for foes...");
-    await sleep(5000);
+    await sleep(WAITTIME);
     enemy = new Enemy(MAX_HP, HP, DAM, NAME);
     buttonState(false, true, false);
-    player.mage = true;
+    player.mage = true; // turn spellbook back on
     updateCharacters("Ready", "Ready");
 }
 
@@ -290,19 +467,28 @@ function setClass(clicked_id) {
     var DAMAGE = [2, 3, 4];
     var BLOCK = [4, 3, 2];
     var NAME = ["Fighter", "Ranger", "Mage"];
+
+    var abilButton = document.getElementById("abilities-button");
+    var icon;
     
     if (!chooseClass) {
         if (clicked_id == "fight-button") {
             player = new Player(MAX_HP[0], MAX_HP[0], MAX_MP[0], MAX_MP[0], DAMAGE[0], BLOCK[0], NAME[0]); // Player(MAX-HP, HP, Damage, Block, Name)
+            icon = "/icons/abilityIcon.svg";
         }
         if (clicked_id == "range-button") {
+            rangerFlag = true;
             player = new Player(MAX_HP[1], MAX_HP[1], MAX_MP[1], MAX_MP[1], DAMAGE[1], BLOCK[1], NAME[1]); // Player(MAX-HP, HP, Damage, Block, Name)
+            icon = "/icons/abilityIcon.svg";
         }
         if (clicked_id == "mage-button") {
             mageFlag = true;
             player = new Player(MAX_HP[2], MAX_HP[2], MAX_MP[2], MAX_MP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
+            icon = "/icons/spellIcon.svg";
         }
+        abilButton.src = `${icon}`
         genEnemy();
+        classPopup();
     } else {
         return console.log("Already picked a class");
     }
@@ -334,11 +520,8 @@ function stunEnemy() {
 
 function checkStun() {
     var getStunButton = document.getElementById("stun-button");
-    if (!stunFlag) {
-        console.log(`Not Stunned ${stunFlag}`)
-    } else {
+    if (!stunFlag) {} else {
         stunCounter --;
-        console.log(`Stun Counter: ${stunCounter}`)
         getStunButton.innerHTML = `Stun (${stunCounter})`
         enemy.update(`*Stunned* (${stunCounter})`)
         if (stunCounter == 0) {
@@ -371,12 +554,39 @@ function enemyAttack() {
 }
 
 // attack button; increments winCounter each win
-function attackEnemy() {
+async function attackEnemy() {
     if (enemy.hp > 0) {
         enemy.hp = player.attack(enemy.hp);
-        enemyAttack();
+        _textCheck();
+        buttonSwitch(1250);
+        
+        if (turnCounter > 0) {
+            turnCounter --;
+        } else {
+            if (player.ranger) {
+                turnCounter = 1;
+            }
+            enemyAttack();
+        }
     } 
     checkVictory();
+
+    function _textCheck() { // change text depending on class
+        var ptext;
+        var etext = "*Winces*";
+        switch(player.name) {
+            case "Fighter":
+                ptext = "Slashes!"
+                break;
+            case "Ranger":
+                ptext = "Shoots Arrow!"
+                break;
+            case "Mage":
+                ptext = "Staff bash!"
+                break;
+        }
+        updateCharacters(`${ptext}`, `${etext}`)
+    }
 }
 
 async function checkVictory() {
@@ -389,6 +599,7 @@ async function checkVictory() {
         updateCharacters("Victory Dance", "Pile of bones");
         if (winCounter < winsNeeded) {
             getLevelUp.hidden = false;
+            levelPopup();
             
             await sleep(3000)
             genEnemy();
@@ -442,9 +653,8 @@ function newGame() { // reset game state
     enemy = new Enemy("?", "?", "?", "...");
     updateCharacters("Choose Class", "Awaiting player choice");
     buttonState(true, false, true);
+    classPopup();
 }
 
 // starts new game on page load
 newGame();
-
-//
