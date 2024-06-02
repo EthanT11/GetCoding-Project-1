@@ -11,7 +11,7 @@
         <div id="header">
             <h1 id="title">Title of Game</h1>
             <div id="dropdown">
-                <button onclick="dropDown()" class="dropbtn">???</button>
+                <input type="image" src="icons/menuIcon2-fonts.google.svg", onclick="dropDown()", class="dropbtn">
                 <div id="myDropdown" class="dropdown-content">
                     <a onclick="newGame()">New Game</a>
                     <a>Help</a>
@@ -23,90 +23,97 @@
         <!-- TODO: look into generating the elements through js rather then fixed
         Will probably work better to use the same popout and change information depending
         on the button or action required -->
+        <!-- TODO: Clean up old containers and js associated with it -->
+        <div class="popup" hidden="true">
+            <span class="popuptext" id="statsPopup">
+                <h2>Stats</h2>
+                <h3 id="s-class">
+                <h3 id="s-hp">max_hp</h2>
+                <h3 id="s-mp">max_mp</h2>
+                <h3 id="s-dam">damage</h2>
+                <h3 id="s-block">block</h2>
+                <h3 id="s-wins">wins</h2>
+                <p>------------------</p>
+                <h2 id="stats">Enemy</h2>
+                <h3 id="e-class">class</h2>
+                <h3 id="e-hp">max_hp</h2>
+                <h3 id="e-dam">damage</h2>
+            </span>
+            <span class="popuptext" id="classPopup">
+                <h2 id="class">Choose Class</h2>
+                <table>
+                    <tr>
+                        <td><button id="fight-button", onclick="setClass(this.id)">Fighter</button></td>
+                        <td>Block/Stun</td>
+                    </tr>
+                    <tr>
+                        <td><button id="range-button", onclick="setClass(this.id)">Ranger</button></td>
+                        <td>Quick Attack</td>
+                    </tr>
+                    <tr>
+                        <td><button id="mage-button", onclick="setClass(this.id)">Mage</button></td>
+                        <td>Spellbook</td>
+                    </tr>
+                </table>
+            </span>
+            <span class="popuptext" id="abilPopup">
+                <h2 id="class">Abilities</h2>
+                <table>
+                    <tr>
+                        <td><button id="block-button", disabled = true, onclick="blockEnemy()">Block</button></td>
+                        <td>Block damage equal to block stat</td>
+                    </tr>
+                    <tr>
+                        <td><button id="stun-button", disabled = true, onclick="stunEnemy()">Stun</button></td>
+                        <td>50% chance to stun</td>
+                    </tr>
+                </table>
+            </span>
+            <span class="popuptext" id="spellPopup">
+                <h2 id="class">Spellbook</h2>
+            </span>
+            <span class="popuptext" id="levelPopup">
+                <h2 id="class">Level Up!</h2>
+                <table>
+                    <tr>
+                        <td><button id="first-choice", onclick="levelUp(this.id)">Stats</button></td>
+                        <td>Increase Stats</td>
+                    </tr>
+                    <tr>
+                        <td><button id="second-choice", onclick="levelUp(this.id)">Heal</button></td>
+                        <td>Heal HP/MP to full</td>
+                    </tr>
+                    <tr>
+                        <td><button id="third-choice", onclick="levelUp(this.id)">Repair</button></td>
+                        <td>Repair your Shield</td>
+                    </tr>
+                </table>
+            </span>
+        </div>
         <div id="main">
-            <div class="popup">
-                <span class="popuptext" id="statsPopup">
-                    <h2>Stats</h2>
-                    <h3 id="s-class">
-                    <h3 id="s-hp">max_hp</h2>
-                    <h3 id="s-mp">max_mp</h2>
-                    <h3 id="s-dam">damage</h2>
-                    <h3 id="s-block">block</h2>
-                    <h3 id="s-wins">wins</h2>
-                    <p>------------------</p>
-                    <h2 id="stats">Enemy</h2>
-                    <h3 id="e-class">class</h2>
-                    <h3 id="e-hp">max_hp</h2>
-                    <h3 id="e-dam">damage</h2>
-                </span>
-            </div>
-            <div class="popup">
-                <span class="popuptext" id="classPopup">
-                    <h2 id="class">Choose Class</h2>
-                    <button id="fight-button", onclick="setClass(this.id)">Fighter</button>
-                    <button id="range-button", onclick="setClass(this.id)">Ranger</button>
-                    <button id="mage-button", onclick="setClass(this.id)">Mage</button>
-                </span>
-            </div>
-
             <div id="containers">
-                <!-- <div id="classContainer">
-                    <h2 id="class">Class</h2>
-                    <button id="fight-button", onclick="setClass(this.id)">Fighter</button>
-                    <button id="range-button", onclick="setClass(this.id)">Ranger</button>
-                    <button id="mage-button", onclick="setClass(this.id)">Mage</button>
-                </div> -->
-                <div id="menuContainer">
-                    <h2 id="menu">Menu</h2>
-                    <button id="attack-button", disabled = true, onclick="attackEnemy()">Attack</button>
-                    <button id="block-button", disabled = true, onclick="blockEnemy()">Block</button>
-                    <button id="stun-button", disabled = true, onclick="stunEnemy()">Stun</button>
-                    <button id="spell-book", disabled = true, onclick="openSpellBook()">Spells</button>
+                <div id="menuContainer", hidden="true">
                 </div>
                 <div id="hpContainer">
                     <h2 id="player-name">Player</h2>
                     <h2 id="player-hp">HP: 9999</h2>
                     <h2 id="player-mp">MP: 9999</h2>
-                    <h2 id="player-action">Action</h2>
+                    <h2 id="player-action", hidden="true">Action</h2>
                 </div>
                 <div id="enemyContainer">
                     <h2 id="enemy-name">Enemy</h2>
                     <h2 id="enemy-hp">HP: 9999</h2>
-                    <h2 id="enemy-action">Action</h2>
+                    <h2 id="enemy-action", hidden="true">Action</h2>
                 </div>
                 <div id="levelContainer", hidden="true">
-                    <button id="first-choice", onclick="levelUp(this.id)">Stats Level Up</button>
-                    <button id="second-choice", onclick="levelUp(this.id)">Heal HP/MP</button>
-                    <button id="third-choice", onclick="levelUp(this.id)">Repair Shield</button>
-                </div>
-                <div id="spellContainer", hidden=""true>
-                    <h2>Spellbook</h2>
                 </div>
             </div>
-                <!-- <div id="pStatsContainer">
-                <h2 id="stats">Stats</h2>
-                <h2 id="s-class">class</h2>
-                <h2 id="s-hp">max_hp</h2>
-                <h2 id="s-mp">max_mp</h2>
-                <h2 id="s-dam">damage</h2>
-                <h2 id="s-block">block</h2>
-                <h2 id="s-wins">wins</h2>
-            </div> 
-
-                <div id="eStatsContainer">
-                <h2 id="stats">Enemy Stats</h2>
-                <h2 id="e-class">class</h2>
-                <h2 id="e-hp">max_hp</h2>
-                <h2 id="e-dam">damage</h2>
-            </div> -->
-
-            <!-- TODO: Figure out how to keep the footer small, problem of it expanding when
-            not enough content on page -->
-            <div id="footer">
-                <button id="attack-button" class="btn" onclick="attackEnemy()">Atk</button>
-                <button id="abilities-button" class="btn">S/A</button>
-                <button id="stats-button" class="btn" onclick="popUp()">Sts</button>
-            </div>
+        </div>
+        <div id="footer">
+            <!-- TODO: resize icons -->
+            <input type="image", src="/icons/fighterIcon.svg" id="attack-button" class="btn" onclick="attackEnemy()"></button>
+            <input type="image", src="icons/abilityIcon.svg" id="abilities-button" class="btn" onclick="saPopup()"></button>
+            <button id="stats-button" class="btn" onclick="popUp()">Sts</button>
         </div>
         
         <script defer src="./index.js"></script>

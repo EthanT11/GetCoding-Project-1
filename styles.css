@@ -15,81 +15,6 @@ body {
 
 }
 
-/* #header {
-    background-color: #5D5323;
-    margin: 0;
-    padding-top: 2vh;
-    padding-bottom: 2vh;
-    position: relative;
-
-}
-
-
-#title {
-    color: black;
-    text-align: center;
-    
-  } */
-  
-/* #main {
-    background-color: #4A5D23;
-    height: 100%;
-    position: relative;
-}
-
-#containers {
-  top: 4px;
-  left: 4px;
-  position: absolute;
-}
-
-#hpContainer {
-  margin-bottom: 4px;
-  padding: 10px 4px 10px 2px;
-  border: 1px solid black;
-}
-
-#enemyContainer {
-  margin-bottom: 4px;
-  padding: 10px 4px 10px 2px;
-  border: 1px solid black;
-}
-
-#levelContainer {
-  padding: 10px 4px 10px 2px;
-  border: 1px solid black;
-}
-
-#spellContainer {
-  padding: 10px 4px 10px 2px;
-  border: 1px solid black;
-}
-
-#pStatsContainer {
-  position: absolute;
-  top: 4px;
-  right:4px;
-
-  border: 1px solid black;
-  padding: 10px 4px 10px 4px;
-}
-
-#eStatsContainer {
-  position: absolute;
-  top: 200px;
-  right: 4px;
-
-  border: 1px solid black;
-  padding: 10px 4px 10px 4px;
-}
-
-#stats {
-  text-decoration: underline;
-  text-align: center;
-  padding-bottom: 4px;
-} */
-
-
 /* ---------- START DROPDOWN ----------- */
 
 .dropbtn {
@@ -103,7 +28,7 @@ body {
   bottom: 0;
   
   font-size: 12px;
-  padding: 12px;
+  padding: 6px;
   border: none;
   border-radius: 50%;
   
@@ -148,12 +73,16 @@ body {
 
 /* ----------- END DROPDOWN ------------ */
 
-@media only screen and (max-width:600px) {
+/* TODO: ground stylings together and style based on class
+not ID's
+*/
+
+@media only screen and (max-width:1080px) {
   html {
     background-color: #5D5323;
   }
   body {
-    height: auto;
+    height: 100%;
   }
   #header {
     background-color: #5D5323;
@@ -168,16 +97,38 @@ body {
   }
   #main {
     background-color: #4A5D23;
+    height: 79%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  #containers {
+    display: flex;
+    justify-content: space-between;
+    background-color: gray;
+    position: relative;
+
+    border-style: double;
+  }
+  #hpContainer {
+    width: 50%;
+    text-align: center;
+    border-style: hidden dashed hidden hidden;
+  }
+  #enemyContainer {
+    width: 50%;
+    text-align: center;
   }
   #footer {
     background-color: #5D5323;
     padding-top: 2vh;
     padding-bottom: 2vh;
-    position: sticky;
+    position: relative;
     bottom: 0;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
   }
+  
   .btn {
     background-color: gray;
     border-radius: 50%;
@@ -196,6 +147,8 @@ body {
 
   /* Popup */
   .popup .popuptext {
+    display: flex;
+    flex-direction: column;
     visibility: hidden;
     width: 160px;
     background-color: #555;
