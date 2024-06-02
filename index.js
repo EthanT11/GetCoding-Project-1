@@ -65,8 +65,10 @@ var blockCounter = 0;
 var blockFlag = false;
 
 var mageFlag = false;
+var spellData = {};
 
 var ENEMYDAM = 2; // for testing; enemy damage
+var WAITTIME = 1000; // change enemy gen time
 
 // TODO: Maybe add the flags to the player constructor?? Might cause a lot of issues
 class Player {
@@ -149,49 +151,105 @@ class Player {
 // Class for spell creation; takes name, damage, and cost
 // Creates a button and places in spell menu
 class Spell {
-    constructor(name, damage, cost) {
+    constructor(name, damage, cost, canStun = false) {
         this.name = name;
         this.damage = damage;
         this.cost = cost;
+        this.stun = canStun;
 
         // create button
         var spellButton = document.createElement("button")
         spellButton.innerText = this.name;
         spellButton.id = this.name;
-        spellButton.onclick = spellAttack
-        document.getElementById("spellContainer").appendChild(spellButton)
+        spellButton.onclick = spellAttack;
+        document.getElementById("spellContainer").appendChild(spellButton);
         
+    }
+    attack(hp, playerMp) { // returns spelldata[hp, mpleft]
+        var hpLeft = hp -= this.damage;
+        var mpLeft = playerMp -= this.cost;
+        spellData = {
+            sname: this.name,
+            hpDam: hpLeft,
+            mpDam: mpLeft,
+            canStun: this.stun,
+        };
+        return spellData;
+    }
+    checkCost(playerMp) {
+        return playerMp >= this.cost;
     }
 }
 
 // spell list
-// TODO: find better place for them, maybe put in a list?
-var fireSpell = new Spell("Fire", 4, 2);
-var iceSpell = new Spell("Ice", 2, 2);
-var earthSpell = new Spell("Earth", 1, 2);
+let spells = {
+    fireSpell: new Spell("Fire", 4, 4),
+    iceSpell: new Spell("Ice", 2, 2),
+    earthSpell: new Spell("Earth", 1, 2, true),
+    healSpell: new Spell("Heal", -4, 0), // negative damage for healing
+}
 
 // main spell function
 async function spellAttack(clicked_id) {
+    canUse = false;
+    spellData = {}; // NOTE: Already set as list in global scope but use this to keep it clear
     clicked_id = clicked_id.srcElement.id;
+    
     if (clicked_id == "Fire") { // Maybe burning effect?
-        enemy.hp -= fireSpell.damage;
-        player.mp -= fireSpell.cost;
+        _checkCost(spells.fireSpell, enemy.hp, player.mp);
     } else if (clicked_id == "Ice") { // maybe reduce damage?
-        enemy.hp -= iceSpell.damage;
-        player.mp -= iceSpell.cost;
+        _checkCost(spells.iceSpell, enemy.hp, player.mp);
     } else if (clicked_id == "Earth") { // Damages & chance to stun
-        enemy.hp -= earthSpell.damage;
-        player.mp -= earthSpell.cost;
-        stunEnemy()
+        _checkCost(spells.earthSpell, enemy.hp, player.mp)
+    } else if (clicked_id == "Heal") {  // Heals player
+        canUse = true; // NOTE: leave for testing
+        _checkCost(spells.healSpell, player.hp, player.mp);
     }
-    if (!stunFlag) {
+    
+    if (!stunFlag) { // TODO: figure out something better, probably in the update rework
         updateCharacters(`${clicked_id}!`, "Ouch!");
     } else {
         updateCharacters(`${clicked_id}!`, `*Stunned* (${stunCounter})`);
     }
-    enemyAttack();
-    checkVictory();
+    
+    if (!canUse) { // check if player has enough mp
+        console.log("not enough mp")
+    } else {
+        _castSpell();
+    }
+    // helper funcs
+    function _castSpell() {
+        if (clicked_id == "Heal"){ // TODO: rework heal, quickly threw it together to help testing
+            player.hp = spellData.hpDam;
+            player.mp = spellData.mpDam;
+            enemyAttack();
+            checkVictory();
+        } else {
+            if (spellData.canStun == true) { // check if spell can stun
+                stunEnemy();
+            }
+            enemy.hp = spellData.hpDam;
+            player.mp = spellData.mpDam;
+            enemyAttack();
+            checkVictory();
+        }
+    }
+    function _checkCost(spell, hp, mp) {  // check if spell can be used
+        var check = spell.checkCost(player.mp);
+        if (check) {
+            canUse = true;
+            spell.attack(hp, mp);
+            console.log(spellData)
+        }
+    }
 }
+// spellData [] name, damage, cost, canStun?, 
+
+
+
+
+
+
 
 class Enemy {
     constructor(max_hp, hp, damage, name) {
@@ -276,7 +334,7 @@ async function genEnemy() {
     player.mage = false;
     
     updateCharacters("Ready", "Searching for foes...");
-    await sleep(5000);
+    await sleep(WAITTIME);
     enemy = new Enemy(MAX_HP, HP, DAM, NAME);
     buttonState(false, true, false);
     player.mage = true;
@@ -446,5 +504,3 @@ function newGame() { // reset game state
 
 // starts new game on page load
 newGame();
-
-//
