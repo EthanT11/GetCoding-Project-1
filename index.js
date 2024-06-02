@@ -18,7 +18,8 @@ function dropDown() {
 }
 
 // switches active buttons between class and fight menu; boolean
-function buttonState(actionState, chooseClass, blockState) {
+// TODO: try and remove block flag and chooseClass flag
+function buttonState(actionState, chooseClass, blockState = blockFlag) {
     var classState;
 
     classState = !chooseClass ? false : true;
@@ -35,6 +36,12 @@ function buttonState(actionState, chooseClass, blockState) {
         document.getElementById("stun-button").innerText = "Stun";
     }
     
+}
+
+async function buttonSwitch(time) { // disables buttons then enables them after x time.
+    buttonState(true, true, true);
+    await sleep(1250)
+    buttonState(false, true, false);
 }
 
 // toggles spell book visibility
@@ -64,8 +71,12 @@ var stunFlag = false;
 var blockCounter = 0;
 var blockFlag = false;
 
-var mageFlag = false;
 var spellData = {};
+var mageFlag = false;
+
+var turnCounter = 0;
+var rangerFlag = false;
+var setRanger;
 
 var ENEMYDAM = 2; // for testing; enemy damage
 var WAITTIME = 1000; // change enemy gen time
@@ -82,45 +93,22 @@ class Player {
         this.name = name;
 
         this.mage = mageFlag;
+        this.ranger = rangerFlag;
+        if (this.ranger) {
+            setRanger = true;
+        }
     }
     
     // Update HP and Action on UI
-    // TODO: Since the function is getting huge and probably bigger, break it down
-    // maybe updateClassMenu*probably something less wordy but updateClass sounds like a different function*
-    // updateMenu?
     update(playerAction) {
-        // get player container elements
-        var getPlayerAction = document.getElementById("player-action");
-        var getPlayerHp = document.getElementById("player-hp");
-        var getPlayerMp = document.getElementById("player-mp");
-        var getPlayerName = document.getElementById("player-name");
-        
-        // get player stats container elements
-        var getPlayerSClass = document.getElementById("s-class");
-        var getPlayerSHp = document.getElementById("s-hp");
-        var getPlayerSMp = document.getElementById("s-mp");
-        var getPlayerSDamage = document.getElementById("s-dam");
-        var getPlayerSBlock = document.getElementById("s-block");
-        var getPlayerSWins = document.getElementById("s-wins");
-        
         // get player menu container elements
+        var getAttackButton = document.getElementById("attack-button");
         var getBlockButton = document.getElementById("block-button");
         var getSpellButton = document.getElementById("spell-book");
-        var getSpellContainer = document.getElementById("spellContainer")
+        var getSpellContainer = document.getElementById("spellContainer");
         
-        // set player container elements
-        getPlayerName.innerHTML = this.name;
-        getPlayerHp.innerHTML = `HP: ${this.hp} / ${this.max_hp}`;
-        getPlayerMp.innerHTML = `MP: ${this.mp} / ${this.max_mp}`;
-        getPlayerAction.innerHTML = playerAction;
-        
-        // set player stats container elements
-        getPlayerSClass.innerHTML = `Class: ${this.name}`;
-        getPlayerSHp.innerHTML = `Max HP: ${this.max_hp}`;
-        getPlayerSMp.innerHTML = `Max MP: ${this.max_mp}`;
-        getPlayerSDamage.innerHTML = `Damage: ${this.damage}`;
-        getPlayerSBlock.innerHTML = `Block: ${this.block}`;
-        getPlayerSWins.innerHTML = `Wins: ${winCounter}`;
+        this._updateContainer(playerAction);
+        this._updateStats();
         
         // show spellbook if mage is true
         if (this.mage && this.name == "Mage") {
@@ -129,23 +117,73 @@ class Player {
             getSpellButton.disabled = true;
             getSpellContainer.hidden = true;
         }
-
+        
+        // set amount of actions to 2
+        // TODO: try and use turnCounter for stun instead? 
+        if (this.ranger && this.name == "Ranger") {
+            if (setRanger) {
+                getAttackButton.innerHTML = "Quick Atk";
+                turnCounter = 1;
+                setRanger = false;
+            }
+        }
+        
         // check if block button should be active based on hp
         if (!blockFlag) {
             if (player.hp < player.max_hp && blockCounter > 0) {
-                    getBlockButton.disabled = false;
+                getBlockButton.disabled = false;
             } else {
                 getBlockButton.disabled = true;
             }
         }
     }
     attack(enemyHp) {
-        return enemyHp -= this.damage; // returns enemy hp value
+        if (this.ranger) {
+            var dblDam = dice(2); // TODO: Probably make the chances lower...
+            if (dblDam == 2) {
+                console.log("DOUBLE DAMAGE!!!!")
+                return enemyHp -= this.damage * 2;
+            } else {
+                return enemyHp -= this.damage;
+            }
+        } else {
+            return enemyHp -= this.damage; // returns enemy hp value
+        }
     }
     blockAttack(enemyDam) {
         return this.block - enemyDam;
     }
+    _updateContainer(playerAction) {
+        // get player container elements
+        var getPlayerAction = document.getElementById("player-action");
+        var getPlayerHp = document.getElementById("player-hp");
+        var getPlayerMp = document.getElementById("player-mp");
+        var getPlayerName = document.getElementById("player-name");
 
+        // set player container elements
+        getPlayerName.innerHTML = this.name;
+        getPlayerHp.innerHTML = `HP: ${this.hp} / ${this.max_hp}`;
+        getPlayerMp.innerHTML = `MP: ${this.mp} / ${this.max_mp}`;
+        getPlayerAction.innerHTML = playerAction;
+    }
+    _updateStats() {
+        // get player stats container elements
+        var getPlayerSClass = document.getElementById("s-class");
+        var getPlayerSHp = document.getElementById("s-hp");
+        var getPlayerSMp = document.getElementById("s-mp");
+        var getPlayerSDamage = document.getElementById("s-dam");
+        var getPlayerSBlock = document.getElementById("s-block");
+        var getPlayerSWins = document.getElementById("s-wins");
+        
+        // set player stats container elements
+        getPlayerSClass.innerHTML = `Class: ${this.name}`;
+        getPlayerSHp.innerHTML = `Max HP: ${this.max_hp}`;
+        getPlayerSMp.innerHTML = `Max MP: ${this.max_mp}`;
+        getPlayerSDamage.innerHTML = `Damage: ${this.damage}`;
+        getPlayerSBlock.innerHTML = `Block: ${this.block}`;
+        getPlayerSWins.innerHTML = `Wins: ${winCounter}`;
+    }
+    
 }
 
 // Class for spell creation; takes name, damage, and cost
@@ -243,12 +281,6 @@ async function spellAttack(clicked_id) {
         }
     }
 }
-// spellData [] name, damage, cost, canStun?, 
-
-
-
-
-
 
 
 class Enemy {
@@ -306,7 +338,7 @@ async function levelUp(clicked_id) {
         getBlockButton.innerText = `Block (${blockCounter})`
         player.update("Neat! A shield!")
     }
-    await sleep(2000)
+    buttonSwitch(2000);
     player.update("Ready")
 }
 
@@ -331,13 +363,13 @@ async function genEnemy() {
     var NAME = "Goblin";
 
     buttonState(true, true, true);
-    player.mage = false;
+    player.mage = false; // turn off spellbook; figure out something better
     
     updateCharacters("Ready", "Searching for foes...");
     await sleep(WAITTIME);
     enemy = new Enemy(MAX_HP, HP, DAM, NAME);
     buttonState(false, true, false);
-    player.mage = true;
+    player.mage = true; // turn spellbook back on
     updateCharacters("Ready", "Ready");
 }
 
@@ -354,6 +386,7 @@ function setClass(clicked_id) {
             player = new Player(MAX_HP[0], MAX_HP[0], MAX_MP[0], MAX_MP[0], DAMAGE[0], BLOCK[0], NAME[0]); // Player(MAX-HP, HP, Damage, Block, Name)
         }
         if (clicked_id == "range-button") {
+            rangerFlag = true;
             player = new Player(MAX_HP[1], MAX_HP[1], MAX_MP[1], MAX_MP[1], DAMAGE[1], BLOCK[1], NAME[1]); // Player(MAX-HP, HP, Damage, Block, Name)
         }
         if (clicked_id == "mage-button") {
@@ -392,11 +425,8 @@ function stunEnemy() {
 
 function checkStun() {
     var getStunButton = document.getElementById("stun-button");
-    if (!stunFlag) {
-        console.log(`Not Stunned ${stunFlag}`)
-    } else {
+    if (!stunFlag) {} else {
         stunCounter --;
-        console.log(`Stun Counter: ${stunCounter}`)
         getStunButton.innerHTML = `Stun (${stunCounter})`
         enemy.update(`*Stunned* (${stunCounter})`)
         if (stunCounter == 0) {
@@ -429,12 +459,39 @@ function enemyAttack() {
 }
 
 // attack button; increments winCounter each win
-function attackEnemy() {
+async function attackEnemy() {
     if (enemy.hp > 0) {
         enemy.hp = player.attack(enemy.hp);
-        enemyAttack();
+        _textCheck();
+        buttonSwitch(1250);
+        
+        if (turnCounter > 0) {
+            turnCounter --;
+        } else {
+            if (player.ranger) {
+                turnCounter = 1;
+            }
+            enemyAttack();
+        }
     } 
     checkVictory();
+
+    function _textCheck() { // change text depending on class
+        var ptext;
+        var etext = "*Winces*";
+        switch(player.name) {
+            case "Fighter":
+                ptext = "Slashes!"
+                break;
+            case "Ranger":
+                ptext = "Shoots Arrow!"
+                break;
+            case "Mage":
+                ptext = "Staff bash!"
+                break;
+        }
+        updateCharacters(`${ptext}`, `${etext}`)
+    }
 }
 
 async function checkVictory() {
