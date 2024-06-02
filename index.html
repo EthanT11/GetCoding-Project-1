@@ -20,14 +20,42 @@
         </div>
         
         <!-- TODO: look into using div classes for repeating styles -->
+        <!-- TODO: look into generating the elements through js rather then fixed
+        Will probably work better to use the same popout and change information depending
+        on the button or action required -->
         <div id="main">
+            <div class="popup">
+                <span class="popuptext" id="statsPopup">
+                    <h2>Stats</h2>
+                    <h3 id="s-class">
+                    <h3 id="s-hp">max_hp</h2>
+                    <h3 id="s-mp">max_mp</h2>
+                    <h3 id="s-dam">damage</h2>
+                    <h3 id="s-block">block</h2>
+                    <h3 id="s-wins">wins</h2>
+                    <p>------------------</p>
+                    <h2 id="stats">Enemy</h2>
+                    <h3 id="e-class">class</h2>
+                    <h3 id="e-hp">max_hp</h2>
+                    <h3 id="e-dam">damage</h2>
+                </span>
+            </div>
+            <div class="popup">
+                <span class="popuptext" id="classPopup">
+                    <h2 id="class">Choose Class</h2>
+                    <button id="fight-button", onclick="setClass(this.id)">Fighter</button>
+                    <button id="range-button", onclick="setClass(this.id)">Ranger</button>
+                    <button id="mage-button", onclick="setClass(this.id)">Mage</button>
+                </span>
+            </div>
+
             <div id="containers">
-                <div id="classContainer">
+                <!-- <div id="classContainer">
                     <h2 id="class">Class</h2>
                     <button id="fight-button", onclick="setClass(this.id)">Fighter</button>
                     <button id="range-button", onclick="setClass(this.id)">Ranger</button>
                     <button id="mage-button", onclick="setClass(this.id)">Mage</button>
-                </div>
+                </div> -->
                 <div id="menuContainer">
                     <h2 id="menu">Menu</h2>
                     <button id="attack-button", disabled = true, onclick="attackEnemy()">Attack</button>
@@ -55,8 +83,7 @@
                     <h2>Spellbook</h2>
                 </div>
             </div>
-
-            <div id="pStatsContainer">
+                <!-- <div id="pStatsContainer">
                 <h2 id="stats">Stats</h2>
                 <h2 id="s-class">class</h2>
                 <h2 id="s-hp">max_hp</h2>
@@ -64,18 +91,21 @@
                 <h2 id="s-dam">damage</h2>
                 <h2 id="s-block">block</h2>
                 <h2 id="s-wins">wins</h2>
-            </div>
+            </div> 
 
-            <div id="eStatsContainer">
+                <div id="eStatsContainer">
                 <h2 id="stats">Enemy Stats</h2>
                 <h2 id="e-class">class</h2>
                 <h2 id="e-hp">max_hp</h2>
                 <h2 id="e-dam">damage</h2>
-            </div>
+            </div> -->
+
+            <!-- TODO: Figure out how to keep the footer small, problem of it expanding when
+            not enough content on page -->
             <div id="footer">
-                <button id="attack-button" class="btn" onclick=attackEnemy()>Atk</button>
+                <button id="attack-button" class="btn" onclick="attackEnemy()">Atk</button>
                 <button id="abilities-button" class="btn">S/A</button>
-                <button id="stats-button" class="btn">Sts</button>
+                <button id="stats-button" class="btn" onclick="popUp()">Sts</button>
             </div>
         </div>
         
