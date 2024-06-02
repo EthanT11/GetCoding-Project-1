@@ -30,12 +30,12 @@ function classPopup() {
 }
 
 function saPopup() {
-    var popup = document.getElementById("abilPopup");
+    var popup;
     if (player.name == "Mage") {
         popup = document.getElementById("spellPopup");
-        console.log("SpellBook");
-    } 
-    console.log("Abilities");
+    } else {
+        popup = document.getElementById("abilPopup");
+    }
     popup.classList.toggle("show");
 }
 
@@ -49,7 +49,7 @@ function levelPopup() {
 // TODO: try and remove block flag and chooseClass flag
 function buttonState(actionState, chooseClass, blockState = blockFlag) {
     var classState;
-
+    
     classState = !chooseClass ? false : true;
     document.getElementById("fight-button").disabled = classState;
     document.getElementById("range-button").disabled = classState;
@@ -59,7 +59,7 @@ function buttonState(actionState, chooseClass, blockState = blockFlag) {
     document.getElementById("attack-button").disabled = actionState;
     document.getElementById("block-button").disabled = blockFlag;
     document.getElementById("stun-button").disabled = actionState;
-
+    
     if (stunCounter == 0) {
         document.getElementById("stun-button").innerText = "Stun";
     }
@@ -71,16 +71,6 @@ async function buttonSwitch(time) { // disables buttons then enables them after 
     await sleep(1250)
     buttonState(false, true, false);
 }
-
-// toggles spell book visibility
-// function openSpellBook() {
-//     var getSpellbook = document.getElementById("spellContainer");
-//     if (getSpellbook.hidden) {
-//         getSpellbook.hidden = false;
-//     } else {
-//         getSpellbook.hidden = true;
-//     }
-// }
 
 // -- Game Functions --
 
@@ -120,9 +110,10 @@ class Player {
         this.damage = damage;
         this.block = block;
         this.name = name;
-
+        
         this.mage = mageFlag;
         this.ranger = rangerFlag;
+
         if (this.ranger) {
             setRanger = true;
         }
@@ -138,14 +129,6 @@ class Player {
         
         this._updateContainer(playerAction);
         this._updateStats();
-        
-        // show spellbook if mage is true
-        if (this.mage && this.name == "Mage") {
-            getSpellButton.disabled = false;
-        } else {
-            getSpellButton.disabled = true;
-            getSpellContainer.hidden = true;
-        }
         
         // set amount of actions to 2
         // TODO: try and use turnCounter for stun instead? 
@@ -484,19 +467,26 @@ function setClass(clicked_id) {
     var DAMAGE = [2, 3, 4];
     var BLOCK = [4, 3, 2];
     var NAME = ["Fighter", "Ranger", "Mage"];
+
+    var abilButton = document.getElementById("abilities-button");
+    var icon;
     
     if (!chooseClass) {
         if (clicked_id == "fight-button") {
             player = new Player(MAX_HP[0], MAX_HP[0], MAX_MP[0], MAX_MP[0], DAMAGE[0], BLOCK[0], NAME[0]); // Player(MAX-HP, HP, Damage, Block, Name)
+            icon = "/icons/abilityIcon.svg";
         }
         if (clicked_id == "range-button") {
             rangerFlag = true;
             player = new Player(MAX_HP[1], MAX_HP[1], MAX_MP[1], MAX_MP[1], DAMAGE[1], BLOCK[1], NAME[1]); // Player(MAX-HP, HP, Damage, Block, Name)
+            icon = "/icons/abilityIcon.svg";
         }
         if (clicked_id == "mage-button") {
             mageFlag = true;
             player = new Player(MAX_HP[2], MAX_HP[2], MAX_MP[2], MAX_MP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
+            icon = "/icons/spellIcon.svg";
         }
+        abilButton.src = `${icon}`
         genEnemy();
         classPopup();
     } else {

@@ -11,7 +11,6 @@
         <div id="header">
             <h1 id="title">Title of Game</h1>
             <div id="dropdown">
-                <!-- <button onclick="dropDown()", class="dropbtn"></button> -->
                 <input type="image" src="icons/menuIcon2-fonts.google.svg", onclick="dropDown()", class="dropbtn">
                 <div id="myDropdown" class="dropdown-content">
                     <a onclick="newGame()">New Game</a>
@@ -93,18 +92,7 @@
         </div>
         <div id="main">
             <div id="containers">
-                <!-- <div id="classContainer">
-                    <h2 id="class">Class</h2>
-                    <button id="fight-button", onclick="setClass(this.id)">Fighter</button>
-                    <button id="range-button", onclick="setClass(this.id)">Ranger</button>
-                    <button id="mage-button", onclick="setClass(this.id)">Mage</button>
-                </div> -->
                 <div id="menuContainer", hidden="true">
-                    <!-- <h2 id="menu">Menu</h2> -->
-                    <!-- <button id="attack-button", disabled = true, onclick="attackEnemy()">Attack</button> -->
-                    <!-- <button id="block-button", disabled = true, onclick="blockEnemy()">Block</button> -->
-                    <!-- <button id="stun-button", disabled = true, onclick="stunEnemy()">Stun</button> -->
-                    <button id="spell-book", disabled = true, onclick="openSpellBook()">Spells</button>
                 </div>
                 <div id="hpContainer">
                     <h2 id="player-name">Player</h2>
@@ -118,38 +106,13 @@
                     <h2 id="enemy-action", hidden="true">Action</h2>
                 </div>
                 <div id="levelContainer", hidden="true">
-                    <!-- <button id="first-choice", onclick="levelUp(this.id)">Stats Level Up</button>
-                    <button id="second-choice", onclick="levelUp(this.id)">Heal HP/MP</button>
-                    <button id="third-choice", onclick="levelUp(this.id)">Repair Shield</button> -->
-                </div>
-                <div id="spellContainer", hidden=""true>
-                    <h2>Spellbook</h2>
                 </div>
             </div>
-                <!-- <div id="pStatsContainer">
-                <h2 id="stats">Stats</h2>
-                <h2 id="s-class">class</h2>
-                <h2 id="s-hp">max_hp</h2>
-                <h2 id="s-mp">max_mp</h2>
-                <h2 id="s-dam">damage</h2>
-                <h2 id="s-block">block</h2>
-                <h2 id="s-wins">wins</h2>
-            </div> 
-
-                <div id="eStatsContainer">
-                <h2 id="stats">Enemy Stats</h2>
-                <h2 id="e-class">class</h2>
-                <h2 id="e-hp">max_hp</h2>
-                <h2 id="e-dam">damage</h2>
-            </div> -->
-
-            <!-- TODO: Figure out how to keep the footer small, problem of it expanding when
-            not enough content on page -->
         </div>
         <div id="footer">
-            <!-- TODO: resize icon on aesprite -->
+            <!-- TODO: resize icons -->
             <input type="image", src="/icons/fighterIcon.svg" id="attack-button" class="btn" onclick="attackEnemy()"></button>
-            <button id="abilities-button" class="btn" onclick="saPopup()">S/A</button>
+            <input type="image", src="icons/abilityIcon.svg" id="abilities-button" class="btn" onclick="saPopup()"></button>
             <button id="stats-button" class="btn" onclick="popUp()">Sts</button>
         </div>
         
