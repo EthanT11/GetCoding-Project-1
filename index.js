@@ -46,22 +46,25 @@ function levelPopup() {
 }
 
 // generate level circles
+// TODO: Look into just changing the background color property of a class
+// rather then just switching ID's
 function genLevelCircle() {
     var getProgressCont = document.getElementById("progressContainer");
-    clearElement("progressContainer");
+    let style = "circle";
     
+    clearElement("progressContainer");
     for (let i = 0; i < winsNeeded; i++) {
         createCircle = document.createElement("div");
-        let style = "circle";
         if (i == winCounter) {
             style = "selectedCircle";
+        } else if (i < winCounter) {
+            style = "clearedCircle";
         } else {
-            style = "circle"
+            style = "circle";
         }
         createCircle.id = style;
         
         getProgressCont.appendChild(createCircle)
-        console.log(`Circle: ${i}`)
     }
     
 }
@@ -255,8 +258,8 @@ class Spell {
 let spellInfo = {
     fireData: {
         _name: "Fire",
-        _dam: 4,
-        _cost: 3,
+        _dam: 8,
+        _cost: 1,
         _info: "Hurl a fireball!"
     },
     iceData: {

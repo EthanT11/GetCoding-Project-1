@@ -113,7 +113,7 @@ not ID's
     width: 2rem;
     height: 2rem;
     border-radius: 25px;
-    background: yellow;
+    background-color: yellow;
   }
 
   #selectedCircle {
@@ -121,6 +121,13 @@ not ID's
     height: 2rem;
     border-radius: 25px;
     background: red;
+  }
+
+  #clearedCircle {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 25px;
+    background: black;
   }
  
   .sprites {
