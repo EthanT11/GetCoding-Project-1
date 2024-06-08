@@ -21,12 +21,10 @@ body {
 .dropbtn {
   background-color: #4A5D23;
   color: white;
+  margin-left: 2vw;
 
-  margin-bottom: 1.5vw;
-  margin-left: 2.5vw;
   cursor: pointer;
   position: absolute;
-  bottom: 0;
   
   font-size: 12px;
   padding: 6px;
@@ -87,19 +85,24 @@ not ID's
   }
   #header {
     background-color: #5D5323;
-    padding-top: 2vh;
-    padding-bottom: 2vh;
-    position: sticky;
+    padding-top: 1.5vh;
+    padding-bottom: 1vh;
+    /* position: sticky; */
+    display: flex;
+    justify-content: space-between;
+
     top: 0;
+    max-height: 3vh;
   }
   #title {
     color: black;
-    text-align: center;
+    margin-right: 25%;
   }
+  
   #main {
     background-color: #4A5D23;
-    height: 79%;
     display: flex;
+    height: 80%;
     flex-direction: column;
     justify-content: space-between;
   }
@@ -151,7 +154,7 @@ not ID's
     flex-direction: row;
     justify-content: space-around;
     border-style: hidden double hidden double;
-    background-color: gray;
+    background-color: black;
   }
   #player-action {
     color: lightgreen;
