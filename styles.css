@@ -110,10 +110,17 @@ not ID's
   }
 
   #circle {
-    width: 25px;
-    height: 25px;
+    width: 2rem;
+    height: 2rem;
     border-radius: 25px;
     background: yellow;
+  }
+
+  #selectedCircle {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 25px;
+    background: red;
   }
  
   .sprites {

@@ -46,16 +46,29 @@ function levelPopup() {
 }
 
 // generate level circles
-function circle() {
-    console.log(winsNeeded)
+function genLevelCircle() {
+    var getProgressCont = document.getElementById("progressContainer");
+    clearElement("progressContainer");
+    
     for (let i = 0; i < winsNeeded; i++) {
-        var getProgressCont = document.getElementById("progressContainer");
         createCircle = document.createElement("div");
-        createCircle.id = "circle";
-
+        let style = "circle";
+        if (i == winCounter) {
+            style = "selectedCircle";
+        } else {
+            style = "circle"
+        }
+        createCircle.id = style;
+        
         getProgressCont.appendChild(createCircle)
-        console.log("made circle")
+        console.log(`Circle: ${i}`)
     }
+    
+}
+
+// clears element, takes elementID
+function clearElement(element) {
+    document.getElementById(element).innerHTML = "";
 }
 
 // switches active buttons between class and fight menu; boolean
@@ -113,7 +126,6 @@ var setRanger;
 var ENEMYDAM = 2; // for testing; enemy damage
 var WAITTIME = 1000; // change enemy gen time
 
-circle()
 // TODO: Maybe add the flags to the player constructor?? Might cause a lot of issues
 class Player {
     constructor(max_hp, hp, max_mp, mp, damage, block, name) {
@@ -617,6 +629,7 @@ async function checkVictory() {
             
             await sleep(3000)
             genEnemy();
+            genLevelCircle();
         } else { // victory condition
             getLevelUp.hidden = true;
             buttonState(true, false, true);
@@ -668,6 +681,7 @@ function newGame() { // reset game state
     updateCharacters("Choose Class", "Awaiting player choice");
     buttonState(true, false, true);
     classPopup();
+    genLevelCircle();
 }
 
 // starts new game on page load
