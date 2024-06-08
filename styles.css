@@ -174,10 +174,12 @@ not ID's
     background-repeat: no-repeat;
     background-color: gray;
     background-size: cover;
-
+    
     width: 50%;
     text-align: center;
     border-style: hidden dashed hidden hidden;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
   #enemyContainer {
     background-image: url("icons/healthBorder2.svg");
@@ -187,6 +189,8 @@ not ID's
 
     width: 50%;
     text-align: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
   #footer {
     background-color: #5D5323;
