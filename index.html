@@ -94,14 +94,12 @@
             <div id="progressContainer">
                 <div id="circle"></div>
             </div>
-            <div class="sprites">
-                <div id="playerSprite">
-                    <h2>Action Text</h2>
-                </div>
-                <div id="enemySprite">
-                    <h2>Action Text</h2>
-                </div>
+
+            <div class="spritesContainer">
+                <img id="playerSprite">
+                <img id="enemySprite">
             </div>
+
             <div id="containers" >
                 <div id="hpContainer">
                     <h2 id="player-name">Player</h2>
@@ -109,6 +107,7 @@
                     <h2 id="player-mp">MP: 9999</h2>
                     <h2 id="player-action", hidden="true">Action</h2>
                 </div>
+
                 <div id="enemyContainer">
                     <h2 id="enemy-name">Enemy</h2>
                     <h2 id="enemy-hp">HP: 9999</h2>
@@ -116,12 +115,13 @@
                 </div>
                 <div id="levelContainer", hidden="true">
                 </div>
+
             </div>
         </div>
         <div id="footer">
             <!-- TODO: resize icons -->
-            <input type="image" src="/icons/fighterIcon.svg" alt="" id="attack-button" class="btn" onclick="attackEnemy()"></button>
-            <input type="image" src="icons/abilityIcon.svg" alt="" id="abilities-button" class="btn" onclick="saPopup()"></button>
+            <input type="image" src="/icons/fighterIcon.svg" alt="Attack" id="attack-button" class="btn" onclick="attackEnemy()"></button>
+            <input type="image" src="icons/abilityIcon.svg" alt="Abilities" id="abilities-button" class="btn" onclick="saPopup()"></button>
             <button id="stats-button" class="btn" onclick="popUp()">Sts</button>
         </div>
         
