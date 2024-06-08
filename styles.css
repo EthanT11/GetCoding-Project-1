@@ -102,7 +102,7 @@ not ID's
   #main {
     background-color: #4A5D23;
     display: flex;
-    height: 80%;
+    height: 82%;
     flex-direction: column;
     justify-content: space-between;
   }
@@ -191,10 +191,9 @@ not ID's
   #footer {
     background-color: #5D5323;
     position: relative;
-    padding-top: 4px;
-    bottom: 4px;
     display: flex;
     justify-content: space-evenly;
+    border: double;
   }
   
   .btn {
