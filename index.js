@@ -45,6 +45,19 @@ function levelPopup() {
     console.log("Level up!")
 }
 
+// generate level circles
+function circle() {
+    console.log(winsNeeded)
+    for (let i = 0; i < winsNeeded; i++) {
+        var getProgressCont = document.getElementById("progressContainer");
+        createCircle = document.createElement("div");
+        createCircle.id = "circle";
+
+        getProgressCont.appendChild(createCircle)
+        console.log("made circle")
+    }
+}
+
 // switches active buttons between class and fight menu; boolean
 // TODO: try and remove block flag and chooseClass flag
 function buttonState(actionState, chooseClass, blockState = blockFlag) {
@@ -80,7 +93,7 @@ var enemy;
 var chooseClass = false;
 
 var winCounter = 0;
-var winsNeeded = 3;
+var winsNeeded = 10;
 
 var stunCounter = 0;
 var stunFlag = false;
@@ -100,6 +113,7 @@ var setRanger;
 var ENEMYDAM = 2; // for testing; enemy damage
 var WAITTIME = 1000; // change enemy gen time
 
+circle()
 // TODO: Maybe add the flags to the player constructor?? Might cause a lot of issues
 class Player {
     constructor(max_hp, hp, max_mp, mp, damage, block, name) {

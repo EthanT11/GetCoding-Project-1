@@ -91,9 +91,18 @@
             </span>
         </div>
         <div id="main">
-            <div id="containers">
-                <div id="menuContainer", hidden="true">
+            <div id="progressContainer">
+                <div id="circle"></div>
+            </div>
+            <div class="sprites">
+                <div id="playerSprite">
+                    <h2>Action Text</h2>
                 </div>
+                <div id="enemySprite">
+                    <h2>Action Text</h2>
+                </div>
+            </div>
+            <div id="containers" >
                 <div id="hpContainer">
                     <h2 id="player-name">Player</h2>
                     <h2 id="player-hp">HP: 9999</h2>
@@ -111,8 +120,8 @@
         </div>
         <div id="footer">
             <!-- TODO: resize icons -->
-            <input type="image", src="/icons/fighterIcon.svg" id="attack-button" class="btn" onclick="attackEnemy()"></button>
-            <input type="image", src="icons/abilityIcon.svg" id="abilities-button" class="btn" onclick="saPopup()"></button>
+            <input type="image" src="/icons/fighterIcon.svg" alt="" id="attack-button" class="btn" onclick="attackEnemy()"></button>
+            <input type="image" src="icons/abilityIcon.svg" alt="" id="abilities-button" class="btn" onclick="saPopup()"></button>
             <button id="stats-button" class="btn" onclick="popUp()">Sts</button>
         </div>
         

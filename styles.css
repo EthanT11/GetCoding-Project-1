@@ -101,31 +101,70 @@ not ID's
     height: 79%;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: space-between;
   }
+  #progressContainer {
+    display: flex;
+    justify-content: space-around;
+    background-color: gray;
+  }
+
+  #circle {
+    width: 25px;
+    height: 25px;
+    border-radius: 25px;
+    background: yellow;
+  }
+ 
+  .sprites {
+    display: flex;
+    justify-content: space-around;
+  }
+  #playerSprite {
+    background-color: blue;
+    ::before {
+      content: url("icons/mageSprite.svg");
+    }
+  }
+  #enemySprite {
+     background-color: red;
+     ::before {
+      content: url("icons/mageSprite.svg");
+    }
+  }
+
   #containers {
     display: flex;
     justify-content: space-between;
-    background-color: gray;
+    
+    
     position: relative;
-
     border-style: double;
   }
   #hpContainer {
+    background-image: url("icons/healthBorder1.svg");
+    background-repeat: no-repeat;
+    background-color: gray;
+    background-size: cover;
+
     width: 50%;
     text-align: center;
     border-style: hidden dashed hidden hidden;
   }
   #enemyContainer {
+    background-image: url("icons/healthBorder2.svg");
+    background-repeat: no-repeat;
+    background-color: gray;
+    background-size: cover;
+
     width: 50%;
     text-align: center;
   }
   #footer {
     background-color: #5D5323;
-    padding-top: 2vh;
-    padding-bottom: 2vh;
     position: relative;
-    bottom: 0;
+    padding-top: 4px;
+    bottom: 4px;
     display: flex;
     justify-content: space-evenly;
   }
