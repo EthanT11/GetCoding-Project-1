@@ -83,6 +83,15 @@ not ID's
   body {
     height: 100%;
   }
+  #main {
+    background-color: #4A5D23;
+    display: flex;
+    height: 82%;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  /* ------------ Header ------------*/
   #header {
     background-color: #5D5323;
     padding-top: 1.5vh;
@@ -99,13 +108,8 @@ not ID's
     margin-right: 25%;
   }
   
-  #main {
-    background-color: #4A5D23;
-    display: flex;
-    height: 82%;
-    flex-direction: column;
-    justify-content: space-between;
-  }
+
+  /* ------------ Progression Container ------------*/
   #progressContainer {
     display: flex;
     justify-content: space-around;
@@ -133,6 +137,8 @@ not ID's
     border-radius: 25px;
     background: black;
   }
+
+  /* ------------ Sprites Container ------------*/
  
   #spritesContainer {
     display: flex;
@@ -149,6 +155,8 @@ not ID's
     width: 50%;
     content: url("icons/mageSpriteFlipped.svg");
   }
+
+  /* ------------ Action and Health Containers ------------*/
   #actionContainer {
     display: flex;
     flex-direction: row;
@@ -163,7 +171,7 @@ not ID's
     color: lightcoral;
   }
 
-  #healthContainer {
+  #charaContainer {
     display: flex;
     justify-content: space-between;
     position: relative;
@@ -176,11 +184,28 @@ not ID's
     background-size: cover;
     
     width: 50%;
-    text-align: center;
     border-style: hidden dashed hidden hidden;
     padding-top: 1rem;
     padding-bottom: 1rem;
+
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
   }
+  .meterCont {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .meter {
+    height: 2rem;
+    width: 4rem;
+  }
+
   #enemyContainer {
     background-image: url("icons/healthBorder2.svg");
     background-repeat: no-repeat;
@@ -192,6 +217,8 @@ not ID's
     padding-top: 1rem;
     padding-bottom: 1rem;
   }
+
+  /* ------------ Footer ------------*/
   #footer {
     background-color: #5D5323;
     position: relative;

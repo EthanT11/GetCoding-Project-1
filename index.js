@@ -206,6 +206,9 @@ class Player {
         getPlayerHp.innerHTML = `${this.hp} / ${this.max_hp}`;
         getPlayerMp.innerHTML = `${this.mp} / ${this.max_mp}`;
         getPlayerAction.innerHTML = playerAction;
+
+        this._setMeter("playerHp-meter");
+        this._setMeter("playerMp-meter");
     }
     _updateStats() {
         // get player stats container elements
@@ -224,7 +227,36 @@ class Player {
         getPlayerSBlock.innerHTML = `Block: ${this.block}`;
         getPlayerSWins.innerHTML = `Wins: ${winCounter}`;
     }
-    
+    _setMeter(meter) {
+        var getHpMeter = document.getElementById(meter);
+        var attributes;
+        switch(meter) {
+            case "playerHp-meter":
+                attributes = {
+                    "min": "0",
+                    "max": this.max_hp,
+                    "low": this.max_hp - (this.max_hp * 0.75),
+                    "high": this.max_hp - (this.max_hp * 0.50),
+                    "optimum": this.max_hp - (this.max_hp * 0.25),
+                    "value": this.hp
+                }
+                break
+            case "playerMp-meter":
+                attributes = {
+                    "min": "0",
+                    "max": this.max_mp,
+                    "low": this.max_mp - (this.max_mp * 0.75),
+                    "high": this.max_mp - (this.max_mp * 0.50),
+                    "optimum": this.max_mp - (this.max_mp * 0.25),
+                    "value": this.mp
+                }
+                break
+        }
+        
+        for (let atri in attributes) {
+            getHpMeter.setAttribute(atri, attributes[atri]);
+        }
+    }
 }
 
 // Class for spell creation; takes name, damage, and cost
@@ -438,6 +470,7 @@ class Enemy {
             "optimum": this.max_hp - (this.max_hp * 0.25),
             "value": this.hp
         }
+
         for (let atri in attributes) {
             getHpMeter.setAttribute(atri, attributes[atri]);
         }
