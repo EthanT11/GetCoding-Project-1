@@ -178,11 +178,11 @@ not ID's
     border-style: double;
   }
   #hpContainer {
-    background-image: url("icons/healthBorder1.svg");
+    /* background-image: url("icons/healthBorder1.svg");
     background-repeat: no-repeat;
-    background-color: gray;
-    background-size: cover;
+    background-size: cover; */
     
+    background-color: gray;
     width: 50%;
     border-style: hidden dashed hidden hidden;
     padding-top: 1rem;
@@ -206,12 +206,13 @@ not ID's
     width: 4rem;
   }
 
-  #enemyContainer {
-    background-image: url("icons/healthBorder2.svg");
-    background-repeat: no-repeat;
-    background-color: gray;
-    background-size: cover;
 
+  #enemyContainer {
+    /* background-image: url("icons/healthBorder2.svg");
+    background-repeat: no-repeat;
+    background-size: cover; */
+    
+    background-color: gray;
     width: 50%;
     text-align: center;
     padding-top: 1rem;
