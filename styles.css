@@ -205,6 +205,16 @@ not ID's
     height: 2rem;
     width: 4rem;
   }
+  /* Set Mp Meter to blue */
+  #playerMp-meter::-webkit-meter-optimum-value {
+    background: blue;
+  }
+  #playerMp-meter::-webkit-meter-suboptimum-value {
+    background: blue;
+  }
+  #playerMp-meter::-moz-meter-bar {
+    background: blue;
+  }
 
 
   #enemyContainer {
