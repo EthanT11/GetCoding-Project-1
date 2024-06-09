@@ -423,9 +423,24 @@ class Enemy {
         getEnemySHp.innerHTML = `Max HP: ${this.max_hp}`;
         getEmemySDam.innerHTML = `Damage: ${this.damage}`;
 
+        this._setHpMeter();
     }
     attack(playerHp) {
         return playerHp -= this.damage; // returns player hp value
+    }
+    _setHpMeter() {
+        var getHpMeter = document.getElementById("enemy-meter");
+        let attributes = {
+            "min": "0",
+            "max": this.max_hp,
+            "low": this.max_hp - (this.max_hp * 0.75),
+            "high": this.max_hp - (this.max_hp * 0.50),
+            "optimum": this.max_hp - (this.max_hp * 0.25),
+            "value": this.hp
+        }
+        for (let atri in attributes) {
+            getHpMeter.setAttribute(atri, attributes[atri]);
+        }
     }
 }
 
