@@ -153,8 +153,6 @@ class Player {
         // get player menu container elements
         var getAttackButton = document.getElementById("attack-button");
         var getBlockButton = document.getElementById("block-button");
-        var getSpellButton = document.getElementById("spell-book");
-        var getSpellContainer = document.getElementById("spellContainer");
         
         this._updateContainer(playerAction);
         this._updateStats();

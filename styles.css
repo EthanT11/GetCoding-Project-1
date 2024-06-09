@@ -181,17 +181,21 @@ not ID's
 
   /* ------------ Action and Health Containers ------------*/
   #actionContainer {
+    padding: 0.25rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     border-style: hidden double hidden double;
     background-color: black;
   }
+  /* TODO: Ask about animation looping? Maybe to do with fill mode */
   #player-action {
     color: lightgreen;
+    animation: slide-up 2s;
   }
   #enemy-action {
     color: lightcoral;
+    animation: slide-up 2s;
   }
 
   #charaContainer {
@@ -319,9 +323,7 @@ not ID's
     animation: fadeIn 1s;
   }
 
-  /* Create animation
-  NOTE: ask why it needs to be rewrote twice?
-   */
+  /* Create animations*/
   @-webkit-keyframes fadeIn {
     from {opacity: 0;}
     to {opacity: 1;}
@@ -330,5 +332,10 @@ not ID's
   @keyframes fadeIn {
     from {opacity: 0;}
     to {opacity: 1;}
+  }
+  
+  @keyframes slide-up {
+    from {transform: translateY(3rem);}
+    to {transform: translateY(0rem)}
   }
 }
