@@ -183,7 +183,7 @@ not ID's
   #actionContainer {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     border-style: hidden double hidden double;
     background-color: black;
   }
