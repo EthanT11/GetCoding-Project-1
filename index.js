@@ -45,6 +45,35 @@ function levelPopup() {
     console.log("Level up!")
 }
 
+// generate level circles
+// TODO: Look into just changing the background color property of a class
+// rather then just switching ID's
+function genLevelCircle() {
+    var getProgressCont = document.getElementById("progressContainer");
+    let style = "circle";
+    
+    clearElement("progressContainer");
+    for (let i = 0; i < winsNeeded; i++) {
+        createCircle = document.createElement("div");
+        if (i == winCounter) {
+            style = "selectedCircle";
+        } else if (i < winCounter) {
+            style = "clearedCircle";
+        } else {
+            style = "circle";
+        }
+        createCircle.id = style;
+        
+        getProgressCont.appendChild(createCircle)
+    }
+    
+}
+
+// clears element, takes elementID
+function clearElement(element) {
+    document.getElementById(element).innerHTML = "";
+}
+
 // switches active buttons between class and fight menu; boolean
 // TODO: try and remove block flag and chooseClass flag
 function buttonState(actionState, chooseClass, blockState = blockFlag) {
@@ -80,7 +109,7 @@ var enemy;
 var chooseClass = false;
 
 var winCounter = 0;
-var winsNeeded = 3;
+var winsNeeded = 10;
 
 var stunCounter = 0;
 var stunFlag = false;
@@ -229,8 +258,8 @@ class Spell {
 let spellInfo = {
     fireData: {
         _name: "Fire",
-        _dam: 4,
-        _cost: 3,
+        _dam: 8,
+        _cost: 1,
         _info: "Hurl a fireball!"
     },
     iceData: {
@@ -394,9 +423,24 @@ class Enemy {
         getEnemySHp.innerHTML = `Max HP: ${this.max_hp}`;
         getEmemySDam.innerHTML = `Damage: ${this.damage}`;
 
+        this._setHpMeter();
     }
     attack(playerHp) {
         return playerHp -= this.damage; // returns player hp value
+    }
+    _setHpMeter() {
+        var getHpMeter = document.getElementById("enemy-meter");
+        let attributes = {
+            "min": "0",
+            "max": this.max_hp,
+            "low": this.max_hp - (this.max_hp * 0.75),
+            "high": this.max_hp - (this.max_hp * 0.50),
+            "optimum": this.max_hp - (this.max_hp * 0.25),
+            "value": this.hp
+        }
+        for (let atri in attributes) {
+            getHpMeter.setAttribute(atri, attributes[atri]);
+        }
     }
 }
 
@@ -603,6 +647,7 @@ async function checkVictory() {
             
             await sleep(3000)
             genEnemy();
+            genLevelCircle();
         } else { // victory condition
             getLevelUp.hidden = true;
             buttonState(true, false, true);
@@ -654,6 +699,7 @@ function newGame() { // reset game state
     updateCharacters("Choose Class", "Awaiting player choice");
     buttonState(true, false, true);
     classPopup();
+    genLevelCircle();
 }
 
 // starts new game on page load

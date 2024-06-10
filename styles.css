@@ -21,12 +21,10 @@ body {
 .dropbtn {
   background-color: #4A5D23;
   color: white;
+  margin-left: 2vw;
 
-  margin-bottom: 1.5vw;
-  margin-left: 2.5vw;
   cursor: pointer;
   position: absolute;
-  bottom: 0;
   
   font-size: 12px;
   padding: 6px;
@@ -87,47 +85,119 @@ not ID's
   }
   #header {
     background-color: #5D5323;
-    padding-top: 2vh;
-    padding-bottom: 2vh;
-    position: sticky;
+    padding-top: 1.5vh;
+    padding-bottom: 1vh;
+    /* position: sticky; */
+    display: flex;
+    justify-content: space-between;
+
     top: 0;
+    max-height: 3vh;
   }
   #title {
     color: black;
-    text-align: center;
+    margin-right: 25%;
   }
+  
   #main {
     background-color: #4A5D23;
-    height: 79%;
     display: flex;
+    height: 82%;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: space-between;
   }
-  #containers {
+  #progressContainer {
+    display: flex;
+    justify-content: space-around;
+    background-color: gray;
+    border: double;
+  }
+
+  #circle {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 25px;
+    background-color: yellow;
+  }
+
+  #selectedCircle {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 25px;
+    background: red;
+  }
+
+  #clearedCircle {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 25px;
+    background: black;
+  }
+ 
+  #spritesContainer {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: space-around;
+    border-style: hidden double hidden double;
+  }
+  #playerSprite {
+    width: 50%;
+    content: url("icons/mageSprite.svg");
+  }
+  #enemySprite {
+    width: 50%;
+    content: url("icons/mageSpriteFlipped.svg");
+  }
+  #actionContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    border-style: hidden double hidden double;
+    background-color: black;
+  }
+  #player-action {
+    color: lightgreen;
+  }
+  #enemy-action {
+    color: lightcoral;
+  }
+
+  #healthContainer {
     display: flex;
     justify-content: space-between;
-    background-color: gray;
     position: relative;
-
     border-style: double;
   }
   #hpContainer {
+    background-image: url("icons/healthBorder1.svg");
+    background-repeat: no-repeat;
+    background-color: gray;
+    background-size: cover;
+    
     width: 50%;
     text-align: center;
     border-style: hidden dashed hidden hidden;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
   #enemyContainer {
+    background-image: url("icons/healthBorder2.svg");
+    background-repeat: no-repeat;
+    background-color: gray;
+    background-size: cover;
+
     width: 50%;
     text-align: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
   #footer {
     background-color: #5D5323;
-    padding-top: 2vh;
-    padding-bottom: 2vh;
     position: relative;
-    bottom: 0;
     display: flex;
     justify-content: space-evenly;
+    border: double;
   }
   
   .btn {
