@@ -5,7 +5,10 @@
 - Start looking at styling the actual content
   - Look at getcoding design guide
   - Keep *old look* but with more modern features
+    - Maybe gothic font?
   - Look at old console color pallets for ideas
+  - classes for both types of buttons | Icon and text
+  - classes for the types of text | Headers, primary, description
 - Clean code
   - Better comments and clean old ones/out-dated comments
 - Start using more classes now that I have a better understanding
@@ -17,10 +20,15 @@
 - Design generic enemy and characters
 - Resize images now that I know more about them
 - Figure out a good background idea for the character sprites
+- fix issue of more then one popup, maybe set an on off flag?
+- remove container/element borders when done fixing positions
 
 TODO EXTRA:
 - Better action indicators, maybe a hit splat or more flashy text
 - Look more into border images so I can maybe make my own backgrounds?
+  - brick background?
+- Make the level circles a bit more on theme and styled
+- Look more into the animations of css, make the text and element abit more *alive*
 */
 
 * {
@@ -268,7 +276,7 @@ not ID's
     flex-direction: column;
   }
 
-  /* ------------ Footer ------------*/
+  /* ------------ Footer ------------ */
   #footer {
     background-color: #5D5323;
     position: relative;
@@ -284,7 +292,8 @@ not ID's
     padding: 2vh;
   }
 
-  /* Popup container
+  /* ------------ Popups ------------ */
+  /*
     display: fixed
     top: 50%;
     left: 50%;
@@ -320,6 +329,11 @@ not ID's
     border-width: 5px;
     border-style: solid;
     border-color: #555 transparent transparent transparent;
+  }
+  #statsPopup {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
   }
 
   /* Show popup */
