@@ -120,6 +120,7 @@ var blockFlag = false;
 var spellData = {};
 var spellCount;
 var spellBookFlag;
+// TODO: Check if mage flag is still in use??
 var mageFlag = false;
 
 var turnCounter = 0;
@@ -533,6 +534,49 @@ async function genEnemy() {
     buttonState(false, true, false);
     player.mage = true; // turn spellbook back on
     updateCharacters("Ready", "Ready");
+    
+    // TODO: Finish and flush out enemy list
+    function _getEnemy() {
+        let max_hp = [(dice(10) + winCounter)]
+        let enemyList = {
+            "goblin": {
+                "name": "Goblin",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+            "orc": {
+                "name": "Orc",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+            "ghoul": {
+                "name": "Ghoul",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+            "bats": {
+                "name": "Bats",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+            "evilMonk": {
+                "name": "Evil Monk",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+            "dragon": {
+                "name": "Dragon",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+        };
+    }
 }
 
 // choose class based on button clicked
