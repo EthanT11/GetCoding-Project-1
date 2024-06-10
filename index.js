@@ -450,7 +450,7 @@ class Enemy {
         getEnemyHp.innerHTML = `${this.hp} / ${this.max_hp}`;
         getEnemyName.innerHTML = this.name;
 
-        getEnemySName.innerHTML = `Class: ${this.name}`;
+        getEnemySName.innerHTML = `Type: ${this.name}`;
         getEnemySHp.innerHTML = `Max HP: ${this.max_hp}`;
         getEmemySDam.innerHTML = `Damage: ${this.damage}`;
 
