@@ -9,14 +9,15 @@
 
     <body>
         <div id="header">
-            <h1 id="title">Title of Game</h1>
             <div id="dropdown">
                 <input type="image" src="icons/menuIcon2-fonts.google.svg", onclick="dropDown()", class="dropbtn">
                 <div id="myDropdown" class="dropdown-content">
                     <a onclick="newGame()">New Game</a>
                     <a>Help</a>
+                    <a href="https://github.com/EthanT11">Github</a>
                 </div>
             </div>
+            <h1 id="title">Retro Quest</h1>
         </div>
         
         <!-- TODO: look into using div classes for repeating styles -->
@@ -26,18 +27,23 @@
         <!-- TODO: Clean up old containers and js associated with it -->
         <div class="popup" hidden="true">
             <span class="popuptext" id="statsPopup">
-                <h2>Stats</h2>
-                <h3 id="s-class">
-                <h3 id="s-hp">max_hp</h2>
-                <h3 id="s-mp">max_mp</h2>
-                <h3 id="s-dam">damage</h2>
-                <h3 id="s-block">block</h2>
-                <h3 id="s-wins">wins</h2>
-                <p>------------------</p>
-                <h2 id="stats">Enemy</h2>
-                <h3 id="e-class">class</h2>
-                <h3 id="e-hp">max_hp</h2>
-                <h3 id="e-dam">damage</h2>
+                
+                <div>
+                    <h2 id="stats">Player</h2>
+                    <h3 id="s-class">
+                    <h3 id="s-hp">max_hp</h2>
+                    <h3 id="s-mp">max_mp</h2>
+                    <h3 id="s-dam">damage</h2>
+                    <h3 id="s-block">block</h2>
+                    <h3 id="s-wins">wins</h2>
+                </div>
+                <div>
+                    <h2 id="stats">Enemy</h2>
+                    <h3 id="e-class">class</h2>
+                    <h3 id="e-hp">max_hp</h2>
+                    <h3 id="e-dam">damage</h2>
+
+                </div>
             </span>
             <span class="popuptext" id="classPopup">
                 <h2 id="class">Choose Class</h2>
@@ -91,29 +97,49 @@
             </span>
         </div>
         <div id="main">
-            <div id="containers">
-                <div id="menuContainer", hidden="true">
-                </div>
+            <div id="progressContainer">
+                <div id="circle"></div>
+            </div>
+
+            <div id="spritesContainer">
+                <img id="playerSprite">
+                <img id="enemySprite">
+            </div>
+
+            <div id="actionContainer">
+                <div id="player-action"></div>
+                <div id="enemy-action"></div>
+            </div>
+
+            <div id="charaContainer" >
                 <div id="hpContainer">
-                    <h2 id="player-name">Player</h2>
-                    <h2 id="player-hp">HP: 9999</h2>
-                    <h2 id="player-mp">MP: 9999</h2>
-                    <h2 id="player-action", hidden="true">Action</h2>
+                    <h2 id="player-name" class="charName">Player</h2>
+                    <span class="meterCont">
+                        <h3 id="player-hp" class="charText">9999</h2>
+                        <h3 id="player-mp" class="charText">9999</h2>
+                    </span>
+
+                    <span class="meterCont">
+                        <meter id="playerHp-meter" class="meter"></meter>
+                        <meter id="playerMp-meter" class="meter"></meter>
+                    </span>
                 </div>
+
                 <div id="enemyContainer">
-                    <h2 id="enemy-name">Enemy</h2>
-                    <h2 id="enemy-hp">HP: 9999</h2>
-                    <h2 id="enemy-action", hidden="true">Action</h2>
+                    <h2 id="enemy-name" class="charName">Enemy</h2>
+                    <h3 id="enemy-hp" class="charText">HP: 9999</h2>
+                    <span class="meterCont"><meter id="enemy-meter" class="meter"></meter></span>
                 </div>
                 <div id="levelContainer", hidden="true">
                 </div>
+
             </div>
         </div>
         <div id="footer">
-            <!-- TODO: resize icons -->
-            <input type="image", src="/icons/fighterIcon.svg" id="attack-button" class="btn" onclick="attackEnemy()"></button>
-            <input type="image", src="icons/abilityIcon.svg" id="abilities-button" class="btn" onclick="saPopup()"></button>
-            <button id="stats-button" class="btn" onclick="popUp()">Sts</button>
+            <!-- TODO: resize icons | Maybe change from input type?-->
+            <input type="image" src="/icons/fighterIcon.svg" alt="Attack" id="attack-button" class="btn" onclick="attackEnemy()">
+            <input type="image" src="icons/abilityIcon.svg" alt="Abilities" id="abilities-button" class="btn" onclick="saPopup()">
+            <input type="image" src="icons/stats.svg" alt="Stats" id="stats-button" class="btn" onclick="popUp()">
         </div>
         
         <script defer src="./index.js"></script>

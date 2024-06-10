@@ -45,6 +45,35 @@ function levelPopup() {
     console.log("Level up!")
 }
 
+// generate level circles
+// TODO: Look into just changing the background color property of a class
+// rather then just switching ID's
+function genLevelCircle() {
+    var getProgressCont = document.getElementById("progressContainer");
+    let style = "circle";
+    
+    clearElement("progressContainer");
+    for (let i = 0; i < winsNeeded; i++) {
+        createCircle = document.createElement("div");
+        if (i == winCounter) {
+            style = "selectedCircle";
+        } else if (i < winCounter) {
+            style = "clearedCircle";
+        } else {
+            style = "circle";
+        }
+        createCircle.id = style;
+        
+        getProgressCont.appendChild(createCircle)
+    }
+    
+}
+
+// clears element, takes elementID
+function clearElement(element) {
+    document.getElementById(element).innerHTML = "";
+}
+
 // switches active buttons between class and fight menu; boolean
 // TODO: try and remove block flag and chooseClass flag
 function buttonState(actionState, chooseClass, blockState = blockFlag) {
@@ -80,7 +109,7 @@ var enemy;
 var chooseClass = false;
 
 var winCounter = 0;
-var winsNeeded = 3;
+var winsNeeded = 10;
 
 var stunCounter = 0;
 var stunFlag = false;
@@ -91,6 +120,7 @@ var blockFlag = false;
 var spellData = {};
 var spellCount;
 var spellBookFlag;
+// TODO: Check if mage flag is still in use??
 var mageFlag = false;
 
 var turnCounter = 0;
@@ -124,8 +154,6 @@ class Player {
         // get player menu container elements
         var getAttackButton = document.getElementById("attack-button");
         var getBlockButton = document.getElementById("block-button");
-        var getSpellButton = document.getElementById("spell-book");
-        var getSpellContainer = document.getElementById("spellContainer");
         
         this._updateContainer(playerAction);
         this._updateStats();
@@ -177,6 +205,9 @@ class Player {
         getPlayerHp.innerHTML = `${this.hp} / ${this.max_hp}`;
         getPlayerMp.innerHTML = `${this.mp} / ${this.max_mp}`;
         getPlayerAction.innerHTML = playerAction;
+
+        this._setMeter("playerHp-meter");
+        this._setMeter("playerMp-meter");
     }
     _updateStats() {
         // get player stats container elements
@@ -195,7 +226,36 @@ class Player {
         getPlayerSBlock.innerHTML = `Block: ${this.block}`;
         getPlayerSWins.innerHTML = `Wins: ${winCounter}`;
     }
-    
+    _setMeter(meter) {
+        var getHpMeter = document.getElementById(meter);
+        var attributes;
+        switch(meter) {
+            case "playerHp-meter":
+                attributes = {
+                    "min": "0",
+                    "max": this.max_hp,
+                    "low": this.max_hp - (this.max_hp * 0.75),
+                    "high": this.max_hp - (this.max_hp * 0.50),
+                    "optimum": this.max_hp - (this.max_hp * 0.25),
+                    "value": this.hp
+                }
+                break
+            case "playerMp-meter":
+                attributes = {
+                    "min": "0",
+                    "max": this.max_mp,
+                    "low": this.max_mp - (this.max_mp * 0.75),
+                    "high": this.max_mp - (this.max_mp * 0.50),
+                    "optimum": this.max_mp - (this.max_mp * 0.25),
+                    "value": this.mp
+                }
+                break
+        }
+        
+        for (let atri in attributes) {
+            getHpMeter.setAttribute(atri, attributes[atri]);
+        }
+    }
 }
 
 // Class for spell creation; takes name, damage, and cost
@@ -229,8 +289,8 @@ class Spell {
 let spellInfo = {
     fireData: {
         _name: "Fire",
-        _dam: 4,
-        _cost: 3,
+        _dam: 8,
+        _cost: 1,
         _info: "Hurl a fireball!"
     },
     iceData: {
@@ -390,13 +450,29 @@ class Enemy {
         getEnemyHp.innerHTML = `${this.hp} / ${this.max_hp}`;
         getEnemyName.innerHTML = this.name;
 
-        getEnemySName.innerHTML = `Class: ${this.name}`;
+        getEnemySName.innerHTML = `Type: ${this.name}`;
         getEnemySHp.innerHTML = `Max HP: ${this.max_hp}`;
         getEmemySDam.innerHTML = `Damage: ${this.damage}`;
 
+        this._setHpMeter();
     }
     attack(playerHp) {
         return playerHp -= this.damage; // returns player hp value
+    }
+    _setHpMeter() {
+        var getHpMeter = document.getElementById("enemy-meter");
+        let attributes = {
+            "min": "0",
+            "max": this.max_hp,
+            "low": this.max_hp - (this.max_hp * 0.75),
+            "high": this.max_hp - (this.max_hp * 0.50),
+            "optimum": this.max_hp - (this.max_hp * 0.25),
+            "value": this.hp
+        }
+
+        for (let atri in attributes) {
+            getHpMeter.setAttribute(atri, attributes[atri]);
+        }
     }
 }
 
@@ -458,6 +534,49 @@ async function genEnemy() {
     buttonState(false, true, false);
     player.mage = true; // turn spellbook back on
     updateCharacters("Ready", "Ready");
+    
+    // TODO: Finish and flush out enemy list
+    function _getEnemy() {
+        let max_hp = [(dice(10) + winCounter)]
+        let enemyList = {
+            "goblin": {
+                "name": "Goblin",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+            "orc": {
+                "name": "Orc",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+            "ghoul": {
+                "name": "Ghoul",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+            "bats": {
+                "name": "Bats",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+            "evilMonk": {
+                "name": "Evil Monk",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+            "dragon": {
+                "name": "Dragon",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+        };
+    }
 }
 
 // choose class based on button clicked
@@ -603,6 +722,7 @@ async function checkVictory() {
             
             await sleep(3000)
             genEnemy();
+            genLevelCircle();
         } else { // victory condition
             getLevelUp.hidden = true;
             buttonState(true, false, true);
@@ -654,6 +774,7 @@ function newGame() { // reset game state
     updateCharacters("Choose Class", "Awaiting player choice");
     buttonState(true, false, true);
     classPopup();
+    genLevelCircle();
 }
 
 // starts new game on page load

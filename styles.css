@@ -1,5 +1,36 @@
 /* Color Pallet - Main: #4A5D23 - Accents: #678231, #5D5323 */
 
+/* TODO: 
+- Desktop version layout
+- Start looking at styling the actual content
+  - Look at getcoding design guide
+  - Keep *old look* but with more modern features
+    - Maybe gothic font?
+  - Look at old console color pallets for ideas
+  - classes for both types of buttons | Icon and text
+  - classes for the types of text | Headers, primary, description
+- Clean code
+  - Better comments and clean old ones/out-dated comments
+- Start using more classes now that I have a better understanding
+- Rename and replace outdated names
+- Go through the game a few times and note broken features
+  - Fix bugs that fully break gameplay first
+  - Start thinking about enemy generation
+  - Start thinking about balancing
+- Design generic enemy and characters
+- Resize images now that I know more about them
+- Figure out a good background idea for the character sprites
+- fix issue of more then one popup, maybe set an on off flag?
+- remove container/element borders when done fixing positions
+
+TODO EXTRA:
+- Better action indicators, maybe a hit splat or more flashy text
+- Look more into border images so I can maybe make my own backgrounds?
+  - brick background?
+- Make the level circles a bit more on theme and styled
+- Look more into the animations of css, make the text and element abit more *alive*
+*/
+
 * {
   margin: 0;
   padding: 0;
@@ -8,6 +39,7 @@
 html {
     height: 100vh;
     background-color: #5D5323;
+    font-family: fantasy;
 }
 
 body {
@@ -15,17 +47,16 @@ body {
 
 }
 
+
 /* ---------- START DROPDOWN ----------- */
 
 .dropbtn {
   background-color: #4A5D23;
   color: white;
+  margin-left: 2vw;
 
-  margin-bottom: 1.5vw;
-  margin-left: 2.5vw;
   cursor: pointer;
   position: absolute;
-  bottom: 0;
   
   font-size: 12px;
   padding: 6px;
@@ -73,10 +104,6 @@ body {
 
 /* ----------- END DROPDOWN ------------ */
 
-/* TODO: ground stylings together and style based on class
-not ID's
-*/
-
 @media only screen and (max-width:1080px) {
   html {
     background-color: #5D5323;
@@ -84,49 +111,178 @@ not ID's
   body {
     height: 100%;
   }
+  #main {
+    background-color: #4A5D23;
+    display: flex;
+    height: 82%;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  /* ------------ Header ------------*/
   #header {
     background-color: #5D5323;
-    padding-top: 2vh;
-    padding-bottom: 2vh;
-    position: sticky;
+    padding-top: 1.5vh;
+    padding-bottom: 1vh;
+    display: flex;
+    justify-content: space-between;
+
     top: 0;
+    max-height: 3vh;
   }
   #title {
     color: black;
-    text-align: center;
+    margin-right: 25%;
   }
-  #main {
-    background-color: #4A5D23;
-    height: 79%;
+  
+
+  /* ------------ Progression Container ------------*/
+  #progressContainer {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    justify-content: space-around;
+    background-color: gray;
+    border: double;
   }
-  #containers {
+
+  #circle {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 25px;
+    background-color: yellow;
+  }
+
+  #selectedCircle {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 25px;
+    background: red;
+  }
+
+  #clearedCircle {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 25px;
+    background: black;
+  }
+
+  /* ------------ Sprites Container ------------*/
+ 
+  #spritesContainer {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: space-around;
+    border-style: hidden double hidden double;
+  }
+  #playerSprite {
+    width: 50%;
+    content: url("icons/mageSprite.svg");
+  }
+  #enemySprite {
+    width: 50%;
+    content: url("icons/mageSpriteFlipped.svg");
+  }
+
+  /* ------------ Action and Health Containers ------------*/
+  #actionContainer {
+    padding: 0.25rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-style: hidden double hidden double;
+    background-color: black;
+  }
+  /* TODO: Ask about animation looping? Maybe to do with fill mode */
+  #player-action {
+    color: lightgreen;
+    animation: slide-up 2s;
+  }
+  #enemy-action {
+    color: lightcoral;
+    animation: slide-up 2s;
+  }
+
+  #charaContainer {
     display: flex;
     justify-content: space-between;
-    background-color: gray;
     position: relative;
-
     border-style: double;
   }
   #hpContainer {
+    /* background-image: url("icons/healthBorder1.svg");
+    background-repeat: no-repeat;
+    background-size: cover; */
+    
+    background-color: gray;
     width: 50%;
+    border-style: solid dashed solid solid;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+
     text-align: center;
-    border-style: hidden dashed hidden hidden;
+
+    display: flex;
+    flex-direction: column;
   }
+  .meterCont {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .charName {
+    font-size: 2rem
+  }
+  .charText {
+    text-align: center;
+    padding-top: 1rem;
+    font-size: 1.5rem;
+  }
+  .meter {
+    height: 2rem;
+    width: 4.5rem;
+  }
+  /* Set Mp Meter to blue */
+  ::-webkit-meter-bar {
+    background: black;
+  }
+  #playerMp-meter::-webkit-meter-optimum-value {
+    background: blue;
+  }
+  #playerMp-meter::-webkit-meter-suboptimum-value {
+    background: blue;
+  }
+  #playerMp-meter::-moz-meter-bar {
+    background: blue;
+  }
+
+
   #enemyContainer {
+    /* background-image: url("icons/healthBorder2.svg");
+    background-repeat: no-repeat;
+    background-size: cover; */
+
+    background-color: gray;
     width: 50%;
+    border-style: solid solid solid hidden;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+
     text-align: center;
+
+    display: flex;
+    flex-direction: column;
   }
+
+  /* ------------ Footer ------------ */
   #footer {
     background-color: #5D5323;
-    padding-top: 2vh;
-    padding-bottom: 2vh;
     position: relative;
-    bottom: 0;
     display: flex;
     justify-content: space-evenly;
+    border: double;
   }
   
   .btn {
@@ -136,8 +292,13 @@ not ID's
     padding: 2vh;
   }
 
-  /* Popup container
-    NOTES: display set to relative, change to absolute when finished testing
+  /* ------------ Popups ------------ */
+  /*
+    display: fixed
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    This fixes the pop up in the corner issue but middle of the screen highlights when clicked
    */
   .popup {
     position: relative; 
@@ -150,15 +311,17 @@ not ID's
     display: flex;
     flex-direction: column;
     visibility: hidden;
-    width: 160px;
     background-color: #555;
     color: #fff;
     text-align: center;
     border-radius: 6px;
-    padding: 8px 0;
-    position: absolute;
+    padding: 0.5rem;
+    width: 300px;
     z-index: 1;
-    transform: translateX(50%);
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
   .popup .popuptext::after {
     content: "";
@@ -166,6 +329,11 @@ not ID's
     border-width: 5px;
     border-style: solid;
     border-color: #555 transparent transparent transparent;
+  }
+  #statsPopup {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
   }
 
   /* Show popup */
@@ -175,9 +343,7 @@ not ID's
     animation: fadeIn 1s;
   }
 
-  /* Create animation
-  NOTE: ask why it needs to be rewrote twice?
-   */
+  /* Create animations*/
   @-webkit-keyframes fadeIn {
     from {opacity: 0;}
     to {opacity: 1;}
@@ -186,5 +352,10 @@ not ID's
   @keyframes fadeIn {
     from {opacity: 0;}
     to {opacity: 1;}
+  }
+  
+  @keyframes slide-up {
+    from {transform: translateY(3rem);}
+    to {transform: translateY(0rem)}
   }
 }
