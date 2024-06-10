@@ -120,6 +120,7 @@ var blockFlag = false;
 var spellData = {};
 var spellCount;
 var spellBookFlag;
+// TODO: Check if mage flag is still in use??
 var mageFlag = false;
 
 var turnCounter = 0;
@@ -153,8 +154,6 @@ class Player {
         // get player menu container elements
         var getAttackButton = document.getElementById("attack-button");
         var getBlockButton = document.getElementById("block-button");
-        var getSpellButton = document.getElementById("spell-book");
-        var getSpellContainer = document.getElementById("spellContainer");
         
         this._updateContainer(playerAction);
         this._updateStats();
@@ -206,6 +205,9 @@ class Player {
         getPlayerHp.innerHTML = `${this.hp} / ${this.max_hp}`;
         getPlayerMp.innerHTML = `${this.mp} / ${this.max_mp}`;
         getPlayerAction.innerHTML = playerAction;
+
+        this._setMeter("playerHp-meter");
+        this._setMeter("playerMp-meter");
     }
     _updateStats() {
         // get player stats container elements
@@ -224,7 +226,36 @@ class Player {
         getPlayerSBlock.innerHTML = `Block: ${this.block}`;
         getPlayerSWins.innerHTML = `Wins: ${winCounter}`;
     }
-    
+    _setMeter(meter) {
+        var getHpMeter = document.getElementById(meter);
+        var attributes;
+        switch(meter) {
+            case "playerHp-meter":
+                attributes = {
+                    "min": "0",
+                    "max": this.max_hp,
+                    "low": this.max_hp - (this.max_hp * 0.75),
+                    "high": this.max_hp - (this.max_hp * 0.50),
+                    "optimum": this.max_hp - (this.max_hp * 0.25),
+                    "value": this.hp
+                }
+                break
+            case "playerMp-meter":
+                attributes = {
+                    "min": "0",
+                    "max": this.max_mp,
+                    "low": this.max_mp - (this.max_mp * 0.75),
+                    "high": this.max_mp - (this.max_mp * 0.50),
+                    "optimum": this.max_mp - (this.max_mp * 0.25),
+                    "value": this.mp
+                }
+                break
+        }
+        
+        for (let atri in attributes) {
+            getHpMeter.setAttribute(atri, attributes[atri]);
+        }
+    }
 }
 
 // Class for spell creation; takes name, damage, and cost
@@ -438,6 +469,7 @@ class Enemy {
             "optimum": this.max_hp - (this.max_hp * 0.25),
             "value": this.hp
         }
+
         for (let atri in attributes) {
             getHpMeter.setAttribute(atri, attributes[atri]);
         }
@@ -502,6 +534,49 @@ async function genEnemy() {
     buttonState(false, true, false);
     player.mage = true; // turn spellbook back on
     updateCharacters("Ready", "Ready");
+    
+    // TODO: Finish and flush out enemy list
+    function _getEnemy() {
+        let max_hp = [(dice(10) + winCounter)]
+        let enemyList = {
+            "goblin": {
+                "name": "Goblin",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+            "orc": {
+                "name": "Orc",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+            "ghoul": {
+                "name": "Ghoul",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+            "bats": {
+                "name": "Bats",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+            "evilMonk": {
+                "name": "Evil Monk",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+            "dragon": {
+                "name": "Dragon",
+                "max_hp": 0,
+                "hp": 0,
+                "dam": 0
+            },
+        };
+    }
 }
 
 // choose class based on button clicked
