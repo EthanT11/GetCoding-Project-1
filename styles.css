@@ -285,7 +285,11 @@ not ID's
   }
 
   /* Popup container
-    NOTES: display set to relative, change to absolute when finished testing
+    display: fixed
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    This fixes the pop up in the corner issue but middle of the screen highlights when clicked
    */
   .popup {
     position: relative; 
@@ -298,15 +302,17 @@ not ID's
     display: flex;
     flex-direction: column;
     visibility: hidden;
-    width: 160px;
     background-color: #555;
     color: #fff;
     text-align: center;
     border-radius: 6px;
-    padding: 8px 0;
-    position: absolute;
+    padding: 0.5rem;
+    width: 300px;
     z-index: 1;
-    transform: translateX(50%);
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
   .popup .popuptext::after {
     content: "";
