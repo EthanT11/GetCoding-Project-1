@@ -39,6 +39,7 @@ TODO EXTRA:
 html {
     height: 100vh;
     background-color: #5D5323;
+    font-family: fantasy;
 }
 
 body {
@@ -103,10 +104,6 @@ body {
 
 /* ----------- END DROPDOWN ------------ */
 
-/* TODO: ground stylings together and style based on class
-not ID's
-*/
-
 @media only screen and (max-width:1080px) {
   html {
     background-color: #5D5323;
@@ -127,7 +124,6 @@ not ID's
     background-color: #5D5323;
     padding-top: 1.5vh;
     padding-bottom: 1vh;
-    /* position: sticky; */
     display: flex;
     justify-content: space-between;
 
@@ -236,13 +232,17 @@ not ID's
     padding-left: 1rem;
     padding-right: 1rem;
   }
+  .charName {
+    font-size: 2rem
+  }
+  .charText {
+    text-align: center;
+    padding-top: 1rem;
+    font-size: 1.5rem;
+  }
   .meter {
     height: 2rem;
-    width: 4rem;
-  }
-  #player-hp, #player-mp, #enemy-hp {
-    padding-top: 1rem;
-    font-size: 1rem;
+    width: 4.5rem;
   }
   /* Set Mp Meter to blue */
   ::-webkit-meter-bar {
