@@ -53,7 +53,6 @@ TODO EXTRA:
   
   #main {
     height: 100vh;
-    background-color: blue;
     display: flex;
     flex-direction: column;
   }
@@ -61,7 +60,7 @@ TODO EXTRA:
   /* ---------- HEADER ----------- */
   /* Maybe keep title on the right? Looks kinda cool.. */
   #header {
-    background-color: yellow;
+    background-color: #5D5323;
     display: flex;
     justify-content: space-between;
     
@@ -70,6 +69,7 @@ TODO EXTRA:
   #title {
     padding-right: 1rem;
     padding-top: 0.5rem;
+    color: rgb(255, 222, 0);
   }
   
   .dropbtn {
@@ -90,7 +90,9 @@ TODO EXTRA:
   #progressContainer {
     display: flex;
     justify-content: space-evenly;
-    background-color: gray;
+    background-color: rgb(165, 165, 165);
+    border-style: double;
+    background-image: url("/icons/background2.svg");
   }
 
   /* ---------- SPRITES ----------- */
@@ -100,6 +102,7 @@ TODO EXTRA:
     flex-direction: row;
     justify-content: space-around;
     border-style: hidden double hidden double;
+    background-image: url("/icons/background.svg");
   }
   .sprite {
     border: double;
@@ -126,6 +129,7 @@ TODO EXTRA:
     background-color: black;
     padding-top: 0.5rem;
     border-color: white;
+    border: double;
   }
   #player-action {
     color: lightgreen;
@@ -138,32 +142,45 @@ TODO EXTRA:
 
   /* ---------- Character Container ----------- */
   #charaContainer {
-    background-color: purple;
     display: flex;
     justify-content: space-between;
     position: relative;
   }
-
+  .charName {
+    font-size: 2rem;
+    color: rgb(255, 222, 0);
+  }
+  .charText {
+    font-size: 1.5rem;
+    color: rgb(255, 222, 0);
+  }
+  
   #hpContainer {
-    background-color: magenta;
+    background-image: url("/icons/background2.svg");
+    background-color: gray;
     width: 50%;
     text-align: center;
+    border-style: ridge;
+    border-color: rgb(165, 165, 165);
   }
 
   #enemyContainer {
-    background-color: navy;
+    background-image: url("/icons/background2.svg");
+    background-color: gray;
     width: 50%;
     text-align: center;
+    border-style: ridge;
+    border-color: rgb(165, 165, 165);
+    padding-top: 1rem;
   }
   
 
   /* ---------- FOOTER ----------- */
   #footer {
-    background-color: #5D5323;
     display: flex;
     justify-content: space-evenly;
     border: double;
-    background-color: yellow;
+    background-color: #5D5323;
   }
   
   .btn {
@@ -479,21 +496,21 @@ TODO EXTRA:
   width: 2rem;
   height: 2rem;
   border-radius: 25px;
-  background-color: yellow;
+  background-color: rgb(255, 222, 0);
 }
 
 #selectedCircle {
   width: 2rem;
   height: 2rem;
   border-radius: 25px;
-  background: red;
+  background: rgb(123, 255, 48);
 }
 
 #clearedCircle {
   width: 2rem;
   height: 2rem;
   border-radius: 25px;
-  background: black;
+  background: rgb(0, 0, 0);
 }
 
 /* Set Mp Meter to blue */
