@@ -31,81 +31,152 @@ TODO EXTRA:
 - Look more into the animations of css, make the text and element abit more *alive*
 */
 
+/* Css reset */
 * {
   margin: 0;
   padding: 0;
 }
 
-html {
+ /* ---------- Desktop ----------- */
+@media only screen and (min-width:668px) {
+  html {
+      height: 100vh;
+      background-color: #5D5323;
+      font-family: fantasy;
+  }
+  
+  body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+  }
+  
+  #main {
     height: 100vh;
+    background-color: blue;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* ---------- HEADER ----------- */
+  /* Maybe keep title on the right? Looks kinda cool.. */
+  #header {
+    background-color: yellow;
+    display: flex;
+    justify-content: space-between;
+    
+  }
+  
+  #title {
+    padding-right: 1rem;
+    padding-top: 0.5rem;
+  }
+  
+  .dropbtn {
+    background-color: #4A5D23;
+    color: white;
+  
+    margin-top: 0.5rem;
+    margin-left: 1rem;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 50%;
+    
+  }
+
+  /* ---------- PROGRESS CONTAINER ----------- */
+  #progressContainer {
+    display: flex;
+    justify-content: space-evenly;
+    background-color: gray;
+  }
+
+  /* ---------- SPRITES ----------- */
+  #spritesContainer {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: space-around;
+    border-style: hidden double hidden double;
+  }
+  .sprite {
+    border: double;
+    background-color: gray;
+    min-width: 35%;
+    max-width: 65%;
+    margin: auto;
+    text-align: center;
+  }
+  #playerSprite {
+    width: 50%;
+    content: url("icons/mageSprite.svg");
+  }
+  #enemySprite {
+    width: 50%;
+    content: url("icons/mageSpriteFlipped.svg");
+  }
+
+  /* ---------- Action Container ----------- */
+  #actionContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: black;
+    padding-top: 0.5rem;
+    border-color: white;
+  }
+  #player-action {
+    color: lightgreen;
+    animation: slide-up 2s;
+  }
+  #enemy-action {
+    color: lightcoral;
+    animation: slide-up 2s;
+  }
+
+  /* ---------- Character Container ----------- */
+  #charaContainer {
+    background-color: purple;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  #hpContainer {
+    background-color: magenta;
+    width: 50%;
+    text-align: center;
+  }
+
+  #enemyContainer {
+    background-color: navy;
+    width: 50%;
+    text-align: center;
+  }
+  
+
+  /* ---------- FOOTER ----------- */
+  #footer {
     background-color: #5D5323;
-    font-family: fantasy;
-}
-
-body {
-    height: 100vh;
-
-}
-
-
-/* ---------- START DROPDOWN ----------- */
-
-.dropbtn {
-  background-color: #4A5D23;
-  color: white;
-  margin-left: 2vw;
-
-  cursor: pointer;
-  position: absolute;
+    display: flex;
+    justify-content: space-evenly;
+    border: double;
+    background-color: yellow;
+  }
   
-  font-size: 12px;
-  padding: 6px;
-  border: none;
-  border-radius: 50%;
-  
-}
+  .btn {
+    background-color: gray;
+    border-radius: 50%;
+    border: none;
+    padding: 2vh;
+  }
 
-/* Dropdown button on hover & focus */
-.dropbtn:hover, .dropbtn:focus {
-  background-color: #678231
-}
-
-.dropdown {
-  position: relative;
-  display: inline-block;
-  
 }
 
 
-/* Dropdown Content (Hidden by Default) */
-.dropdown-content {
-  display: none;
-  position: absolute;
-
-  background-color: #f1f1f1;
-  opacity: 80%;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-/* Links inside the dropdown */
-.dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-/* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #ddd;}
-
-/* Show the dropdown menu */
-.show {display:block;}
-
-/* ----------- END DROPDOWN ------------ */
-
-@media only screen and (max-width:1080px) {
+@media only screen and (max-width:667px) {
   html {
     background-color: #5D5323;
   }
@@ -115,7 +186,7 @@ body {
   #main {
     background-color: #4A5D23;
     display: flex;
-    height: 82%;
+    height: 82vh;
     flex-direction: column;
     justify-content: space-between;
   }
@@ -135,9 +206,23 @@ body {
     color: black;
     margin-right: 25%;
   }
+  .dropbtn {
+    background-color: #4A5D23;
+    color: white;
+    margin-left: 2vw;
+  
+    cursor: pointer;
+    position: absolute;
+    
+    font-size: 12px;
+    padding: 6px;
+    border: none;
+    border-radius: 50%;
+    
+  }
   
 
-  /* ------------ Progression Container ------------*/
+  /* ------------ Progress Container ------------*/
   #progressContainer {
     display: flex;
     justify-content: space-around;
@@ -174,6 +259,13 @@ body {
     flex-direction: row;
     justify-content: space-around;
     border-style: hidden double hidden double;
+  }
+  .sprite {
+    border: double;
+    background-color: gray;
+    width: 50%;
+    margin: auto;
+    text-align: center;
   }
   #playerSprite {
     width: 50%;
@@ -245,42 +337,29 @@ body {
     height: 2rem;
     width: 4.5rem;
   }
-  /* Set Mp Meter to blue */
-  ::-webkit-meter-bar {
-    background: black;
-  }
-  #playerMp-meter::-webkit-meter-optimum-value {
-    background: blue;
-  }
-  #playerMp-meter::-webkit-meter-suboptimum-value {
-    background: blue;
-  }
-  #playerMp-meter::-moz-meter-bar {
-    background: blue;
-  }
-
-
+  
+  
   #enemyContainer {
     /* background-image: url("icons/healthBorder2.svg");
     background-repeat: no-repeat;
     background-size: cover; */
-
+    
     background-color: gray;
     width: 50%;
     border-style: solid solid solid hidden;
     padding-top: 1rem;
     padding-bottom: 1rem;
-
+    
     text-align: center;
-
+    
     display: flex;
     flex-direction: column;
   }
-
+  
   /* ------------ Footer ------------ */
   #footer {
     background-color: #5D5323;
-    position: relative;
+    /* position: relative; */
     display: flex;
     justify-content: space-evenly;
     border: double;
@@ -292,21 +371,14 @@ body {
     border: none;
     padding: 2vh;
   }
-
+  
   /* ------------ Popups ------------ */
-  /*
-    display: fixed
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    This fixes the pop up in the corner issue but middle of the screen highlights when clicked
-   */
   .popup {
     position: relative; 
     display: inline-block;
     cursor: pointer;
   }
-
+  
   /* Popup */
   .popup .popuptext {
     display: flex;
@@ -336,27 +408,119 @@ body {
     flex-direction: row;
     justify-content: space-around;
   }
-
+  
   /* Show popup */
   .popup .show {
     visibility: visible;
     -webkit-animation: fadeIn 1s;
     animation: fadeIn 1s;
   }
-
-  /* Create animations*/
-  @-webkit-keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity: 1;}
-  }
-
-  @keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity: 1;}
+  
+  /* Mobile Header button */
+  .dropbtn {
+    background-color: #4A5D23;
+    color: white;
+    margin-left: 2vw;
+    
+    cursor: pointer;
+    position: absolute;
+    
+    font-size: 12px;
+    padding: 6px;
+    border: none;
+    border-radius: 50%;
+    
   }
   
-  @keyframes slide-up {
-    from {transform: translateY(3rem);}
-    to {transform: translateY(0rem)}
-  }
+}
+
+/* ------------ Used for all ------------ */
+
+/* ---------- DROPDOWN ----------- */
+/* Dropdown button on hover & focus */
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #678231
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+
+  background-color: #f1f1f1;
+  opacity: 80%;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+
+/* Show the dropdown menu */
+.show {display:block;}
+
+/* ----------- PROGRESS CIRCLES ------------ */
+#circle {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 25px;
+  background-color: yellow;
+}
+
+#selectedCircle {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 25px;
+  background: red;
+}
+
+#clearedCircle {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 25px;
+  background: black;
+}
+
+/* Set Mp Meter to blue */
+::-webkit-meter-bar {
+  background: black;
+}
+#playerMp-meter::-webkit-meter-optimum-value {
+  background: blue;
+}
+#playerMp-meter::-webkit-meter-suboptimum-value {
+  background: blue;
+}
+#playerMp-meter::-moz-meter-bar {
+  background: blue;
+}
+/* Create animations*/
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes slide-up {
+  from {transform: translateY(3rem);}
+  to {transform: translateY(0rem)}
 }
