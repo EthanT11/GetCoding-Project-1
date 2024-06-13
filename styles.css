@@ -245,6 +245,7 @@ TODO EXTRA:
     justify-content: space-around;
     background-color: gray;
     border: double;
+    background-image: url("icons/background2.svg");
   }
 
   #circle {
@@ -276,6 +277,7 @@ TODO EXTRA:
     flex-direction: row;
     justify-content: space-around;
     border-style: hidden double hidden double;
+    background-image: url("icons/background.svg");
   }
   .sprite {
     border: double;
@@ -333,6 +335,7 @@ TODO EXTRA:
 
     display: flex;
     flex-direction: column;
+    background-image: url("icons/background2.svg");
   }
   .meterCont {
     display: flex;
@@ -371,12 +374,12 @@ TODO EXTRA:
     
     display: flex;
     flex-direction: column;
+    background-image: url("icons/background2.svg");
   }
   
   /* ------------ Footer ------------ */
   #footer {
     background-color: #5D5323;
-    /* position: relative; */
     display: flex;
     justify-content: space-evenly;
     border: double;
@@ -389,49 +392,6 @@ TODO EXTRA:
     padding: 2vh;
   }
   
-  /* ------------ Popups ------------ */
-  .popup {
-    position: relative; 
-    display: inline-block;
-    cursor: pointer;
-  }
-  
-  /* Popup */
-  .popup .popuptext {
-    display: flex;
-    flex-direction: column;
-    visibility: hidden;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 0.5rem;
-    width: 300px;
-    z-index: 1;
-    position: fixed;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-  .popup .popuptext::after {
-    content: "";
-    position: absolute;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #555 transparent transparent transparent;
-  }
-  #statsPopup {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-  }
-  
-  /* Show popup */
-  .popup .show {
-    visibility: visible;
-    -webkit-animation: fadeIn 1s;
-    animation: fadeIn 1s;
-  }
   
   /* Mobile Header button */
   .dropbtn {
@@ -453,6 +413,49 @@ TODO EXTRA:
 
 /* ------------ Used for all ------------ */
 
+/* ------------ Popups ------------ */
+.popup {
+  position: relative; 
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* Popup */
+.popup .popuptext {
+  display: flex;
+  flex-direction: column;
+  visibility: hidden;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 0.5rem;
+  width: 300px;
+  z-index: 1;
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.popup .popuptext::after {
+  content: "";
+  position: absolute;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+#statsPopup {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+/* Show popup */
+.popup .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+}
 /* ---------- DROPDOWN ----------- */
 /* Dropdown button on hover & focus */
 .dropbtn:hover, .dropbtn:focus {
