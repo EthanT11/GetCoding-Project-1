@@ -1,7 +1,4 @@
-/* Color Pallet - Main: #4A5D23 - Accents: #678231, #5D5323 */
-
 /* TODO: 
-- Desktop version layout
 - Start looking at styling the actual content
   - Look at getcoding design guide
   - Keep *old look* but with more modern features
@@ -18,15 +15,12 @@
   - Start thinking about enemy generation
   - Start thinking about balancing
 - Design generic enemy and characters
-- Resize images now that I know more about them
 - Figure out a good background idea for the character sprites
 - fix issue of more then one popup, maybe set an on off flag?
 - remove container/element borders when done fixing positions
 
 TODO EXTRA:
 - Better action indicators, maybe a hit splat or more flashy text
-- Look more into border images so I can maybe make my own backgrounds?
-  - brick background?
 - Make the level circles a bit more on theme and styled
 - Look more into the animations of css, make the text and element abit more *alive*
 */
@@ -199,6 +193,7 @@ TODO EXTRA:
   }
   body {
     height: 100%;
+    font-family: fantasy;
   }
   #main {
     background-color: #4A5D23;
@@ -416,6 +411,13 @@ TODO EXTRA:
 /* ------------ Used for all ------------ */
 
 /* ------------ Popups ------------ */
+.popButton {
+  width: 4rem;
+  background-color: rgb(165, 165, 165);
+  color: black;
+  font-family: fantasy;
+}
+
 .popup {
   position: relative; 
   display: inline-block;
@@ -427,7 +429,7 @@ TODO EXTRA:
   display: flex;
   flex-direction: column;
   visibility: hidden;
-  background-color: #555;
+  background-color: #5D5323;
   color: #fff;
   text-align: center;
   border-radius: 6px;

@@ -303,7 +303,7 @@ let spellInfo = {
         _name: "Earth",
         _dam: 4,
         _cost: 3,
-        _info: "Entomb enemy in stone!",
+        _info: "Fling large rocks!",
         _canStun: true
     },
     healData: {
@@ -355,6 +355,7 @@ async function _createSpellBook() {
                 spellButt = document.createElement("button")
                 spellButt.id = _spell.name
                 spellButt.innerHTML = _spell.name
+                spellButt.classList.add("popButton");
                 spellButt.onclick = spellAttack
                 td.appendChild(spellButt)
             }
