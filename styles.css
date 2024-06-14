@@ -1,9 +1,6 @@
 /* TODO: 
 - Start looking at styling the actual content
   - Look at getcoding design guide
-  - Keep *old look* but with more modern features
-    - Maybe gothic font?
-  - Look at old console color pallets for ideas
   - classes for both types of buttons | Icon and text
   - classes for the types of text | Headers, primary, description
 - Clean code
@@ -31,7 +28,9 @@ TODO EXTRA:
   padding: 0;
 }
 
- /* ---------- Desktop ----------- */
+/* -------------------------------------- */
+/* --------------- Desktop -------------- */
+/* -------------------------------------- */
 @media only screen and (min-width:668px) {
   html {
       height: 100vh;
@@ -63,7 +62,9 @@ TODO EXTRA:
   #title {
     padding-right: 1rem;
     padding-top: 0.5rem;
-    color: rgb(255, 222, 0);
+    color: white;
+    -webkit-animation: slide-right 1s;
+    animation: slide-right 3s;
   }
   
   .dropbtn {
@@ -106,11 +107,11 @@ TODO EXTRA:
     margin: auto;
     text-align: center;
   }
-  #playerSprite {
+  .playerSprite {
     width: 50%;
     content: url("icons/mageSprite.svg");
   }
-  #enemySprite {
+  .enemySprite {
     width: 50%;
     content: url("icons/mageSpriteFlipped.svg");
   }
@@ -125,28 +126,12 @@ TODO EXTRA:
     border-color: white;
     border: double;
   }
-  #player-action {
-    color: lightgreen;
-    animation: slide-up 2s;
-  }
-  #enemy-action {
-    color: lightcoral;
-    animation: slide-up 2s;
-  }
 
   /* ---------- Character Container ----------- */
   #charaContainer {
     display: flex;
     justify-content: space-between;
     position: relative;
-  }
-  .charName {
-    font-size: 2rem;
-    color: rgb(255, 222, 0);
-  }
-  .charText {
-    font-size: 1.5rem;
-    color: rgb(255, 222, 0);
   }
   
   #hpContainer {
@@ -156,6 +141,7 @@ TODO EXTRA:
     text-align: center;
     border-style: ridge;
     border-color: rgb(165, 165, 165);
+    padding-top: 0.5rem;
   }
 
   #enemyContainer {
@@ -165,7 +151,20 @@ TODO EXTRA:
     text-align: center;
     border-style: ridge;
     border-color: rgb(165, 165, 165);
-    padding-top: 1rem;
+    padding-top: 0.5rem;
+  }
+
+  .meterCont {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .meter {
+    height: 2rem;
+    width: 4.5rem;
   }
   
 
@@ -186,7 +185,9 @@ TODO EXTRA:
 
 }
 
-
+/* -------------------------------------- */
+/* --------------- Mobile --------------- */
+/* -------------------------------------- */
 @media only screen and (max-width:667px) {
   html {
     background-color: #5D5323;
@@ -243,27 +244,6 @@ TODO EXTRA:
     background-image: url("icons/background2.svg");
   }
 
-  #circle {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 25px;
-    background-color: yellow;
-  }
-
-  #selectedCircle {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 25px;
-    background: red;
-  }
-
-  #clearedCircle {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 25px;
-    background: black;
-  }
-
   /* ------------ Sprites Container ------------*/
  
   #spritesContainer {
@@ -277,25 +257,10 @@ TODO EXTRA:
   .sprite {
     border: double;
     background-color: gray;
-    width: 50%;
+    min-width: 35%;
+    max-width: 65%;
     margin: auto;
     text-align: center;
-  }
-  .pSpriteHit {
-    border: double;
-    background-color: gray;
-    width: 50%;
-    margin: auto;
-    text-align: center;
-    background-color: red;
-  }
-  .eSpriteHit {
-    border: double;
-    background-color: gray;
-    width: 50%;
-    margin: auto;
-    text-align: center;
-    background-color: red;
   }
   .playerSprite {
     width: 50%;
@@ -315,15 +280,6 @@ TODO EXTRA:
     border-style: hidden double hidden double;
     background-color: black;
   }
-  /* TODO: Ask about animation looping? Maybe to do with fill mode */
-  #player-action {
-    color: lightgreen;
-    animation: slide-up 2s;
-  }
-  #enemy-action {
-    color: lightcoral;
-    animation: slide-up 2s;
-  }
 
   #charaContainer {
     display: flex;
@@ -331,11 +287,8 @@ TODO EXTRA:
     position: relative;
     border-style: double;
   }
+
   #hpContainer {
-    /* background-image: url("icons/healthBorder1.svg");
-    background-repeat: no-repeat;
-    background-size: cover; */
-    
     background-color: gray;
     width: 50%;
     border-style: solid dashed solid solid;
@@ -356,16 +309,6 @@ TODO EXTRA:
     padding-left: 1rem;
     padding-right: 1rem;
   }
-  .charName {
-    font-size: 2rem;
-    color: white;
-  }
-  .charText {
-    text-align: center;
-    padding-top: 1rem;
-    font-size: 1.5rem;
-    color: whitesmoke;
-  }
   .meter {
     height: 2rem;
     width: 4.5rem;
@@ -373,10 +316,6 @@ TODO EXTRA:
   
   
   #enemyContainer {
-    /* background-image: url("icons/healthBorder2.svg");
-    background-repeat: no-repeat;
-    background-size: cover; */
-    
     background-color: gray;
     width: 50%;
     border-style: solid solid solid hidden;
@@ -424,7 +363,9 @@ TODO EXTRA:
   
 }
 
+/* -------------------------------------- */
 /* ------------ Used for all ------------ */
+/* -------------------------------------- */
 
 /* ------------ Popups ------------ */
 .popButton {
@@ -476,6 +417,7 @@ TODO EXTRA:
   -webkit-animation: fadeIn 1s;
   animation: fadeIn 1s;
 }
+
 /* ---------- DROPDOWN ----------- */
 /* Dropdown button on hover & focus */
 .dropbtn:hover, .dropbtn:focus {
@@ -536,7 +478,45 @@ TODO EXTRA:
   background: rgb(0, 0, 0);
 }
 
-/* Set Mp Meter to blue */
+/* ----------- SPRITE HIT ------------ */
+.pSpriteHit {
+  border: double;
+  background-color: gray;
+  width: 50%;
+  margin: auto;
+  text-align: center;
+  background-color: red;
+}
+.eSpriteHit {
+  border: double;
+  background-color: gray;
+  width: 50%;
+  margin: auto;
+  text-align: center;
+  background-color: red;
+}
+
+/* ----------- TEXT ------------ */
+#player-action {
+  color: lightgreen;
+  animation: slide-up 2s;
+}
+#enemy-action {
+  color: lightcoral;
+  animation: slide-up 2s;
+}
+.charName {
+  font-size: 2rem;
+  color: white;
+}
+.charText {
+  text-align: center;
+  padding-top: 1rem;
+  font-size: 1.5rem;
+  color: whitesmoke;
+}
+
+/* ----------- HP/MP METER ------------ */
 ::-webkit-meter-bar {
   background: black;
 }
@@ -549,7 +529,8 @@ TODO EXTRA:
 #playerMp-meter::-moz-meter-bar {
   background: blue;
 }
-/* Create animations*/
+
+/* ----------- Animations ------------ */
 @-webkit-keyframes fadeIn {
   from {opacity: 0;}
   to {opacity: 1;}
@@ -563,4 +544,9 @@ TODO EXTRA:
 @keyframes slide-up {
   from {transform: translateY(3rem);}
   to {transform: translateY(0rem);}
+}
+
+@keyframes slide-right {
+  from {transform: translateX(-4rem);}
+  to {transform: translateX(0rem);}
 }
