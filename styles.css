@@ -38,17 +38,6 @@ TODO EXTRA:
     -webkit-animation: slide-right 3s;
     animation: slide-right 3s;
   }
-
-  /* ---------- FOOTER ----------- */
-  #footer {
-    justify-content: space-between;
-  }
-  
-  .btn {
-    
-
-  }
-
 }
 
 /* --------------- Mobile --------------- */
@@ -290,6 +279,14 @@ body {
   border-radius: 50%;
   border: solid;
   border-color: rgb(82, 82, 82);
+}
+.btn:hover {
+  background-color: rgb(82, 82, 82);
+  border-color: rgb(165, 165, 165);
+}
+.btn:active {
+  box-shadow: 0 5px rgb(165, 165, 165);
+  transform: translateY(0.25rem)
 }
 
 /* ----------- PROGRESS CIRCLES ------------ */
