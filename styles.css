@@ -28,175 +28,37 @@ TODO EXTRA:
   padding: 0;
 }
 
-/* -------------------------------------- */
 /* --------------- Desktop -------------- */
 /* -------------------------------------- */
 @media only screen and (min-width:668px) {
   
   /* ---------- HEADER ----------- */
   #title {
-    color: white;
     padding-right: 1rem;
-    padding-top: 0.5rem;
-
-    -webkit-animation: slide-right 1s;
+    -webkit-animation: slide-right 3s;
     animation: slide-right 3s;
   }
 
-  /* ---------- Action Container ----------- */
-  #actionContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    background-color: black;
-    padding-top: 0.5rem;
-    border-color: white;
-    border: double;
-  }
-
-  /* ---------- Character Container ----------- */
-  #charaContainer {
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-  }
-  
-  #hpContainer {
-    background-image: url("/icons/background2.svg");
-    background-color: gray;
-    width: 50%;
-    text-align: center;
-    border-style: ridge;
-    border-color: rgb(165, 165, 165);
-    padding-top: 0.5rem;
-  }
-
-  #enemyContainer {
-    background-image: url("/icons/background2.svg");
-    background-color: gray;
-    width: 50%;
-    text-align: center;
-    border-style: ridge;
-    border-color: rgb(165, 165, 165);
-    padding-top: 0.5rem;
-  }
-
-  .meterCont {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-  .meter {
-    height: 2rem;
-    width: 4.5rem;
-  }
-  
-
   /* ---------- FOOTER ----------- */
   #footer {
-    display: flex;
-    justify-content: space-evenly;
-    border: double;
-    background-color: #5D5323;
+    justify-content: space-between;
   }
   
   .btn {
-    background-color: gray;
-    border-radius: 50%;
-    border: none;
-    padding: 2vh;
+    
+
   }
 
 }
 
-/* -------------------------------------- */
 /* --------------- Mobile --------------- */
 /* -------------------------------------- */
 @media only screen and (max-width:667px) {
   
   /* ------------ Header ------------*/
   #title {
-    color: white;
     margin-right: 25%;
-    padding-top: 0.5rem;
   }
-  
-  /* ------------ Action and Health Containers ------------*/
-  #actionContainer {
-    padding: 0.25rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    border-style: hidden double hidden double;
-    background-color: black;
-  }
-
-  #charaContainer {
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-    border-style: double;
-  }
-
-  #hpContainer {
-    background-color: gray;
-    width: 50%;
-    border-style: solid dashed solid solid;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-
-    text-align: center;
-
-    display: flex;
-    flex-direction: column;
-    background-image: url("icons/background2.svg");
-  }
-  .meterCont {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-  .meter {
-    height: 2rem;
-    width: 4.5rem;
-  }
-  
-  
-  #enemyContainer {
-    background-color: gray;
-    width: 50%;
-    border-style: solid solid solid hidden;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    
-    text-align: center;
-    
-    display: flex;
-    flex-direction: column;
-    background-image: url("icons/background2.svg");
-  }
-  
-  /* ------------ Footer ------------ */
-  #footer {
-    background-color: #5D5323;
-    display: flex;
-    justify-content: space-evenly;
-    border: double;
-  }
-  
-  .btn {
-    background-color: gray;
-    border-radius: 50%;
-    border: none;
-    padding: 2vh;
-  }
-  
   
   /* Mobile Header button */
   .dropbtn {
@@ -242,6 +104,10 @@ body {
   display: flex;
   justify-content: space-between;
 }
+#title {
+  color: white;
+  padding-top: 0.5rem;
+}
 
 .dropbtn {
   background-color: #4A5D23;
@@ -264,8 +130,188 @@ body {
   display: flex;
   justify-content: space-around;
   background-color: rgb(165, 165, 165);
-  border-style: double;
   background-image: url("/icons/background2.svg");
+  border-style: solid hidden solid;
+  border-color: rgb(82, 82, 82);
+}
+
+/* ----------- Action Container ------------ */
+#actionContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: black;
+  padding: 0.5rem;
+  
+  border-style: solid hidden solid;
+  border-color: rgb(82, 82, 82);
+}
+
+/* ---------- HEALTH CONTAINER ----------- */
+#charaContainer {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+
+  border-style: ridge;
+  border-color: rgb(82, 82, 82);
+}
+#hpContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: gray;
+  background-image: url("icons/background2.svg");
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  text-align: center;
+  width: 50%;
+  
+  border-style: solid hidden solid solid;
+  border-color: rgb(82, 82, 82);
+
+}
+#enemyContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: gray;
+  background-image: url("icons/background2.svg");
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  text-align: center;
+  width: 50%;
+  
+  border-style: solid solid solid hidden;
+  border-color: rgb(82, 82, 82);
+  
+}
+
+/* ---------- SPRITES ----------- */
+#spritesContainer {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: space-around;
+  background-image: url("/icons/background.svg");
+  
+  border-style: ridge;
+  border-color: rgb(82, 82, 82);
+}
+.sprite {
+  border: double;
+  background-color: gray;
+  min-width: 35%;
+  max-width: 65%;
+  margin: auto;
+  text-align: center;
+}
+.playerSprite {
+  width: 50%;
+  content: url("icons/mageSprite.svg");
+}
+.enemySprite {
+  width: 50%;
+  content: url("icons/mageSpriteFlipped.svg");
+}
+
+/* ----------- SPRITE HIT ------------ */
+.pSpriteHit {
+  border: double;
+  background-color: gray;
+  width: 50%;
+  margin: auto;
+  text-align: center;
+  background-color: red;
+}
+.eSpriteHit {
+  border: double;
+  background-color: gray;
+  width: 50%;
+  margin: auto;
+  text-align: center;
+  background-color: red;
+}
+
+/* ----------- TEXT ------------ */
+#player-action {
+  color: lightgreen;
+  animation: slide-up 2s;
+}
+#enemy-action {
+  color: lightcoral;
+  animation: slide-up 2s;
+}
+.charName {
+  font-size: 2rem;
+  color: white;
+}
+.charText {
+  text-align: center;
+  padding-top: 1rem;
+  font-size: 1.5rem;
+  color: whitesmoke;
+}
+
+/* ----------- HP/MP METER ------------ */
+.meterCont {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.meter {
+  height: 2rem;
+  width: 4.5rem;
+}
+::-webkit-meter-bar {
+  background: black;
+}
+#playerMp-meter::-webkit-meter-optimum-value {
+  background: blue;
+}
+#playerMp-meter::-webkit-meter-suboptimum-value {
+  background: blue;
+}
+#playerMp-meter::-moz-meter-bar {
+  background: blue;
+}
+
+/* ----------- FOOTER ------------ */
+#footer {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 0.25rem;
+}
+
+.btn {
+  background-color: rgb(165, 165, 165);
+  padding: 1rem;
+  border-radius: 50%;
+  border: solid;
+  border-color: rgb(82, 82, 82);
+}
+
+/* ----------- PROGRESS CIRCLES ------------ */
+#circle {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 25px;
+  background-color: rgb(255, 222, 0);
+}
+
+#selectedCircle {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 25px;
+  background: rgb(123, 255, 48);
+}
+
+#clearedCircle {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 25px;
+  background: rgb(0, 0, 0);
 }
 
 /* ------------ Popups ------------ */
@@ -356,106 +402,6 @@ body {
 
 /* Show the dropdown menu */
 .show {display:block;}
-
-/* ----------- PROGRESS CIRCLES ------------ */
-#circle {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 25px;
-  background-color: rgb(255, 222, 0);
-}
-
-#selectedCircle {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 25px;
-  background: rgb(123, 255, 48);
-}
-
-#clearedCircle {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 25px;
-  background: rgb(0, 0, 0);
-}
-
-/* ---------- SPRITES ----------- */
-#spritesContainer {
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  justify-content: space-around;
-  border-style: hidden double hidden double;
-  background-image: url("/icons/background.svg");
-}
-.sprite {
-  border: double;
-  background-color: gray;
-  min-width: 35%;
-  max-width: 65%;
-  margin: auto;
-  text-align: center;
-}
-.playerSprite {
-  width: 50%;
-  content: url("icons/mageSprite.svg");
-}
-.enemySprite {
-  width: 50%;
-  content: url("icons/mageSpriteFlipped.svg");
-}
-
-/* ----------- SPRITE HIT ------------ */
-.pSpriteHit {
-  border: double;
-  background-color: gray;
-  width: 50%;
-  margin: auto;
-  text-align: center;
-  background-color: red;
-}
-.eSpriteHit {
-  border: double;
-  background-color: gray;
-  width: 50%;
-  margin: auto;
-  text-align: center;
-  background-color: red;
-}
-
-/* ----------- TEXT ------------ */
-#player-action {
-  color: lightgreen;
-  animation: slide-up 2s;
-}
-#enemy-action {
-  color: lightcoral;
-  animation: slide-up 2s;
-}
-.charName {
-  font-size: 2rem;
-  color: white;
-}
-.charText {
-  text-align: center;
-  padding-top: 1rem;
-  font-size: 1.5rem;
-  color: whitesmoke;
-}
-
-/* ----------- HP/MP METER ------------ */
-::-webkit-meter-bar {
-  background: black;
-}
-#playerMp-meter::-webkit-meter-optimum-value {
-  background: blue;
-}
-#playerMp-meter::-webkit-meter-suboptimum-value {
-  background: blue;
-}
-#playerMp-meter::-moz-meter-bar {
-  background: blue;
-}
 
 /* ----------- Animations ------------ */
 @-webkit-keyframes fadeIn {
