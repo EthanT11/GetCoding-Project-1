@@ -402,7 +402,7 @@ async function spellAttack(clicked_id) {
         _castSpell();
     }
     // helper funcs
-    function _castSpell() {
+    async function _castSpell() {
         saPopup() // close popup
         if (clicked_id == "Heal"){ // TODO: rework heal, quickly threw it together to help testing
             player.hp = spellData.hpDam;
@@ -413,6 +413,8 @@ async function spellAttack(clicked_id) {
             if (spellData.canStun == true) { // check if spell can stun
                 stunEnemy();
             }
+            spriteContainerHit("eSprite")
+            await sleep(2000)
             enemy.hp = spellData.hpDam;
             player.mp = spellData.mpDam;
             enemyAttack();
@@ -424,7 +426,6 @@ async function spellAttack(clicked_id) {
         if (check) {
             canUse = true;
             spell.attack(hp, mp);
-            console.log(spellData)
         }
     }
 }
