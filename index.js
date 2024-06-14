@@ -655,6 +655,7 @@ function checkStun() {
 function enemyAttack() {
     if (player.hp > 0 && enemy.hp > 0 && !stunFlag) {
         player.hp = enemy.attack(player.hp);
+        spriteContainerHit("pSprite")
         updateCharacters("Flinches in pain", "Bites");
     } 
     if (player.hp <= 0) {
@@ -673,20 +674,55 @@ function enemyAttack() {
     }
 }
 
+// Flash container red when hit
+let intId;
+async function spriteContainerHit(spriteContainerId) {
+
+    _setAnim();
+    await sleep(1000);
+    _resetSpriteContainer();
+
+    function _setAnim() {
+        if (!intId) {
+        intId = setInterval(_flashCont, 500);    
+        }
+    }
+    // Change background to red depending on container
+    function _flashCont() {
+        const container = document.getElementById(spriteContainerId);
+        switch(spriteContainerId) {
+            case "pSprite":
+                container.className = container.className === "sprite" ? "pSpriteHit" : "sprite";
+                break;
+            case "eSprite":
+                container.className = container.className === "sprite" ? "eSpriteHit" : "sprite";
+                break;
+        }
+    }
+    function _resetSpriteContainer() {
+        clearInterval(intId);
+        intId = null;
+    }
+
+}
+
+
 // attack button; increments winCounter each win
 async function attackEnemy() {
     if (enemy.hp > 0) {
         enemy.hp = player.attack(enemy.hp);
         _textCheck();
+        spriteContainerHit("eSprite");
         buttonSwitch(1250);
-        
         if (turnCounter > 0) {
             turnCounter --;
         } else {
             if (player.ranger) {
                 turnCounter = 1;
             }
+            await sleep(2000);
             enemyAttack();
+            await sleep(2000);
         }
     } 
     checkVictory();
@@ -710,6 +746,7 @@ async function attackEnemy() {
 }
 
 async function checkVictory() {
+    updateCharacters("Ready", "Ready")
     if (enemy.hp <= 0) { // check if enemyhp is 0. Level up & load next enemy
         var getLevelUp = document.getElementById("levelContainer");
         winCounter ++;

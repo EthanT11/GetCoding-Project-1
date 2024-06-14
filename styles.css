@@ -281,15 +281,31 @@ TODO EXTRA:
     margin: auto;
     text-align: center;
   }
-  #playerSprite {
+  .pSpriteHit {
+    border: double;
+    background-color: gray;
+    width: 50%;
+    margin: auto;
+    text-align: center;
+    background-color: red;
+  }
+  .eSpriteHit {
+    border: double;
+    background-color: gray;
+    width: 50%;
+    margin: auto;
+    text-align: center;
+    background-color: red;
+  }
+  .playerSprite {
     width: 50%;
     content: url("icons/mageSprite.svg");
   }
-  #enemySprite {
+  .enemySprite {
     width: 50%;
     content: url("icons/mageSpriteFlipped.svg");
   }
-
+  
   /* ------------ Action and Health Containers ------------*/
   #actionContainer {
     padding: 0.25rem;
@@ -546,5 +562,5 @@ TODO EXTRA:
 
 @keyframes slide-up {
   from {transform: translateY(3rem);}
-  to {transform: translateY(0rem)}
+  to {transform: translateY(0rem);}
 }
