@@ -1,8 +1,6 @@
 /* TODO: 
 - Start looking at styling the actual content
   - Look at getcoding design guide
-  - classes for both types of buttons | Icon and text
-  - classes for the types of text | Headers, primary, description
 - Clean code
   - Better comments and clean old ones/out-dated comments
 - Start using more classes now that I have a better understanding
@@ -47,20 +45,6 @@ TODO EXTRA:
     border: solid;
     border-color: rgb(82, 82, 82);
   }
-  .atkimg, .ablimg, .stsimg {
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-  .atkimg {
-    background-image: url("icons/fighterIcon.svg");
-  }
-  .ablimg {
-    background-image: url("icons/abilityIcon.svg");
-    background-size: 3rem;
-  }
-  .stsimg {
-    background-image: url("icons/stats.svg");
-  }
 }
 
 /* --------------- Mobile --------------- */
@@ -94,22 +78,6 @@ TODO EXTRA:
     border-radius: 50%;
     border: solid;
     border-color: rgb(82, 82, 82);
-  }
-  .atkimg {
-    background-image: url("icons/fighterIcon.svg");
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-  .ablimg {
-    background-image: url("icons/abilityIcon.svg");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 3rem;
-  }
-  .stsimg {
-    background-image: url("icons/stats.svg");
-    background-position: center;
-    background-repeat: no-repeat;
   }
   
 }
@@ -439,6 +407,24 @@ body {
 
 /* Show the dropdown menu */
 .show {display:block;}
+
+.atkimg, .ablimg, .stsimg {
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.atkimg {
+  background-image: url("icons/fighterIcon.svg");
+}
+.ablimg {
+  background-image: url("icons/abilityIcon.svg");
+  background-size: 3rem;
+}
+.splimg {
+  background-image: url("icons/spellIcon.svg");
+}
+.stsimg {
+  background-image: url("icons/stats.svg");
+}
 
 /* ----------- Animations ------------ */
 @-webkit-keyframes fadeIn {
