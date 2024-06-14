@@ -592,6 +592,7 @@ function setClass(clicked_id) {
     var abilButton = document.getElementById("abilities-button");
     var icon;
     
+    // TODO fix spellbook not showing up
     if (!chooseClass) {
         if (clicked_id == "fight-button") {
             player = new Player(MAX_HP[0], MAX_HP[0], MAX_MP[0], MAX_MP[0], DAMAGE[0], BLOCK[0], NAME[0]); // Player(MAX-HP, HP, Damage, Block, Name)

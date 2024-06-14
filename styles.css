@@ -38,6 +38,29 @@ TODO EXTRA:
     -webkit-animation: slide-right 3s;
     animation: slide-right 3s;
   }
+  .btn {
+    background-color: rgb(165, 165, 165);
+    padding: 2rem;
+    border-radius: 0.5rem;
+    max-height: 2rem;
+    width: 33%;
+    border: solid;
+    border-color: rgb(82, 82, 82);
+  }
+  .atkimg, .ablimg, .stsimg {
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .atkimg {
+    background-image: url("icons/fighterIcon.svg");
+  }
+  .ablimg {
+    background-image: url("icons/abilityIcon.svg");
+    background-size: 3rem;
+  }
+  .stsimg {
+    background-image: url("icons/stats.svg");
+  }
 }
 
 /* --------------- Mobile --------------- */
@@ -63,6 +86,30 @@ TODO EXTRA:
     border: none;
     border-radius: 50%;
     
+  }
+  /* Footer buttons */
+  .btn {
+    background-color: rgb(165, 165, 165);
+    padding: 2rem;
+    border-radius: 50%;
+    border: solid;
+    border-color: rgb(82, 82, 82);
+  }
+  .atkimg {
+    background-image: url("icons/fighterIcon.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .ablimg {
+    background-image: url("icons/abilityIcon.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 3rem;
+  }
+  .stsimg {
+    background-image: url("icons/stats.svg");
+    background-position: center;
+    background-repeat: no-repeat;
   }
   
 }
@@ -273,13 +320,6 @@ body {
   padding: 0.25rem;
 }
 
-.btn {
-  background-color: rgb(165, 165, 165);
-  padding: 1rem;
-  border-radius: 50%;
-  border: solid;
-  border-color: rgb(82, 82, 82);
-}
 .btn:hover {
   background-color: rgb(82, 82, 82);
   border-color: rgb(165, 165, 165);
