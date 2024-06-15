@@ -276,21 +276,27 @@ body {
   width: 2rem;
   height: 2rem;
   border-radius: 25px;
-  background-color: rgb(255, 222, 0);
+  border-style: solid;
+  border-color: rgb(82, 82, 82);
+  background-color: rgb(165, 165, 165);
 }
 
 #selectedCircle {
   width: 2rem;
   height: 2rem;
   border-radius: 25px;
-  background: rgb(123, 255, 48);
+  border-style: solid;
+  border-color: rgb(165, 165, 165);
+  background-color: white;
 }
 
 #clearedCircle {
   width: 2rem;
   height: 2rem;
   border-radius: 25px;
-  background: rgb(0, 0, 0);
+  border-style: solid;
+  border-color: rgb(165, 165, 165);
+  background: rgb(82, 82, 82);
 }
 
 /* ------------ Popups ------------ */
