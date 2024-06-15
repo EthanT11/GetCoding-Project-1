@@ -44,16 +44,31 @@ function levelPopup() {
     popup.classList.toggle("show");
 }
 
-// left off here!!
 function helpPopup() {
     const popup = document.getElementById("helpPopup");
     _genText()
     popup.classList.toggle("show");
+
     function _genText() {
-        const helpText = "";
-        popup.innerHTML = helpText;
+        const helpText = 
+`- Choose Class -
+    Pick between three classes for your character; Fighter, Ranger, or Mage.
+
+- Objective -
+    Get 10 wins in a row.
+    Each win highlights a circle below the title.
+
+- Fighting -
+    There are three button on the bottom; Attack, Abilities and Stats.
+    
+    Everytime you attack/use an ability/spell the enemy will attack back!
+
+    Make sure to keep an eye on your Health(Green bar) and for Mages also
+    your Magic(blue bar).`;
+        popup.append(helpText);
     }
 }
+helpPopup()
 
 // generate level circles
 // TODO: Look into just changing the background color property of a class

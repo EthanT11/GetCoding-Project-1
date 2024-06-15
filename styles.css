@@ -328,7 +328,7 @@ body {
   width: 300px;
   z-index: 1;
   position: fixed;
-  top: 40%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 5px 5px 5px rgb(82, 82, 82);
@@ -346,7 +346,7 @@ body {
   justify-content: space-around;
 }
 #helpPopup {
-  
+  white-space: pre-wrap;
 }
 
 /* Show popup */
