@@ -13,18 +13,13 @@
                 <input type="image" src="icons/menuIcon2-fonts.google.svg", onclick="dropDown()", class="dropbtn">
                 <div id="myDropdown" class="dropdown-content">
                     <a onclick="newGame()">New Game</a>
-                    <a>Help</a>
+                    <a onclick="helpPopup()">Help</a>
                     <a href="https://github.com/EthanT11">Github</a>
                 </div>
             </div>
             <h1 id="title">Retro Quest</h1>
         </div>
-        
-        <!-- TODO: look into using div classes for repeating styles -->
-        <!-- TODO: look into generating the elements through js rather then fixed
-        Will probably work better to use the same popout and change information depending
-        on the button or action required -->
-        <!-- TODO: Clean up old containers and js associated with it -->
+
         <div class="popup" hidden="true">
             <span class="popuptext" id="statsPopup">
                 <div>
@@ -94,6 +89,9 @@
                     </tr>
                 </table>
             </span>
+            <span class="popuptext" id="helpPopup">
+                <h2 id="class">How to Play</h2>
+            </span>
         </div>
         <div id="main">
             <div id="progressContainer">
@@ -138,7 +136,6 @@
             </div>
         </div>
         <div id="footer">
-            <!-- TODO: resize icons | Maybe change from input type?-->
             <button alt="Attack" id="attack-button" class="btn atkimg" onclick="attackEnemy()"></button>
             <button alt="Abilities" id="abilities-button" class="btn ablimg" onclick="saPopup()"></button>
             <button alt="Stats" id="stats-button" class="btn stsimg" onclick="popUp()"></button>

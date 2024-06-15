@@ -20,17 +20,17 @@ function dropDown() {
 // popups
 // TODO: Maybe merge into one and pass id as arg
 function popUp() {
-    var popup = document.getElementById("statsPopup");
+    const popup = document.getElementById("statsPopup");
     popup.classList.toggle("show");
 }
 
 function classPopup() {
-    var popup = document.getElementById("classPopup");
+    const popup = document.getElementById("classPopup");
     popup.classList.toggle("show");
 }
 
 function saPopup() {
-    var popup;
+    let popup;
     if (player.name == "Mage") {
         popup = document.getElementById("spellPopup");
     } else {
@@ -40,16 +40,26 @@ function saPopup() {
 }
 
 function levelPopup() {
-    var popup = document.getElementById("levelPopup");
+    const popup = document.getElementById("levelPopup");
     popup.classList.toggle("show");
-    console.log("Level up!")
+}
+
+// left off here!!
+function helpPopup() {
+    const popup = document.getElementById("helpPopup");
+    _genText()
+    popup.classList.toggle("show");
+    function _genText() {
+        const helpText = "";
+        popup.innerHTML = helpText;
+    }
 }
 
 // generate level circles
 // TODO: Look into just changing the background color property of a class
 // rather then just switching ID's
 function genLevelCircle() {
-    var getProgressCont = document.getElementById("progressContainer");
+    const getProgressCont = document.getElementById("progressContainer");
     let style = "circle";
     
     clearElement("progressContainer");
