@@ -348,6 +348,16 @@ body {
 #helpPopup {
   white-space: pre-wrap;
 }
+.closebtn {
+  position: absolute;
+  background-color: rgb(165, 165, 165);
+  font-size: 12px;
+  padding: 0.5rem;
+
+  border-color: rgb(82, 82, 82);
+  border-radius: 50%;
+  border-style: solid;
+}
 
 /* Show popup */
 .popup .show {
@@ -358,7 +368,7 @@ body {
 
 /* ---------- DROPDOWN ----------- */
 /* Dropdown button on hover & focus */
-.dropbtn:hover, .dropbtn:focus {
+.dropbtn:hover, .dropbtn:focus, .closebtn:hover, .closebtn:focus {
   background-color: rgb(82, 82, 82);
   border-color: rgb(165, 165, 165);
 }

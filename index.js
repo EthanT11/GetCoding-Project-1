@@ -19,8 +19,20 @@ function dropDown() {
 
 // popups
 // TODO: Maybe merge into one and pass id as arg
+// Adds closing button to popups
+function genButton(popup) {
+    const button = document.createElement("button")
+    button.classList.add("closebtn")
+    button.onclick = _close;
+    popup.append(button)
+    function _close() {
+        popup.classList.toggle("show")
+    }
+}
+
 function popUp() {
     const popup = document.getElementById("statsPopup");
+    genButton(popup)
     popup.classList.toggle("show");
 }
 
@@ -36,22 +48,37 @@ function saPopup() {
     } else {
         popup = document.getElementById("abilPopup");
     }
+    genButton(popup)
     popup.classList.toggle("show");
 }
 
 function levelPopup() {
     const popup = document.getElementById("levelPopup");
+    genButton(popup)
     popup.classList.toggle("show");
 }
 
+
 function helpPopup() {
     const popup = document.getElementById("helpPopup");
-    _genText()
+    popup.innerHTML = "";
+    genButton(popup);
+    _genHeader();
+    _genText();
     popup.classList.toggle("show");
 
+    // create h2 element
+    function _genHeader() {
+        const h2 = document.createElement("h2");
+        h2.classList.add("class");
+        h2.innerHTML = "How to Play";
+        popup.append(h2);
+    }
+
+    // create help text
     function _genText() {
         const helpText = 
-`- Choose Class -
+        `- Choose Class -
     Pick between three classes for your character; Fighter, Ranger, or Mage.
 
 - Objective -
