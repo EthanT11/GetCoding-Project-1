@@ -590,7 +590,6 @@ function setClass(clicked_id) {
     var NAME = ["Fighter", "Ranger", "Mage"];
 
     var abilButton = document.getElementById("abilities-button");
-    var icon;
     
     // TODO fix spellbook not showing up
     if (!chooseClass) {
