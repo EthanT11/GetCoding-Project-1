@@ -18,7 +18,9 @@ function dropDown() {
 }
 
 // popups
-// TODO: Maybe merge into one and pass id as arg
+// TODO: Maybe merge into one and pass clicked id as arg
+// put into a switch case?
+
 // Adds closing button to popups
 function genButton(popup) {
     const button = document.createElement("button")
@@ -30,6 +32,9 @@ function genButton(popup) {
     }
 }
 
+// TODO: Fix stats popup close button from being in the middle
+// pretty sure its appending itself to the last made div holding
+// the enemy container
 function popUp() {
     const popup = document.getElementById("statsPopup");
     genButton(popup)
@@ -95,7 +100,6 @@ function helpPopup() {
         popup.append(helpText);
     }
 }
-helpPopup()
 
 // generate level circles
 // TODO: Look into just changing the background color property of a class
@@ -861,6 +865,7 @@ function newGame() { // reset game state
     enemy = new Enemy("?", "?", "?", "...");
     updateCharacters("Choose Class", "Awaiting player choice");
     buttonState(true, false, true);
+    helpPopup();
     classPopup();
     genLevelCircle();
 }

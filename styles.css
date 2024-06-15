@@ -350,6 +350,7 @@ body {
 }
 .closebtn {
   position: absolute;
+  cursor: pointer;
   background-color: rgb(165, 165, 165);
   font-size: 12px;
   padding: 0.5rem;
@@ -368,9 +369,12 @@ body {
 
 /* ---------- DROPDOWN ----------- */
 /* Dropdown button on hover & focus */
-.dropbtn:hover, .dropbtn:focus, .closebtn:hover, .closebtn:focus {
+.dropbtn:hover, .dropbtn:focus,
+.closebtn:hover, .closebtn:focus,
+.popButton:hover, .popButton:focus {
   background-color: rgb(82, 82, 82);
   border-color: rgb(165, 165, 165);
+  color: white;
 }
 
 .dropdown {
