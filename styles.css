@@ -188,7 +188,8 @@ body {
 }
 .enemySprite {
   width: 50%;
-  content: url("icons/mageSpriteFlipped.svg");
+  /* content: url("icons/mageSpriteFlipped.svg"); */
+  content: url("icons/goblin.svg");
 }
 
 /* ----------- SPRITE HIT ------------ */
