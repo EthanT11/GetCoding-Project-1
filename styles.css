@@ -186,6 +186,7 @@ body {
   width: 50%;
   content: url("icons/mageSprite.svg");
 }
+
 .enemySprite {
   width: 50%;
   /* content: url("icons/mageSpriteFlipped.svg"); */
