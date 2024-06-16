@@ -1,73 +1,381 @@
-/* Color Pallet - Main: #4A5D23 - Accents: #678231, #5D5323 */
-
-/* TODO: 
-- Desktop version layout
-- Start looking at styling the actual content
-  - Look at getcoding design guide
-  - Keep *old look* but with more modern features
-    - Maybe gothic font?
-  - Look at old console color pallets for ideas
-  - classes for both types of buttons | Icon and text
-  - classes for the types of text | Headers, primary, description
+/* TODO:
 - Clean code
   - Better comments and clean old ones/out-dated comments
-- Start using more classes now that I have a better understanding
-- Rename and replace outdated names
 - Go through the game a few times and note broken features
   - Fix bugs that fully break gameplay first
   - Start thinking about enemy generation
   - Start thinking about balancing
 - Design generic enemy and characters
-- Resize images now that I know more about them
-- Figure out a good background idea for the character sprites
 - fix issue of more then one popup, maybe set an on off flag?
-- remove container/element borders when done fixing positions
 
-TODO EXTRA:
-- Better action indicators, maybe a hit splat or more flashy text
-- Look more into border images so I can maybe make my own backgrounds?
-  - brick background?
-- Make the level circles a bit more on theme and styled
-- Look more into the animations of css, make the text and element abit more *alive*
-*/
-
+/* Css reset */
 * {
   margin: 0;
   padding: 0;
 }
 
+/* --------------- Desktop -------------- */
+/* -------------------------------------- */
+@media only screen and (min-width:668px) {
+  
+  /* ---------- HEADER ----------- */
+  #title {
+    padding-right: 1rem;
+    -webkit-animation: slide-right 3s;
+    animation: slide-right 3s;
+  }
+  .btn {
+    background-color: rgb(165, 165, 165);
+    padding: 2rem;
+    border-radius: 0.5rem;
+    max-height: 2rem;
+    width: 33%;
+    border: solid;
+    border-color: rgb(82, 82, 82);
+  }
+}
+
+/* --------------- Mobile --------------- */
+/* -------------------------------------- */
+@media only screen and (max-width:667px) {
+  
+  /* ------------ Header ------------*/
+  #title {
+    margin-right: 25%;
+  }
+  
+  /* Footer buttons */
+  .btn {
+    background-color: rgb(165, 165, 165);
+    padding: 2rem;
+    border-radius: 50%;
+    border: solid;
+    border-color: rgb(82, 82, 82);
+  }
+  
+}
+
+/* -------------------------------------- */
+/* ------------ Used for all ------------ */
+/* -------------------------------------- */
+
 html {
-    height: 100vh;
-    background-color: #5D5323;
-    font-family: fantasy;
+  height: 100vh;
+  background-color: #5D5323;
+  font-family: fantasy;
 }
-
 body {
-    height: 100vh;
-
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+#main {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-
-/* ---------- START DROPDOWN ----------- */
+/* ------------ Header ------------ */
+#header {
+  background-color: #5D5323;
+  display: flex;
+  justify-content: space-between;
+}
+#title {
+  color: white;
+  padding-top: 1rem;
+}
 
 .dropbtn {
-  background-color: #4A5D23;
+  background-color: rgb(165, 165, 165);
   color: white;
-  margin-left: 2vw;
+
+  margin-top: 1rem;
+  margin-left: 1rem;
 
   cursor: pointer;
-  position: absolute;
   
   font-size: 12px;
   padding: 6px;
-  border: none;
+  border-style: solid;
+  border-color: rgb(82, 82, 82);
   border-radius: 50%;
   
 }
 
+/* ---------- PROGRESS CONTAINER ----------- */
+#progressContainer {
+  display: flex;
+  justify-content: space-around;
+  background-color: rgb(165, 165, 165);
+  background-image: url("/icons/background2.svg");
+  border-style: solid hidden solid;
+  border-color: rgb(82, 82, 82);
+}
+
+/* ----------- Action Container ------------ */
+#actionContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: black;
+  padding: 0.5rem;
+  
+  border-style: solid hidden solid;
+  border-color: rgb(82, 82, 82);
+}
+
+/* ---------- HEALTH CONTAINER ----------- */
+#charaContainer {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+
+  border-style: ridge;
+  border-color: rgb(82, 82, 82);
+}
+#hpContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: gray;
+  background-image: url("icons/background2.svg");
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  text-align: center;
+  width: 50%;
+  
+  border-style: solid hidden solid solid;
+  border-color: rgb(82, 82, 82);
+
+}
+#enemyContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: gray;
+  background-image: url("icons/background2.svg");
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  text-align: center;
+  width: 50%;
+  
+  border-style: solid solid solid hidden;
+  border-color: rgb(82, 82, 82);
+  
+}
+
+/* ---------- SPRITES ----------- */
+#spritesContainer {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: space-around;
+  background-image: url("/icons/background.svg");
+  
+  border-style: ridge;
+  border-color: rgb(82, 82, 82);
+}
+.sprite {
+  border: double;
+  background-color: gray;
+  min-width: 35%;
+  max-width: 65%;
+  margin: auto;
+  text-align: center;
+}
+.playerSprite {
+  width: 50%;
+  content: url("icons/mageSprite.svg");
+}
+.enemySprite {
+  width: 50%;
+  /* content: url("icons/mageSpriteFlipped.svg"); */
+  content: url("icons/goblin.svg");
+}
+
+/* ----------- SPRITE HIT ------------ */
+.pSpriteHit {
+  border: double;
+  background-color: gray;
+  width: 50%;
+  margin: auto;
+  text-align: center;
+  background-color: red;
+}
+.eSpriteHit {
+  border: double;
+  background-color: gray;
+  width: 50%;
+  margin: auto;
+  text-align: center;
+  background-color: red;
+}
+
+/* ----------- TEXT ------------ */
+#player-action {
+  color: lightgreen;
+  animation: slide-up 2s;
+}
+#enemy-action {
+  color: lightcoral;
+  animation: slide-up 2s;
+}
+.charName {
+  font-size: 2rem;
+  color: white;
+}
+.charText {
+  text-align: center;
+  padding-top: 1rem;
+  font-size: 1.5rem;
+  color: whitesmoke;
+}
+
+/* ----------- HP/MP METER ------------ */
+.meterCont {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.meter {
+  height: 2rem;
+  width: 4.5rem;
+}
+::-webkit-meter-bar {
+  background: black;
+}
+#playerMp-meter::-webkit-meter-optimum-value {
+  background: blue;
+}
+#playerMp-meter::-webkit-meter-suboptimum-value {
+  background: blue;
+}
+#playerMp-meter::-moz-meter-bar {
+  background: blue;
+}
+
+/* ----------- FOOTER ------------ */
+#footer {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 0.25rem;
+}
+
+.btn:hover {
+  background-color: rgb(82, 82, 82);
+  border-color: rgb(165, 165, 165);
+}
+.btn:active {
+  box-shadow: 0 5px rgb(165, 165, 165);
+  transform: translateY(0.25rem)
+}
+
+/* ----------- PROGRESS CIRCLES ------------ */
+#circle {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 25px;
+  border-style: solid;
+  border-color: rgb(82, 82, 82);
+  background-color: rgb(165, 165, 165);
+}
+
+#selectedCircle {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 25px;
+  border-style: solid;
+  border-color: rgb(165, 165, 165);
+  background-color: white;
+}
+
+#clearedCircle {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 25px;
+  border-style: solid;
+  border-color: rgb(165, 165, 165);
+  background: rgb(82, 82, 82);
+}
+
+/* ------------ Popups ------------ */
+.popButton {
+  width: 4rem;
+  background-color: rgb(165, 165, 165);
+  color: black;
+  font-family: fantasy;
+  cursor: pointer;
+}
+
+.popup {
+  position: relative; 
+  display: inline-block;
+}
+
+/* Popup */
+.popup .popuptext {
+  display: flex;
+  flex-direction: column;
+  visibility: hidden;
+  background-color: #5D5323;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  border-style: solid;
+  border-color: rgb(82, 82, 82);
+  padding: 0.5rem;
+  width: 300px;
+  z-index: 1;
+  position: fixed;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 5px 5px 5px rgb(82, 82, 82);
+}
+.popup .popuptext::after {
+  content: "";
+  position: absolute;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+#statsPopup {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+#helpPopup {
+  white-space: pre-wrap;
+}
+.closebtn {
+  position: absolute;
+  cursor: pointer;
+  background-color: rgb(165, 165, 165);
+  font-size: 12px;
+  padding: 0.5rem;
+
+  border-color: rgb(82, 82, 82);
+  border-radius: 50%;
+  border-style: solid;
+}
+
+/* Show popup */
+.popup .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+}
+
+/* ---------- DROPDOWN ----------- */
 /* Dropdown button on hover & focus */
-.dropbtn:hover, .dropbtn:focus {
-  background-color: #678231
+.dropbtn:hover, .dropbtn:focus,
+.closebtn:hover, .closebtn:focus,
+.popButton:hover, .popButton:focus {
+  background-color: rgb(82, 82, 82);
+  border-color: rgb(165, 165, 165);
+  color: white;
 }
 
 .dropdown {
@@ -76,14 +384,14 @@ body {
   
 }
 
-
 /* Dropdown Content (Hidden by Default) */
 .dropdown-content {
   display: none;
   position: absolute;
 
-  background-color: #f1f1f1;
-  opacity: 80%;
+  border-radius: 0.5rem;
+  background-color: rgb(165, 165, 165);
+  opacity: 95%;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
@@ -91,272 +399,57 @@ body {
 
 /* Links inside the dropdown */
 .dropdown-content a {
-  color: black;
+  color: white;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
 }
 
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #ddd;}
+.dropdown-content a:hover {
+  background-color: rgb(82, 82, 82);
+  border-radius: 1rem;
+}
 
 /* Show the dropdown menu */
 .show {display:block;}
 
-/* ----------- END DROPDOWN ------------ */
+/* images for menu buttons */
+.atkimg, .ablimg, .stsimg {
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.atkimg {
+  background-image: url("icons/fighterIcon.svg");
+}
+.ablimg {
+  background-image: url("icons/abilityIcon.svg");
+  background-size: 3rem;
+}
+.splimg {
+  background-image: url("icons/spellIcon.svg");
+}
+.stsimg {
+  background-image: url("icons/stats.svg");
+}
 
-@media only screen and (max-width:1080px) {
-  html {
-    background-color: #5D5323;
-  }
-  body {
-    height: 100%;
-  }
-  #main {
-    background-color: #4A5D23;
-    display: flex;
-    height: 82%;
-    flex-direction: column;
-    justify-content: space-between;
-  }
+/* ----------- Animations ------------ */
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
 
-  /* ------------ Header ------------*/
-  #header {
-    background-color: #5D5323;
-    padding-top: 1.5vh;
-    padding-bottom: 1vh;
-    display: flex;
-    justify-content: space-between;
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
 
-    top: 0;
-    max-height: 3vh;
-  }
-  #title {
-    color: black;
-    margin-right: 25%;
-  }
-  
+@keyframes slide-up {
+  from {transform: translateY(3rem);}
+  to {transform: translateY(0rem);}
+}
 
-  /* ------------ Progression Container ------------*/
-  #progressContainer {
-    display: flex;
-    justify-content: space-around;
-    background-color: gray;
-    border: double;
-  }
-
-  #circle {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 25px;
-    background-color: yellow;
-  }
-
-  #selectedCircle {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 25px;
-    background: red;
-  }
-
-  #clearedCircle {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 25px;
-    background: black;
-  }
-
-  /* ------------ Sprites Container ------------*/
- 
-  #spritesContainer {
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-    justify-content: space-around;
-    border-style: hidden double hidden double;
-  }
-  #playerSprite {
-    width: 50%;
-    content: url("icons/mageSprite.svg");
-  }
-  #enemySprite {
-    width: 50%;
-    content: url("icons/mageSpriteFlipped.svg");
-  }
-
-  /* ------------ Action and Health Containers ------------*/
-  #actionContainer {
-    padding: 0.25rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    border-style: hidden double hidden double;
-    background-color: black;
-  }
-  /* TODO: Ask about animation looping? Maybe to do with fill mode */
-  #player-action {
-    color: lightgreen;
-    animation: slide-up 2s;
-  }
-  #enemy-action {
-    color: lightcoral;
-    animation: slide-up 2s;
-  }
-
-  #charaContainer {
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-    border-style: double;
-  }
-  #hpContainer {
-    /* background-image: url("icons/healthBorder1.svg");
-    background-repeat: no-repeat;
-    background-size: cover; */
-    
-    background-color: gray;
-    width: 50%;
-    border-style: solid dashed solid solid;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-
-    text-align: center;
-
-    display: flex;
-    flex-direction: column;
-  }
-  .meterCont {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-  .charName {
-    font-size: 2rem
-  }
-  .charText {
-    text-align: center;
-    padding-top: 1rem;
-    font-size: 1.5rem;
-  }
-  .meter {
-    height: 2rem;
-    width: 4.5rem;
-  }
-  /* Set Mp Meter to blue */
-  ::-webkit-meter-bar {
-    background: black;
-  }
-  #playerMp-meter::-webkit-meter-optimum-value {
-    background: blue;
-  }
-  #playerMp-meter::-webkit-meter-suboptimum-value {
-    background: blue;
-  }
-  #playerMp-meter::-moz-meter-bar {
-    background: blue;
-  }
-
-
-  #enemyContainer {
-    /* background-image: url("icons/healthBorder2.svg");
-    background-repeat: no-repeat;
-    background-size: cover; */
-
-    background-color: gray;
-    width: 50%;
-    border-style: solid solid solid hidden;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-
-    text-align: center;
-
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* ------------ Footer ------------ */
-  #footer {
-    background-color: #5D5323;
-    position: relative;
-    display: flex;
-    justify-content: space-evenly;
-    border: double;
-  }
-  
-  .btn {
-    background-color: gray;
-    border-radius: 50%;
-    border: none;
-    padding: 2vh;
-  }
-
-  /* ------------ Popups ------------ */
-  /*
-    display: fixed
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    This fixes the pop up in the corner issue but middle of the screen highlights when clicked
-   */
-  .popup {
-    position: relative; 
-    display: inline-block;
-    cursor: pointer;
-  }
-
-  /* Popup */
-  .popup .popuptext {
-    display: flex;
-    flex-direction: column;
-    visibility: hidden;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 0.5rem;
-    width: 300px;
-    z-index: 1;
-    position: fixed;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-  .popup .popuptext::after {
-    content: "";
-    position: absolute;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #555 transparent transparent transparent;
-  }
-  #statsPopup {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-  }
-
-  /* Show popup */
-  .popup .show {
-    visibility: visible;
-    -webkit-animation: fadeIn 1s;
-    animation: fadeIn 1s;
-  }
-
-  /* Create animations*/
-  @-webkit-keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity: 1;}
-  }
-
-  @keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity: 1;}
-  }
-  
-  @keyframes slide-up {
-    from {transform: translateY(3rem);}
-    to {transform: translateY(0rem)}
-  }
+@keyframes slide-right {
+  from {transform: translateX(-4rem);}
+  to {transform: translateX(0rem);}
 }

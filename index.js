@@ -18,38 +18,94 @@ function dropDown() {
 }
 
 // popups
-// TODO: Maybe merge into one and pass id as arg
+// TODO: Maybe merge into one and pass clicked id as arg
+// put into a switch case?
+
+// Adds closing button to popups
+function genButton(popup) {
+    const button = document.createElement("button")
+    button.classList.add("closebtn")
+    button.onclick = _close;
+    popup.append(button)
+    function _close() {
+        popup.classList.toggle("show")
+    }
+}
+
+// TODO: Fix stats popup close button from being in the middle
+// pretty sure its appending itself to the last made div holding
+// the enemy container
 function popUp() {
-    var popup = document.getElementById("statsPopup");
+    const popup = document.getElementById("statsPopup");
+    genButton(popup)
     popup.classList.toggle("show");
 }
 
 function classPopup() {
-    var popup = document.getElementById("classPopup");
+    const popup = document.getElementById("classPopup");
     popup.classList.toggle("show");
 }
 
 function saPopup() {
-    var popup;
+    let popup;
     if (player.name == "Mage") {
         popup = document.getElementById("spellPopup");
     } else {
         popup = document.getElementById("abilPopup");
     }
+    genButton(popup)
     popup.classList.toggle("show");
 }
 
 function levelPopup() {
-    var popup = document.getElementById("levelPopup");
+    const popup = document.getElementById("levelPopup");
+    genButton(popup)
     popup.classList.toggle("show");
-    console.log("Level up!")
+}
+
+
+function helpPopup() {
+    const popup = document.getElementById("helpPopup");
+    popup.innerHTML = "";
+    genButton(popup);
+    _genHeader();
+    _genText();
+    popup.classList.toggle("show");
+
+    // create h2 element
+    function _genHeader() {
+        const h2 = document.createElement("h2");
+        h2.classList.add("class");
+        h2.innerHTML = "How to Play";
+        popup.append(h2);
+    }
+
+    // create help text
+    function _genText() {
+        const helpText = 
+        `- Choose Class -
+    Pick between three classes for your character; Fighter, Ranger, or Mage.
+
+- Objective -
+    Get 10 wins in a row.
+    Each win highlights a circle below the title.
+
+- Fighting -
+    There are three button on the bottom; Attack, Abilities and Stats.
+    
+    Everytime you attack/use an ability/spell the enemy will attack back!
+
+    Make sure to keep an eye on your Health(Green bar) and for Mages also
+    your Magic(blue bar).`;
+        popup.append(helpText);
+    }
 }
 
 // generate level circles
 // TODO: Look into just changing the background color property of a class
 // rather then just switching ID's
 function genLevelCircle() {
-    var getProgressCont = document.getElementById("progressContainer");
+    const getProgressCont = document.getElementById("progressContainer");
     let style = "circle";
     
     clearElement("progressContainer");
@@ -303,7 +359,7 @@ let spellInfo = {
         _name: "Earth",
         _dam: 4,
         _cost: 3,
-        _info: "Entomb enemy in stone!",
+        _info: "Fling large rocks!",
         _canStun: true
     },
     healData: {
@@ -355,6 +411,7 @@ async function _createSpellBook() {
                 spellButt = document.createElement("button")
                 spellButt.id = _spell.name
                 spellButt.innerHTML = _spell.name
+                spellButt.classList.add("popButton");
                 spellButt.onclick = spellAttack
                 td.appendChild(spellButt)
             }
@@ -401,7 +458,7 @@ async function spellAttack(clicked_id) {
         _castSpell();
     }
     // helper funcs
-    function _castSpell() {
+    async function _castSpell() {
         saPopup() // close popup
         if (clicked_id == "Heal"){ // TODO: rework heal, quickly threw it together to help testing
             player.hp = spellData.hpDam;
@@ -412,6 +469,8 @@ async function spellAttack(clicked_id) {
             if (spellData.canStun == true) { // check if spell can stun
                 stunEnemy();
             }
+            spriteContainerHit("eSprite")
+            await sleep(2000)
             enemy.hp = spellData.hpDam;
             player.mp = spellData.mpDam;
             enemyAttack();
@@ -423,7 +482,6 @@ async function spellAttack(clicked_id) {
         if (check) {
             canUse = true;
             spell.attack(hp, mp);
-            console.log(spellData)
         }
     }
 }
@@ -588,24 +646,21 @@ function setClass(clicked_id) {
     var NAME = ["Fighter", "Ranger", "Mage"];
 
     var abilButton = document.getElementById("abilities-button");
-    var icon;
     
+    // TODO fix spellbook not showing up
     if (!chooseClass) {
         if (clicked_id == "fight-button") {
             player = new Player(MAX_HP[0], MAX_HP[0], MAX_MP[0], MAX_MP[0], DAMAGE[0], BLOCK[0], NAME[0]); // Player(MAX-HP, HP, Damage, Block, Name)
-            icon = "/icons/abilityIcon.svg";
         }
         if (clicked_id == "range-button") {
             rangerFlag = true;
             player = new Player(MAX_HP[1], MAX_HP[1], MAX_MP[1], MAX_MP[1], DAMAGE[1], BLOCK[1], NAME[1]); // Player(MAX-HP, HP, Damage, Block, Name)
-            icon = "/icons/abilityIcon.svg";
         }
         if (clicked_id == "mage-button") {
             mageFlag = true;
             player = new Player(MAX_HP[2], MAX_HP[2], MAX_MP[2], MAX_MP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
-            icon = "/icons/spellIcon.svg";
+            abilButton.classList.add("splimg")
         }
-        abilButton.src = `${icon}`
         genEnemy();
         classPopup();
     } else {
@@ -654,6 +709,7 @@ function checkStun() {
 function enemyAttack() {
     if (player.hp > 0 && enemy.hp > 0 && !stunFlag) {
         player.hp = enemy.attack(player.hp);
+        spriteContainerHit("pSprite")
         updateCharacters("Flinches in pain", "Bites");
     } 
     if (player.hp <= 0) {
@@ -672,20 +728,55 @@ function enemyAttack() {
     }
 }
 
+// Flash container red when hit
+let intId;
+async function spriteContainerHit(spriteContainerId) {
+
+    _setAnim();
+    await sleep(1000);
+    _resetSpriteContainer();
+
+    function _setAnim() {
+        if (!intId) {
+        intId = setInterval(_flashCont, 500);    
+        }
+    }
+    // Change background to red depending on container
+    function _flashCont() {
+        const container = document.getElementById(spriteContainerId);
+        switch(spriteContainerId) {
+            case "pSprite":
+                container.className = container.className === "sprite" ? "pSpriteHit" : "sprite";
+                break;
+            case "eSprite":
+                container.className = container.className === "sprite" ? "eSpriteHit" : "sprite";
+                break;
+        }
+    }
+    function _resetSpriteContainer() {
+        clearInterval(intId);
+        intId = null;
+    }
+
+}
+
+
 // attack button; increments winCounter each win
 async function attackEnemy() {
     if (enemy.hp > 0) {
         enemy.hp = player.attack(enemy.hp);
         _textCheck();
+        spriteContainerHit("eSprite");
         buttonSwitch(1250);
-        
         if (turnCounter > 0) {
             turnCounter --;
         } else {
             if (player.ranger) {
                 turnCounter = 1;
             }
+            await sleep(2000);
             enemyAttack();
+            await sleep(2000);
         }
     } 
     checkVictory();
@@ -709,6 +800,7 @@ async function attackEnemy() {
 }
 
 async function checkVictory() {
+    updateCharacters("Ready", "Ready")
     if (enemy.hp <= 0) { // check if enemyhp is 0. Level up & load next enemy
         var getLevelUp = document.getElementById("levelContainer");
         winCounter ++;
@@ -773,6 +865,7 @@ function newGame() { // reset game state
     enemy = new Enemy("?", "?", "?", "...");
     updateCharacters("Choose Class", "Awaiting player choice");
     buttonState(true, false, true);
+    helpPopup();
     classPopup();
     genLevelCircle();
 }
