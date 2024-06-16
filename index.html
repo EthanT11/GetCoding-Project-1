@@ -13,21 +13,15 @@
                 <input type="image" src="icons/menuIcon2-fonts.google.svg", onclick="dropDown()", class="dropbtn">
                 <div id="myDropdown" class="dropdown-content">
                     <a onclick="newGame()">New Game</a>
-                    <a>Help</a>
+                    <a onclick="helpPopup()">Help</a>
                     <a href="https://github.com/EthanT11">Github</a>
                 </div>
             </div>
             <h1 id="title">Retro Quest</h1>
         </div>
-        
-        <!-- TODO: look into using div classes for repeating styles -->
-        <!-- TODO: look into generating the elements through js rather then fixed
-        Will probably work better to use the same popout and change information depending
-        on the button or action required -->
-        <!-- TODO: Clean up old containers and js associated with it -->
+
         <div class="popup" hidden="true">
             <span class="popuptext" id="statsPopup">
-                
                 <div>
                     <h2 id="stats">Player</h2>
                     <h3 id="s-class">
@@ -49,15 +43,15 @@
                 <h2 id="class">Choose Class</h2>
                 <table>
                     <tr>
-                        <td><button id="fight-button", onclick="setClass(this.id)">Fighter</button></td>
+                        <td><button id="fight-button" class="popButton" onclick="setClass(this.id)">Fighter</button></td>
                         <td>Block/Stun</td>
                     </tr>
                     <tr>
-                        <td><button id="range-button", onclick="setClass(this.id)">Ranger</button></td>
+                        <td><button id="range-button" class="popButton" onclick="setClass(this.id)">Ranger</button></td>
                         <td>Quick Attack</td>
                     </tr>
                     <tr>
-                        <td><button id="mage-button", onclick="setClass(this.id)">Mage</button></td>
+                        <td><button id="mage-button" class="popButton" onclick="setClass(this.id)">Mage</button></td>
                         <td>Spellbook</td>
                     </tr>
                 </table>
@@ -66,11 +60,11 @@
                 <h2 id="class">Abilities</h2>
                 <table>
                     <tr>
-                        <td><button id="block-button", disabled = true, onclick="blockEnemy()">Block</button></td>
+                        <td><button id="block-button" class="popButton" disabled = true, onclick="blockEnemy()">Block</button></td>
                         <td>Block damage equal to block stat</td>
                     </tr>
                     <tr>
-                        <td><button id="stun-button", disabled = true, onclick="stunEnemy()">Stun</button></td>
+                        <td><button id="stun-button" class="popButton" disabled = true, onclick="stunEnemy()">Stun</button></td>
                         <td>50% chance to stun</td>
                     </tr>
                 </table>
@@ -95,6 +89,9 @@
                     </tr>
                 </table>
             </span>
+            <span class="popuptext" id="helpPopup">
+                <h2 id="class">How to Play</h2>
+            </span>
         </div>
         <div id="main">
             <div id="progressContainer">
@@ -102,8 +99,11 @@
             </div>
 
             <div id="spritesContainer">
-                <img id="playerSprite">
-                <img id="enemySprite">
+                <span class="sprite" id="pSprite">
+                    <img class="playerSprite">
+                </span>
+                <span class="sprite", id="eSprite">
+                    <img class="enemySprite">
             </div>
 
             <div id="actionContainer">
@@ -136,10 +136,9 @@
             </div>
         </div>
         <div id="footer">
-            <!-- TODO: resize icons | Maybe change from input type?-->
-            <input type="image" src="/icons/fighterIcon.svg" alt="Attack" id="attack-button" class="btn" onclick="attackEnemy()">
-            <input type="image" src="icons/abilityIcon.svg" alt="Abilities" id="abilities-button" class="btn" onclick="saPopup()">
-            <input type="image" src="icons/stats.svg" alt="Stats" id="stats-button" class="btn" onclick="popUp()">
+            <button alt="Attack" id="attack-button" class="btn atkimg" onclick="attackEnemy()"></button>
+            <button alt="Abilities" id="abilities-button" class="btn ablimg" onclick="saPopup()"></button>
+            <button alt="Stats" id="stats-button" class="btn stsimg" onclick="popUp()"></button>
         </div>
         
         <script defer src="./index.js"></script>
