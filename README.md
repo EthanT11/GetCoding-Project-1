@@ -11,6 +11,9 @@ Retro quest is a turn based RPG where you pick a character class and fight your 
 - CSS
 - JS
 
+## Art
+- Aseprite
+
 ---
 ## Game loop
 The goal is to kill **10** monsters.
