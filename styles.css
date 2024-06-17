@@ -113,24 +113,13 @@ body {
   border-color: rgb(82, 82, 82);
 }
 
-/* ----------- Action Container ------------ */
-#actionContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  background-color: black;
-  padding: 0.5rem;
-  
-  border-style: solid hidden solid;
-  border-color: rgb(82, 82, 82);
-}
 
 /* ---------- HEALTH CONTAINER ----------- */
 #charaContainer {
   display: flex;
   justify-content: space-between;
   position: relative;
-
+  
   border-style: ridge;
   border-color: rgb(82, 82, 82);
 }
@@ -146,7 +135,7 @@ body {
   
   border-style: solid hidden solid solid;
   border-color: rgb(82, 82, 82);
-
+  
 }
 #enemyContainer {
   display: flex;
@@ -163,35 +152,83 @@ body {
   
 }
 
-/* ---------- SPRITES ----------- */
+/* ---------- SPRITES & ACTION ----------- */
 #spritesContainer {
   display: flex;
   flex: 1;
-  flex-direction: row;
-  justify-content: space-around;
+  flex-direction: column;
+  justify-content: space-evenly;
   background-image: url("/icons/background.svg");
   
   border-style: ridge;
   border-color: rgb(82, 82, 82);
-}
-.sprite {
-  border: double;
-  background-color: gray;
-  min-width: 35%;
-  max-width: 65%;
-  margin: auto;
-  text-align: center;
-}
-.playerSprite {
-  width: 50%;
-  content: url("icons/mageSprite.svg");
+  
+  .spriteAction {
+    display: flex;
+    flex: 1;
+    justify-content: space-around;
+    align-items: center;
+
+    .actionBorder {
+      width: 40%;
+      height: 40%;
+      min-width: 40%;
+      max-width: 40%;
+      min-height: 50%;
+      max-height: 50%;
+      text-align: center;
+      
+      border: double;
+      border-color: rgb(82, 82, 82);
+      background-color: gray;
+      
+      #player-action {
+        color: lightgreen;
+        animation: slide-up 2s;
+      }
+      
+      #enemy-action {
+        color: lightcoral;
+        
+        animation: slide-up 2s;
+      }
+    }
+
+  }
+  
 }
 
-.enemySprite {
-  width: 50%;
-  /* content: url("icons/mageSpriteFlipped.svg"); */
-  content: url("icons/goblin.svg");
+.sprites {
+  position: absolute;
+  width: 100%;
+  bottom: 32%;
+
+  .spritesCont {
+    display: flex;
+    justify-content: space-evenly;
+
+    .playerSprite {
+      width: 20%;
+      content: url("icons/mageSprite.svg");
+    }
+    
+    .enemySprite {
+      content: url("icons/goblin.svg");
+    }
+  }
 }
+
+/* ----------- Action Container ------------ */
+#actionContainer {
+  z-index: 2;
+  max-height: 2%;
+  background-color: black;
+  padding: 0.5rem;
+  
+  border-style: solid hidden solid;
+  border-color: rgb(82, 82, 82);
+}
+
 
 /* ----------- SPRITE HIT ------------ */
 .pSpriteHit {
@@ -212,14 +249,6 @@ body {
 }
 
 /* ----------- TEXT ------------ */
-#player-action {
-  color: lightgreen;
-  animation: slide-up 2s;
-}
-#enemy-action {
-  color: lightcoral;
-  animation: slide-up 2s;
-}
 .charName {
   font-size: 2rem;
   color: white;
@@ -239,22 +268,23 @@ body {
   align-items: center;
   padding-left: 1rem;
   padding-right: 1rem;
-}
-.meter {
-  height: 2rem;
-  width: 4.5rem;
-}
-::-webkit-meter-bar {
-  background: black;
-}
-#playerMp-meter::-webkit-meter-optimum-value {
-  background: blue;
-}
-#playerMp-meter::-webkit-meter-suboptimum-value {
-  background: blue;
-}
-#playerMp-meter::-moz-meter-bar {
-  background: blue;
+
+  .meter {
+    height: 2rem;
+    width: 4.5rem;
+  }
+  ::-webkit-meter-bar {
+    background: black;
+  }
+  #playerMp-meter::-webkit-meter-optimum-value {
+    background: blue;
+  }
+  #playerMp-meter::-webkit-meter-suboptimum-value {
+    background: blue;
+  }
+  #playerMp-meter::-moz-meter-bar {
+    background: blue;
+  }
 }
 
 /* ----------- FOOTER ------------ */
@@ -313,6 +343,7 @@ body {
 .popup {
   position: relative; 
   display: inline-block;
+  z-index: 100;
 }
 
 /* Popup */
