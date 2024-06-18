@@ -199,16 +199,16 @@ body {
 }
 
 .sprites {
-  position: absolute;
+  position: relative;
   width: 100%;
-  bottom: 32%;
-
+  max-height: 0%;
+  
   .spritesCont {
     display: flex;
     justify-content: space-evenly;
-
+    transform: translateY(-100%);
+    
     .playerSprite {
-      width: 20%;
       content: url("icons/mageSprite.svg");
     }
     
@@ -218,8 +218,8 @@ body {
   }
 }
 
-/* ----------- Action Container ------------ */
-#actionContainer {
+/* ----------- Action Container/Black Bar ------------ */
+#blackBar {
   z-index: 2;
   max-height: 2%;
   background-color: black;
