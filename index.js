@@ -734,26 +734,31 @@ async function spriteContainerHit(spriteContainerId) {
 
     _setAnim();
     await sleep(1000);
-    _resetSpriteContainer();
+    _reset();
 
     function _setAnim() {
-        if (!intId) {
-        intId = setInterval(_flashCont, 500);    
-        }
+        if (!intId) {intId = setInterval(_flashCont, 500);}
     }
-    // Change background to red depending on container
+    
     function _flashCont() {
         const container = document.getElementById(spriteContainerId);
+        const pContainer = document.getElementById("pSprite");
+        const eContainer = document.getElementById("eSprite");
         switch(spriteContainerId) {
+            // Attack player anim
             case "pSprite":
-                container.className = container.className === "sprite" ? "pSpriteHit" : "sprite";
+                eContainer.className = eContainer.className === "enemySprite" ? "eSpriteAtk" : "enemySprite";
+                container.className = container.className === "playerSprite" ? "pSpriteHit" : "playerSprite";
                 break;
-            case "eSprite":
-                container.className = container.className === "sprite" ? "eSpriteHit" : "sprite";
+                // Attack enemy anim
+                case "eSprite":
+                console.log(pContainer.className)
+                pContainer.className = pContainer.className === "playerSprite" ? "pSpriteAtk" : "playerSprite";
+                container.className = container.className === "enemySprite" ? "eSpriteHit" : "enemySprite";
                 break;
         }
     }
-    function _resetSpriteContainer() {
+    function _reset() {
         clearInterval(intId);
         intId = null;
     }
@@ -865,10 +870,10 @@ function newGame() { // reset game state
     enemy = new Enemy("?", "?", "?", "...");
     updateCharacters("Choose Class", "Awaiting player choice");
     buttonState(true, false, true);
-    helpPopup();
     classPopup();
     genLevelCircle();
 }
 
 // starts new game on page load
 newGame();
+// helpPopup();

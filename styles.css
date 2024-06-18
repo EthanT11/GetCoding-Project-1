@@ -204,8 +204,8 @@ body {
   
   .spritesCont {
     display: flex;
-    justify-content: space-evenly;
-    transform: translateY(-100%);
+    justify-content: space-around;
+    transform: translateY(-90%);
     
     .playerSprite {
       content: url("icons/mageSprite.svg");
@@ -231,20 +231,20 @@ body {
 
 /* ----------- SPRITE HIT ------------ */
 .pSpriteHit {
-  border: double;
-  background-color: gray;
-  width: 50%;
-  margin: auto;
-  text-align: center;
-  background-color: red;
+  animation: slide-up 1s;
+  content: url("icons/mageSprite.svg");
+}
+.pSpriteAtk {
+  animation: slide-left 1s;
+  content: url("icons/mageSprite.svg");
 }
 .eSpriteHit {
-  border: double;
-  background-color: gray;
-  width: 50%;
-  margin: auto;
-  text-align: center;
-  background-color: red;
+  animation: slide-up 1s;
+  content: url("icons/goblin.svg");
+}
+.eSpriteAtk {
+  animation: slide-right 1s;
+  content: url("icons/goblin.svg");
 }
 
 /* ----------- TEXT ------------ */
@@ -483,4 +483,10 @@ body {
 @keyframes slide-right {
   from {transform: translateX(-4rem);}
   to {transform: translateX(0rem);}
+}
+
+@keyframes slide-left {
+  from {transform: translateX(4rem);}
+  to {transform: translateX(0rem);}
+  
 }
