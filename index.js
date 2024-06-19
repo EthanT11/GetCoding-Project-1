@@ -186,6 +186,8 @@ var setRanger;
 var ENEMYDAM = 2; // for testing; enemy damage
 var WAITTIME = 1000; // change enemy gen time
 
+var actionTextCount = 0;
+const textList = [];
 // TODO: Maybe add the flags to the player constructor?? Might cause a lot of issues
 class Player {
     constructor(max_hp, hp, max_mp, mp, damage, block, name) {
@@ -257,13 +259,39 @@ class Player {
         var getPlayerName = document.getElementById("player-name");
 
         // set player container elements
+        getPlayerAction.innerHTML = playerAction;
         getPlayerName.innerHTML = this.name;
         getPlayerHp.innerHTML = `${this.hp} / ${this.max_hp}`;
         getPlayerMp.innerHTML = `${this.mp} / ${this.max_mp}`;
-        getPlayerAction.innerHTML = playerAction;
 
+        this._updateAction(playerAction);
         this._setMeter("playerHp-meter");
         this._setMeter("playerMp-meter");
+    }
+    _updateAction(playerAction) {
+        const getBorderCont = document.getElementById("pSubAct");
+        let textLen = textList.length;
+        
+        textList.unshift(playerAction); // appends to end of array
+        // console.log(`textList -> [${textList}]`);
+
+        getBorderCont.innerHTML = "";
+        for (let i = 0; i < textLen; i++) {
+            if (textLen == 3) {
+                textList.pop();
+                textLen = textList.length
+                getBorderCont.innerHTML = "";
+            }
+            // console.log(`${textLen}`)
+            const makeH3 = document.createElement("h3");
+            makeH3.innerHTML = textList[i]
+            makeH3.classList.add("actionSubText")
+
+            console.log(textList[i])
+            getBorderCont.appendChild(makeH3);
+        }
+
+        
     }
     _updateStats() {
         // get player stats container elements
@@ -728,7 +756,7 @@ function enemyAttack() {
     }
 }
 
-// Flash container red when hit
+// TODO: Fix jerky animation in css, maybe use the curve?
 let intId;
 async function spriteContainerHit(spriteContainerId) {
 

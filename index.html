@@ -100,13 +100,20 @@
 
             <div id="spritesContainer">
                 <span class="spriteAction">
-                    <span class="actionBorder"><div id="player-action"></div></span>
-                    <span class="actionBorder"><div id="enemy-action"></div></span>
+                    <span class="actionBorder">
+                        <span class="mainAction" id="pAct">
+                            <h3 id="player-action"></h3>
+                        </span>
+                        <span class="subAction" id="pSubAct"></span>
+                    </span>
+                    <span class="actionBorder" id="eActBord">
+                        <h3 id="enemy-action"></h3>
+                    </span>
                 </span>
             </div>
             
             <div id="blackBar"></div>
-            
+
             <div class="sprites">
                 <span class="spritesCont">
                     <img class="playerSprite" id="pSprite">

@@ -157,7 +157,7 @@ body {
   display: flex;
   flex: 1;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-around;
   background-image: url("/icons/background.svg");
   
   border-style: ridge;
@@ -167,29 +167,43 @@ body {
     display: flex;
     flex: 1;
     justify-content: space-around;
-    align-items: center;
 
     .actionBorder {
-      width: 40%;
-      height: 40%;
+      display: flex;
+      flex-direction: column;
+      /* justify-content: center; */
       min-width: 40%;
-      max-width: 40%;
-      min-height: 50%;
-      max-height: 50%;
+      max-width: 50%;
+      min-height: 30%;
+      max-height: 30%;
+      overflow: hidden;
       text-align: center;
       
       border: double;
       border-color: rgb(82, 82, 82);
       background-color: gray;
-      
-      #player-action {
-        color: lightgreen;
-        animation: slide-up 2s;
+
+      .mainAction{
+        background-color: rgb(82, 82, 82);
+
+        #player-action {
+          color: lightgreen;
+          animation: slide-right 2s;
+        }
       }
+
+      .subAction {
+        /* background-color: rgb(165, 165, 165); */
+        
+      }
+      .actionSubText {
+        opacity: 20%;
+        animation: slide-up 1s;
+      }
+      .
       
       #enemy-action {
         color: lightcoral;
-        
         animation: slide-up 2s;
       }
     }
@@ -489,4 +503,9 @@ body {
   from {transform: translateX(4rem);}
   to {transform: translateX(0rem);}
   
+}
+
+@keyframes expand {
+  from {width: 0;}
+  to {width: 1;}
 }
