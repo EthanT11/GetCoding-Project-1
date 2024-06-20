@@ -630,7 +630,7 @@ async function genEnemy() {
     var MAX_HP = 10 + (winCounter * (dice(2) + 1));
     var HP = MAX_HP;
     // var DAM = (dice(2) + 1) + winCounter;
-    var DAM = 12;
+    var DAM = 2;
     var NAME = ["Goblin", "Bats", "Ghoul", "Orc", "Evil Monk", "Dragon"];
 
     buttonState(true, true, true);
@@ -719,6 +719,14 @@ function setClass(clicked_id) {
 
 // general update player/enemy UI, takes actions as str. "Attacking", "Defending"
 function updateCharacters(p_action, e_action) {
+    if (p_action == undefined) {
+        const pAction = document.getElementById("player-action")
+        p_action = pAction.innerHTML;
+    }
+    if (e_action == undefined) {
+        const eAction = document.getElementById("enemy-action")
+        e_action = eAction.innerHTML;
+    }
     player.update(p_action);
     enemy.update(e_action);
 }
@@ -889,7 +897,6 @@ async function blockEnemy() {
     saPopup(); // close popup
     if (blockCounter > 0) {
         spriteContainerHit("pSprite")
-        enemy.update("Bites Shield!")
         if (blocked >= 0) { // if greater than 0 heal for the amount
             if (healCheck >= player.max_hp) { // check if hp would be greater then max
                 player.hp = player.max_hp;
@@ -897,6 +904,9 @@ async function blockEnemy() {
             else {
                 player.hp += blocked;
             }
+            enemy.hp -= blocked;
+            checkVictory()
+            updateCharacters()
         } else if (blocked < 0) {
             player.hp += blocked;
             player.update(`Blocked ${enemy.damage} Damage`);
