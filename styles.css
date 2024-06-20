@@ -174,8 +174,8 @@ body {
       /* justify-content: center; */
       min-width: 40%;
       max-width: 50%;
-      min-height: 30%;
-      max-height: 30%;
+      min-height: 40%;
+      max-height: 40%;
       overflow: hidden;
       text-align: center;
       
@@ -200,11 +200,10 @@ body {
         opacity: 20%;
         animation: slide-up 1s;
       }
-      .
       
       #enemy-action {
         color: lightcoral;
-        animation: slide-up 2s;
+        animation: slide-left 2s;
       }
     }
 

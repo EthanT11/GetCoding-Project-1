@@ -268,28 +268,40 @@ class Player {
         this._setMeter("playerHp-meter");
         this._setMeter("playerMp-meter");
     }
+    // todo: Smooth out action log, maybe delay adding element when i >= 1
+    // maybe switch case if 5 or more conditions?
     _updateAction(playerAction) {
-        const getBorderCont = document.getElementById("pSubAct");
-        let textLen = textList.length;
-        
-        textList.unshift(playerAction); // appends to end of array
-        // console.log(`textList -> [${textList}]`);
+        console.log(`Current PA -> ${playerAction}`)
+        if (textList[0] == undefined) {
+            console.log("textList Empty")
+            textList.unshift(playerAction)
+        // } else if (playerAction == textList[0]) {
+        //     console.log("tl[0] -> pass")
 
-        getBorderCont.innerHTML = "";
-        for (let i = 0; i < textLen; i++) {
-            if (textLen == 3) {
-                textList.pop();
-                textLen = textList.length
-                getBorderCont.innerHTML = "";
+        } else if (playerAction == "Ready") {
+            console.log("pa[ready] -> pass")
+
+        } else if (playerAction == undefined) {
+            console.log("tl undefined -> pass")
+
+        } else if (textList.length == 4) {
+            textList.pop();
+
+        } else {
+            const getBorderCont = document.getElementById("pSubAct");
+            
+            getBorderCont.innerHTML = "";
+            textList.unshift(playerAction)
+            console.log(`textList -> ${textList}`)
+            for (let i = 0; i < textList.length; i++) {
+                console.log("creating element")
+                const makeH3 = document.createElement("h3");
+                makeH3.innerHTML = textList[i]
+                makeH3.classList.add("actionSubText")
+                getBorderCont.appendChild(makeH3);
             }
-            // console.log(`${textLen}`)
-            const makeH3 = document.createElement("h3");
-            makeH3.innerHTML = textList[i]
-            makeH3.classList.add("actionSubText")
-
-            console.log(textList[i])
-            getBorderCont.appendChild(makeH3);
         }
+        console.log("------------------")
 
         
     }
@@ -780,7 +792,6 @@ async function spriteContainerHit(spriteContainerId) {
                 break;
                 // Attack enemy anim
                 case "eSprite":
-                console.log(pContainer.className)
                 pContainer.className = pContainer.className === "playerSprite" ? "pSpriteAtk" : "playerSprite";
                 container.className = container.className === "enemySprite" ? "eSpriteHit" : "enemySprite";
                 break;
