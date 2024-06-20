@@ -629,7 +629,8 @@ function sleep(ms) {
 async function genEnemy() {
     var MAX_HP = 10 + (winCounter * (dice(2) + 1));
     var HP = MAX_HP;
-    var DAM = (dice(2) + 1) + winCounter;
+    // var DAM = (dice(2) + 1) + winCounter;
+    var DAM = 12;
     var NAME = ["Goblin", "Bats", "Ghoul", "Orc", "Evil Monk", "Dragon"];
 
     buttonState(true, true, true);
@@ -765,15 +766,16 @@ function enemyAttack() {
     }
     checkStun();
     
-    async function playerDeath() { // as of now the enemy attacking is the only way to die
-        var getLevelUp = document.getElementById("levelContainer");
-    
-        getLevelUp.hidden = true;
-        updateCharacters("Piles of bones", "Victory laugh");
-        buttonState(true, true, true);
-        await sleep(4000);
-        newGame();
-    }
+
+}
+async function playerDeath() {
+    var getLevelUp = document.getElementById("levelContainer");
+
+    getLevelUp.hidden = true;
+    updateCharacters("Piles of bones", "Victory laugh");
+    buttonState(true, true, true);
+    await sleep(4000);
+    newGame();
 }
 
 // TODO: Fix jerky animation in css, maybe use the curve?
@@ -883,7 +885,11 @@ async function blockEnemy() {
     var getBlockButton = document.getElementById("block-button");
     var blocked = player.blockAttack(enemy.damage); // player.block - enemy.damage -> 4 - 2
     var healCheck = player.hp + blocked;
+
+    saPopup(); // close popup
     if (blockCounter > 0) {
+        spriteContainerHit("pSprite")
+        enemy.update("Bites Shield!")
         if (blocked >= 0) { // if greater than 0 heal for the amount
             if (healCheck >= player.max_hp) { // check if hp would be greater then max
                 player.hp = player.max_hp;
@@ -891,7 +897,6 @@ async function blockEnemy() {
             else {
                 player.hp += blocked;
             }
-            player.update(`Blocked and healed ${blocked}`);
         } else if (blocked < 0) {
             player.hp += blocked;
             player.update(`Blocked ${enemy.damage} Damage`);
