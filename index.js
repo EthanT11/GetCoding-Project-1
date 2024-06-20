@@ -187,7 +187,7 @@ var ENEMYDAM = 2; // for testing; enemy damage
 var WAITTIME = 1000; // change enemy gen time
 
 var actionTextCount = 0;
-const textList = [];
+
 // TODO: Maybe add the flags to the player constructor?? Might cause a lot of issues
 class Player {
     constructor(max_hp, hp, max_mp, mp, damage, block, name) {
@@ -202,6 +202,7 @@ class Player {
         this.mage = mageFlag;
         this.ranger = rangerFlag;
 
+        this.textList = [];
         if (this.ranger) {
             setRanger = true;
         }
@@ -269,36 +270,28 @@ class Player {
         this._setMeter("playerMp-meter");
     }
     // todo: Smooth out action log, maybe delay adding element when i >= 1
-    // maybe switch case if 5 or more conditions?
-    _updateAction(playerAction) {
+    _updateAction(action) {
         const getBorderCont = document.getElementById("pSubAct");
-        console.log(`Current PA -> ${playerAction}`)
-
-        if (playerAction == "Ready") {
+        if (action == "Ready") {
             // pass
-        } else if (playerAction == undefined) {
+        } else if (action == undefined) {
             // pass
         } else {
-            if (textList[0] == undefined) {
+            if (this.textList[0] == undefined) {
                 // pass
-            } else if (textList.length == 4) {
-                textList.pop();
+            } else if (this.textList.length == 8) {
+                this.textList.pop();
             }
-            textList.unshift(playerAction)
-
+            this.textList.unshift(action)
             getBorderCont.innerHTML = "";
-            for (let i = 0; i < textList.length; i++) {
-                console.log("creating element")
+            for (let i = 0; i < this.textList.length; i++) {
                 const makeH3 = document.createElement("h3");
-                makeH3.innerHTML = textList[i]
+                makeH3.innerHTML = this.textList[i]
                 makeH3.classList.add("actionSubText")
                 getBorderCont.appendChild(makeH3);
             }
             
         }
-        console.log("------------------")
-
-        
     }
     _updateStats() {
         // get player stats container elements
@@ -528,6 +521,7 @@ class Enemy {
         this.hp = hp;
         this.damage = damage;
         this.name = name;
+        this.textList = [];
     }
     // Update HP and Action on UI
     update(enemyAction = "Action") {
@@ -547,10 +541,34 @@ class Enemy {
         getEnemySHp.innerHTML = `Max HP: ${this.max_hp}`;
         getEmemySDam.innerHTML = `Damage: ${this.damage}`;
 
+        this._updateAction(enemyAction)
         this._setHpMeter();
     }
     attack(playerHp) {
         return playerHp -= this.damage; // returns player hp value
+    }
+    _updateAction(action) {
+        const getBorderCont = document.getElementById("eSubAct");
+        if (action == "Ready") {
+            // pass
+        } else if (action == undefined) {
+            // pass
+        } else {
+            if (this.textList[0] == undefined) {
+                // pass
+            } else if (this.textList.length == 8) {
+                this.textList.pop();
+            }
+            this.textList.unshift(action)
+            getBorderCont.innerHTML = "";
+            for (let i = 0; i < this.textList.length; i++) {
+                const makeH3 = document.createElement("h3");
+                makeH3.innerHTML = this.textList[i]
+                makeH3.classList.add("actionSubText")
+                getBorderCont.appendChild(makeH3);
+            }
+            
+        }
     }
     _setHpMeter() {
         var getHpMeter = document.getElementById("enemy-meter");
