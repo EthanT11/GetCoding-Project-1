@@ -692,7 +692,7 @@ async function genEnemy() {
 
 // choose class based on button clicked
 function setClass(clicked_id) {
-    var MAX_HP = [12, 10, 8];
+    var MAX_HP = [12, 10, 8]; // fighter ranger mage
     var MAX_MP = [8, 10, 12];
     var DAMAGE = [2, 3, 4];
     var BLOCK = [4, 3, 2];
