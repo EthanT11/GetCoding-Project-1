@@ -59,7 +59,6 @@ function saPopup() {
 
 function levelPopup() {
     const popup = document.getElementById("levelPopup");
-    genButton(popup)
     popup.classList.toggle("show");
 }
 
@@ -165,7 +164,7 @@ var enemy;
 var chooseClass = false;
 
 var winCounter = 0;
-var winsNeeded = 10;
+var winsNeeded = 6;
 
 var stunCounter = 0;
 var stunFlag = false;
@@ -367,14 +366,13 @@ class Spell {
         return playerMp >= this.cost;
     }
 }
-
 // spell information: name, damage, cost, info, canStun
 // may be redundent but helps me keep it a bit organized
 let spellInfo = {
     fireData: {
         _name: "Fire",
         _dam: 8,
-        _cost: 1,
+        _cost: 2,
         _info: "Hurl a fireball!"
     },
     iceData: {
@@ -470,7 +468,6 @@ async function spellAttack(clicked_id) {
     } else if (clicked_id == "Earth") { // Damages & chance to stun
         _checkCost(spells.earthSpell, enemy.hp, player.mp)
     } else if (clicked_id == "Heal") {  // Heals player
-        canUse = true; // NOTE: leave for testing
         _checkCost(spells.healSpell, player.hp, player.mp);
     }
     
@@ -599,8 +596,8 @@ async function levelUp(clicked_id) {
     if (clicked_id == "first-choice") {
         player.max_hp += 2;
         player.max_mp += 2;
-        player.damage += 2;
-        player.block += 2;
+        player.damage += 1;
+        player.block += 1;
         player.update("I'm feeling strong!")
     } else if (clicked_id == "second-choice") {
         player.hp = player.max_hp;
@@ -630,20 +627,18 @@ function sleep(ms) {
 // TODO: Add variety for different levels and different names
 // idea: use winCounter to adjust "difficulty"
 async function genEnemy() {
-    var MAX_HP = dice(10) + 10;
+    var MAX_HP = 10 + (winCounter * (dice(2) + 1));
     var HP = MAX_HP;
-    // var DAM = dice(2) + dice(2) + 1;
-    var DAM = ENEMYDAM; // for testing
-    var NAME = "Goblin";
+    var DAM = (dice(2) + 1) + winCounter;
+    var NAME = ["Goblin", "Bats", "Ghoul", "Orc", "Evil Monk", "Dragon"];
 
     buttonState(true, true, true);
     player.mage = false; // turn off spellbook; figure out something better
     
     updateCharacters("Ready", "Searching for foes...");
     await sleep(WAITTIME);
-    enemy = new Enemy(MAX_HP, HP, DAM, NAME);
+    enemy = new Enemy(MAX_HP, HP, DAM, NAME[winCounter]);
     buttonState(false, true, false);
-    player.mage = true; // turn spellbook back on
     updateCharacters("Ready", "Ready");
     
     // TODO: Finish and flush out enemy list
@@ -692,9 +687,9 @@ async function genEnemy() {
 
 // choose class based on button clicked
 function setClass(clicked_id) {
-    var MAX_HP = [12, 10, 8]; // fighter ranger mage
-    var MAX_MP = [8, 10, 12];
-    var DAMAGE = [2, 3, 4];
+    var MAX_HP = [16, 14, 12]; // fighter ranger mage
+    var MAX_MP = [10, 12, 14];
+    var DAMAGE = [4, 3, 3];
     var BLOCK = [4, 3, 2];
     var NAME = ["Fighter", "Ranger", "Mage"];
 
@@ -830,10 +825,11 @@ async function attackEnemy() {
         } else {
             if (player.ranger) {
                 turnCounter = 1;
+            } else if (enemy.hp > 0) {
+                await sleep(2000);
+                enemyAttack();
+                await sleep(2000);
             }
-            await sleep(2000);
-            enemyAttack();
-            await sleep(2000);
         }
     } 
     checkVictory();
@@ -895,7 +891,7 @@ async function blockEnemy() {
             else {
                 player.hp += blocked;
             }
-            player.update(`You blocked all damage`);
+            player.update(`Blocked and healed ${blocked}`);
         } else if (blocked < 0) {
             player.hp += blocked;
             player.update(`Blocked ${enemy.damage} Damage`);
@@ -928,4 +924,4 @@ function newGame() { // reset game state
 
 // starts new game on page load
 newGame();
-// helpPopup();
+helpPopup();
