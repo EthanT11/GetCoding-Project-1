@@ -167,15 +167,17 @@ body {
     display: flex;
     flex: 1;
     justify-content: space-around;
+    align-items: center;
+    transform: translateY(-10%);
 
     .actionBorder {
       display: flex;
       flex-direction: column;
       /* justify-content: center; */
       min-width: 40%;
-      max-width: 50%;
-      min-height: 40%;
-      max-height: 40%;
+      max-width: 40%;
+      min-height: 30%;
+      max-height: 30%;
       overflow: hidden;
       text-align: center;
       

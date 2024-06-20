@@ -271,28 +271,22 @@ class Player {
     // todo: Smooth out action log, maybe delay adding element when i >= 1
     // maybe switch case if 5 or more conditions?
     _updateAction(playerAction) {
+        const getBorderCont = document.getElementById("pSubAct");
         console.log(`Current PA -> ${playerAction}`)
-        if (textList[0] == undefined) {
-            console.log("textList Empty")
-            textList.unshift(playerAction)
-        // } else if (playerAction == textList[0]) {
-        //     console.log("tl[0] -> pass")
 
-        } else if (playerAction == "Ready") {
-            console.log("pa[ready] -> pass")
-
+        if (playerAction == "Ready") {
+            // pass
         } else if (playerAction == undefined) {
-            console.log("tl undefined -> pass")
-
-        } else if (textList.length == 4) {
-            textList.pop();
-
+            // pass
         } else {
-            const getBorderCont = document.getElementById("pSubAct");
-            
-            getBorderCont.innerHTML = "";
+            if (textList[0] == undefined) {
+                // pass
+            } else if (textList.length == 4) {
+                textList.pop();
+            }
             textList.unshift(playerAction)
-            console.log(`textList -> ${textList}`)
+
+            getBorderCont.innerHTML = "";
             for (let i = 0; i < textList.length; i++) {
                 console.log("creating element")
                 const makeH3 = document.createElement("h3");
@@ -300,6 +294,7 @@ class Player {
                 makeH3.classList.add("actionSubText")
                 getBorderCont.appendChild(makeH3);
             }
+            
         }
         console.log("------------------")
 
