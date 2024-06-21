@@ -532,26 +532,31 @@ class Enemy {
         var getEnemySHp = document.getElementById("e-hp")
         var getEmemySDam = document.getElementById("e-dam")
         
-        getEnemyAction.innerHTML = enemyAction;
         getEnemyHp.innerHTML = `${this.hp} / ${this.max_hp}`;
         getEnemyName.innerHTML = this.name;
-
+        
         getEnemySName.innerHTML = `Type: ${this.name}`;
         getEnemySHp.innerHTML = `Max HP: ${this.max_hp}`;
         getEmemySDam.innerHTML = `Damage: ${this.damage}`;
-
+        
         if (addSub == true) {
             this._updateAction(enemyAction, addSub)
         } else if (addSub == false) {
             // pass
         }
         
+        if (enemyAction == undefined) {
+            // pass
+        } else {
+            getEnemyAction.innerHTML = enemyAction;
+        }
+
         this._setHpMeter();
     }
     attack(playerHp) {
         return playerHp -= this.damage; // returns player hp value
     }
-    _updateAction(action, addSub = false) {
+    _updateAction(action) {
         const getBorderCont = document.getElementById("eSubAct");
         if (action == "Ready") {
             // pass
@@ -738,20 +743,24 @@ function updateCharacters(p_action, e_action, pAddSub, eAddSub) {
 }
 
 // TODO: hit enemy for half damage on success & 1.5 of gob damage to player on fail?
-function stunEnemy() {
+async function stunEnemy() {
+    saPopup();
     var getStunButton = document.getElementById("stun-button");
     var d4 = dice(4);
     var d2 = dice(2) + 1;
     
     if (d4 >= 3) { // pass check
+        spriteContainerHit("eSprite")
         stunFlag = true;
         stunCounter = d2;
         getStunButton.disabled = true;
         getStunButton.innerHTML = `Stun (${stunCounter})`
-        enemy.update(`*Stunned* (${stunCounter})`, true)
+        updateCharacters(`Success!`, `*Stunned* (${stunCounter})`, true, true)
+        await sleep(3000);
     } else if (d4 <= 2) { // fail check
+        player.update(`Failed!`);
+        await sleep(1500);
         enemyAttack();
-        console.log("Failed Stun")
     }
 }
 
@@ -911,11 +920,13 @@ async function blockEnemy() {
                 player.hp += blocked;
             }
             enemy.hp -= blocked;
+            updateCharacters(`Block! +(${blocked})`, `*Stagger* -(${blocked})`, true, true)
+            await sleep(3000)
             checkVictory()
-            updateCharacters()
-        } else if (blocked < 0) {
+        } else if (blocked < 0) { // block < enemy dam
             player.hp += blocked;
             player.update(`Blocked ${enemy.damage} Damage`, true);
+            updateCharacters(`Blocked ${enemy.damage} Damage`, `*Bites* +${blocked}`)
             if (player.hp <= 0) {
                 playerDeath();
             }
