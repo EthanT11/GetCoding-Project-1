@@ -175,8 +175,6 @@ var blockFlag = false;
 var spellData = {};
 var spellCount;
 var spellBookFlag;
-// TODO: Check if mage flag is still in use??
-var mageFlag = false;
 
 var turnCounter = 0;
 var rangerFlag = false;
@@ -198,7 +196,6 @@ class Player {
         this.block = block;
         this.name = name;
         
-        this.mage = mageFlag;
         this.ranger = rangerFlag;
 
         this.textList = [];
@@ -208,12 +205,12 @@ class Player {
     }
     
     // Update HP and Action on UI
-    update(playerAction) {
+    update(playerAction, addSub) {
         // get player menu container elements
         var getAttackButton = document.getElementById("attack-button");
         var getBlockButton = document.getElementById("block-button");
         
-        this._updateContainer(playerAction);
+        this._updateContainer(playerAction, addSub);
         this._updateStats();
         
         // set amount of actions to 2
@@ -251,7 +248,7 @@ class Player {
     blockAttack(enemyDam) {
         return this.block - enemyDam;
     }
-    _updateContainer(playerAction) {
+    _updateContainer(playerAction, addSub = false) {
         // get player container elements
         var getPlayerAction = document.getElementById("player-action");
         var getPlayerHp = document.getElementById("player-hp");
@@ -264,7 +261,12 @@ class Player {
         getPlayerHp.innerHTML = `${this.hp} / ${this.max_hp}`;
         getPlayerMp.innerHTML = `${this.mp} / ${this.max_mp}`;
 
-        this._updateAction(playerAction);
+        if (addSub == true) {
+            this._updateAction(playerAction);
+        }   else if (addSub == false) {
+            // pass
+        }
+
         this._setMeter("playerHp-meter");
         this._setMeter("playerMp-meter");
     }
@@ -472,9 +474,9 @@ async function spellAttack(clicked_id) {
     }
     
     if (!stunFlag) { // TODO: figure out something better, probably in the update rework
-        updateCharacters(`${clicked_id}!`, "Ouch!");
+        updateCharacters(`${clicked_id}!`, "Ouch!", true, true);
     } else {
-        updateCharacters(`${clicked_id}!`, `*Stunned* (${stunCounter})`);
+        updateCharacters(`${clicked_id}!`, `*Stunned* (${stunCounter})`, true, true);
     }
     
     if (!canUse) { // check if player has enough mp
@@ -521,7 +523,7 @@ class Enemy {
         this.textList = [];
     }
     // Update HP and Action on UI
-    update(enemyAction = "Action") {
+    update(enemyAction, addSub) {
         var getEnemyAction = document.getElementById("enemy-action");
         var getEnemyHp = document.getElementById("enemy-hp");
         var getEnemyName = document.getElementById("enemy-name");
@@ -538,13 +540,18 @@ class Enemy {
         getEnemySHp.innerHTML = `Max HP: ${this.max_hp}`;
         getEmemySDam.innerHTML = `Damage: ${this.damage}`;
 
-        this._updateAction(enemyAction)
+        if (addSub == true) {
+            this._updateAction(enemyAction, addSub)
+        } else if (addSub == false) {
+            // pass
+        }
+        
         this._setHpMeter();
     }
     attack(playerHp) {
         return playerHp -= this.damage; // returns player hp value
     }
-    _updateAction(action) {
+    _updateAction(action, addSub = false) {
         const getBorderCont = document.getElementById("eSubAct");
         if (action == "Ready") {
             // pass
@@ -598,15 +605,15 @@ async function levelUp(clicked_id) {
         player.max_mp += 2;
         player.damage += 1;
         player.block += 1;
-        player.update("I'm feeling strong!")
+        player.update("I'm feeling strong!", true)
     } else if (clicked_id == "second-choice") {
         player.hp = player.max_hp;
         player.mp = player.max_mp;
-        player.update("I'm feeling healthy!")
+        player.update("I'm feeling healthy!", true)
     } else if (clicked_id == "third-choice") {
         blockCounter = 5;
         getBlockButton.innerText = `Block (${blockCounter})`
-        player.update("Neat! A shield!")
+        player.update("Neat! A shield!", true)
     }
     levelPopup();
     buttonSwitch(2000);
@@ -706,7 +713,6 @@ function setClass(clicked_id) {
             player = new Player(MAX_HP[1], MAX_HP[1], MAX_MP[1], MAX_MP[1], DAMAGE[1], BLOCK[1], NAME[1]); // Player(MAX-HP, HP, Damage, Block, Name)
         }
         if (clicked_id == "mage-button") {
-            mageFlag = true;
             player = new Player(MAX_HP[2], MAX_HP[2], MAX_MP[2], MAX_MP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
             abilButton.classList.add("splimg")
         }
@@ -718,17 +724,17 @@ function setClass(clicked_id) {
 }
 
 // general update player/enemy UI, takes actions as str. "Attacking", "Defending"
-function updateCharacters(p_action, e_action) {
+function updateCharacters(p_action, e_action, pAddSub, eAddSub) {
     if (p_action == undefined) {
         const pAction = document.getElementById("player-action")
         p_action = pAction.innerHTML;
-    }
-    if (e_action == undefined) {
+    } else if (e_action == undefined) {
         const eAction = document.getElementById("enemy-action")
         e_action = eAction.innerHTML;
     }
-    player.update(p_action);
-    enemy.update(e_action);
+
+    player.update(p_action, pAddSub);
+    enemy.update(e_action, eAddSub);
 }
 
 // TODO: hit enemy for half damage on success & 1.5 of gob damage to player on fail?
@@ -742,7 +748,7 @@ function stunEnemy() {
         stunCounter = d2;
         getStunButton.disabled = true;
         getStunButton.innerHTML = `Stun (${stunCounter})`
-        enemy.update(`*Stunned* (${stunCounter})`)
+        enemy.update(`*Stunned* (${stunCounter})`, true)
     } else if (d4 <= 2) { // fail check
         enemyAttack();
         console.log("Failed Stun")
@@ -754,7 +760,7 @@ function checkStun() {
     if (!stunFlag) {} else {
         stunCounter --;
         getStunButton.innerHTML = `Stun (${stunCounter})`
-        enemy.update(`*Stunned* (${stunCounter})`)
+        enemy.update(`*Stunned* (${stunCounter})`, true)
         if (stunCounter == 0) {
             stunFlag = false;
             getStunButton.disabled = false;
@@ -767,7 +773,7 @@ function enemyAttack() {
     if (player.hp > 0 && enemy.hp > 0 && !stunFlag) {
         player.hp = enemy.attack(player.hp);
         spriteContainerHit("pSprite")
-        updateCharacters("Flinches in pain", "Bites");
+        updateCharacters(`*Flinches* -(${enemy.damage})`, "Bite!", true, true);
     } 
     if (player.hp <= 0) {
         playerDeath();
@@ -780,7 +786,7 @@ async function playerDeath() {
     var getLevelUp = document.getElementById("levelContainer");
 
     getLevelUp.hidden = true;
-    updateCharacters("Piles of bones", "Victory laugh");
+    updateCharacters("Piles of bones", "Victory laugh", true, true);
     buttonState(true, true, true);
     await sleep(4000);
     newGame();
@@ -846,19 +852,19 @@ async function attackEnemy() {
 
     function _textCheck() { // change text depending on class
         var ptext;
-        var etext = "*Winces*";
+        var etext = `*Wince* -(${player.damage})`;
         switch(player.name) {
             case "Fighter":
-                ptext = "Slashes!"
+                ptext = `Slash! +(${player.damage})`
                 break;
             case "Ranger":
-                ptext = "Shoots Arrow!"
+                ptext = `Loose arrow! +(${player.damage})`
                 break;
             case "Mage":
-                ptext = "Staff bash!"
+                ptext = `Bonk! +(${player.damage})`
                 break;
         }
-        updateCharacters(`${ptext}`, `${etext}`)
+        updateCharacters(`${ptext}`, `${etext}`, true, true)
     }
 }
 
@@ -870,7 +876,7 @@ async function checkVictory() {
         player.mage = false;
 
         buttonState(true, true, true);
-        updateCharacters("Victory Dance", "Pile of bones");
+        updateCharacters("Victory Dance", "Pile of bones", true, true);
         if (winCounter < winsNeeded) {
             getLevelUp.hidden = false;
             levelPopup();
@@ -882,7 +888,7 @@ async function checkVictory() {
             getLevelUp.hidden = true;
             buttonState(true, false, true);
             player.mage = false;
-            player.update("I win!!");
+            player.update("I win!!", true);
             await sleep(6000);
             newGame();
         }
@@ -909,7 +915,7 @@ async function blockEnemy() {
             updateCharacters()
         } else if (blocked < 0) {
             player.hp += blocked;
-            player.update(`Blocked ${enemy.damage} Damage`);
+            player.update(`Blocked ${enemy.damage} Damage`, true);
             if (player.hp <= 0) {
                 playerDeath();
             }
@@ -917,7 +923,7 @@ async function blockEnemy() {
         blockCounter --;
         getBlockButton.innerText = `Block (${blockCounter})`;
     } else {
-        player.update("Your shield is broke!");
+        player.update("Your shield is broke!", true);
         getBlockButton.innerText = "*Broken*";
         getBlockButton.disabled = true;
     }
@@ -928,7 +934,6 @@ function newGame() { // reset game state
     stunCounter = 0;
     blockCounter = 5;
     stunFlag = false;
-    mageFlag = false;
     player = new Player("?", "?", "?", "?", "?", "?", "...");
     enemy = new Enemy("?", "?", "?", "...");
     updateCharacters("Choose Class", "Awaiting player choice");
@@ -939,4 +944,4 @@ function newGame() { // reset game state
 
 // starts new game on page load
 newGame();
-helpPopup();
+// helpPopup();
