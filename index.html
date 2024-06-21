@@ -99,22 +99,30 @@
             </div>
 
             <div id="spritesContainer">
-                    <span class="spriteAction" id="pSprite">
-                        <span class="actionBorder"><div id="player-action"></div></span>
-                        <span class="actionBorder"><div id="enemy-action"></div></span>
+                <span class="spriteAction">
+                    <span class="actionBorder">
+                        <span class="mainAction" id="pAct">
+                            <h3 id="player-action"></h3>
+                        </span>
+                        <span class="subAction" id="pSubAct"></span>
                     </span>
-                <!-- <span class="spriteAction", id="eSprite">
-                </span> -->
-            </div>
-            <span class="sprites">
-                <span class="spritesCont">
-                    <img class="playerSprite">
-                    <img class="enemySprite">
+
+                    <span class="actionBorder" id="eActBord">
+                        <span class="mainAction" id="eAct">
+                            <h3 id="enemy-action"></h3>
+                        </span>
+                        <span class="subAction" id="eSubAct"></span>
+                    </span>
                 </span>
-            </span>
+            </div>
             
-            <div id="actionContainer">
-                
+            <div id="blackBar"></div>
+
+            <div class="sprites">
+                <span class="spritesCont">
+                    <img class="playerSprite" id="pSprite">
+                    <img class="enemySprite" id="eSprite">
+                </span>
             </div>
 
             <div id="charaContainer" >
@@ -140,11 +148,11 @@
                 </div>
 
             </div>
-        </div>
-        <div id="footer">
-            <button alt="Attack" id="attack-button" class="btn atkimg" onclick="attackEnemy()"></button>
-            <button alt="Abilities" id="abilities-button" class="btn ablimg" onclick="saPopup()"></button>
-            <button alt="Stats" id="stats-button" class="btn stsimg" onclick="popUp()"></button>
+            <div id="footer">
+                <button alt="Attack" id="attack-button" class="btn atkimg" onclick="attackEnemy()"></button>
+                <button alt="Abilities" id="abilities-button" class="btn ablimg" onclick="saPopup()"></button>
+                <button alt="Stats" id="stats-button" class="btn stsimg" onclick="popUp()"></button>
+            </div>
         </div>
         
         <script defer src="./index.js"></script>

@@ -59,7 +59,6 @@ function saPopup() {
 
 function levelPopup() {
     const popup = document.getElementById("levelPopup");
-    genButton(popup)
     popup.classList.toggle("show");
 }
 
@@ -165,7 +164,7 @@ var enemy;
 var chooseClass = false;
 
 var winCounter = 0;
-var winsNeeded = 10;
+var winsNeeded = 6;
 
 var stunCounter = 0;
 var stunFlag = false;
@@ -176,8 +175,6 @@ var blockFlag = false;
 var spellData = {};
 var spellCount;
 var spellBookFlag;
-// TODO: Check if mage flag is still in use??
-var mageFlag = false;
 
 var turnCounter = 0;
 var rangerFlag = false;
@@ -185,6 +182,8 @@ var setRanger;
 
 var ENEMYDAM = 2; // for testing; enemy damage
 var WAITTIME = 1000; // change enemy gen time
+
+var actionTextCount = 0;
 
 // TODO: Maybe add the flags to the player constructor?? Might cause a lot of issues
 class Player {
@@ -197,21 +196,21 @@ class Player {
         this.block = block;
         this.name = name;
         
-        this.mage = mageFlag;
         this.ranger = rangerFlag;
 
+        this.textList = [];
         if (this.ranger) {
             setRanger = true;
         }
     }
     
     // Update HP and Action on UI
-    update(playerAction) {
+    update(playerAction, addSub) {
         // get player menu container elements
         var getAttackButton = document.getElementById("attack-button");
         var getBlockButton = document.getElementById("block-button");
         
-        this._updateContainer(playerAction);
+        this._updateContainer(playerAction, addSub);
         this._updateStats();
         
         // set amount of actions to 2
@@ -249,7 +248,7 @@ class Player {
     blockAttack(enemyDam) {
         return this.block - enemyDam;
     }
-    _updateContainer(playerAction) {
+    _updateContainer(playerAction, addSub = false) {
         // get player container elements
         var getPlayerAction = document.getElementById("player-action");
         var getPlayerHp = document.getElementById("player-hp");
@@ -257,13 +256,43 @@ class Player {
         var getPlayerName = document.getElementById("player-name");
 
         // set player container elements
+        getPlayerAction.innerHTML = playerAction;
         getPlayerName.innerHTML = this.name;
         getPlayerHp.innerHTML = `${this.hp} / ${this.max_hp}`;
         getPlayerMp.innerHTML = `${this.mp} / ${this.max_mp}`;
-        getPlayerAction.innerHTML = playerAction;
+
+        if (addSub == true) {
+            this._updateAction(playerAction);
+        }   else if (addSub == false) {
+            // pass
+        }
 
         this._setMeter("playerHp-meter");
         this._setMeter("playerMp-meter");
+    }
+    // todo: Smooth out action log, maybe delay adding element when i >= 1
+    _updateAction(action) {
+        const getBorderCont = document.getElementById("pSubAct");
+        if (action == "Ready") {
+            // pass
+        } else if (action == undefined) {
+            // pass
+        } else {
+            if (this.textList[0] == undefined) {
+                // pass
+            } else if (this.textList.length == 8) {
+                this.textList.pop();
+            }
+            this.textList.unshift(action)
+            getBorderCont.innerHTML = "";
+            for (let i = 0; i < this.textList.length; i++) {
+                const makeH3 = document.createElement("h3");
+                makeH3.innerHTML = this.textList[i]
+                makeH3.classList.add("actionSubText")
+                getBorderCont.appendChild(makeH3);
+            }
+            
+        }
     }
     _updateStats() {
         // get player stats container elements
@@ -339,14 +368,13 @@ class Spell {
         return playerMp >= this.cost;
     }
 }
-
 // spell information: name, damage, cost, info, canStun
 // may be redundent but helps me keep it a bit organized
 let spellInfo = {
     fireData: {
         _name: "Fire",
         _dam: 8,
-        _cost: 1,
+        _cost: 2,
         _info: "Hurl a fireball!"
     },
     iceData: {
@@ -442,14 +470,13 @@ async function spellAttack(clicked_id) {
     } else if (clicked_id == "Earth") { // Damages & chance to stun
         _checkCost(spells.earthSpell, enemy.hp, player.mp)
     } else if (clicked_id == "Heal") {  // Heals player
-        canUse = true; // NOTE: leave for testing
         _checkCost(spells.healSpell, player.hp, player.mp);
     }
     
     if (!stunFlag) { // TODO: figure out something better, probably in the update rework
-        updateCharacters(`${clicked_id}!`, "Ouch!");
+        updateCharacters(`${clicked_id}!`, "Ouch!", true, true);
     } else {
-        updateCharacters(`${clicked_id}!`, `*Stunned* (${stunCounter})`);
+        updateCharacters(`${clicked_id}!`, `*Stunned* (${stunCounter})`, true, true);
     }
     
     if (!canUse) { // check if player has enough mp
@@ -493,9 +520,10 @@ class Enemy {
         this.hp = hp;
         this.damage = damage;
         this.name = name;
+        this.textList = [];
     }
     // Update HP and Action on UI
-    update(enemyAction = "Action") {
+    update(enemyAction, addSub) {
         var getEnemyAction = document.getElementById("enemy-action");
         var getEnemyHp = document.getElementById("enemy-hp");
         var getEnemyName = document.getElementById("enemy-name");
@@ -504,18 +532,52 @@ class Enemy {
         var getEnemySHp = document.getElementById("e-hp")
         var getEmemySDam = document.getElementById("e-dam")
         
-        getEnemyAction.innerHTML = enemyAction;
         getEnemyHp.innerHTML = `${this.hp} / ${this.max_hp}`;
         getEnemyName.innerHTML = this.name;
-
+        
         getEnemySName.innerHTML = `Type: ${this.name}`;
         getEnemySHp.innerHTML = `Max HP: ${this.max_hp}`;
         getEmemySDam.innerHTML = `Damage: ${this.damage}`;
+        
+        if (addSub == true) {
+            this._updateAction(enemyAction, addSub)
+        } else if (addSub == false) {
+            // pass
+        }
+        
+        if (enemyAction == undefined) {
+            // pass
+        } else {
+            getEnemyAction.innerHTML = enemyAction;
+        }
 
         this._setHpMeter();
     }
     attack(playerHp) {
         return playerHp -= this.damage; // returns player hp value
+    }
+    _updateAction(action) {
+        const getBorderCont = document.getElementById("eSubAct");
+        if (action == "Ready") {
+            // pass
+        } else if (action == undefined) {
+            // pass
+        } else {
+            if (this.textList[0] == undefined) {
+                // pass
+            } else if (this.textList.length == 8) {
+                this.textList.pop();
+            }
+            this.textList.unshift(action)
+            getBorderCont.innerHTML = "";
+            for (let i = 0; i < this.textList.length; i++) {
+                const makeH3 = document.createElement("h3");
+                makeH3.innerHTML = this.textList[i]
+                makeH3.classList.add("actionSubText")
+                getBorderCont.appendChild(makeH3);
+            }
+            
+        }
     }
     _setHpMeter() {
         var getHpMeter = document.getElementById("enemy-meter");
@@ -546,17 +608,17 @@ async function levelUp(clicked_id) {
     if (clicked_id == "first-choice") {
         player.max_hp += 2;
         player.max_mp += 2;
-        player.damage += 2;
-        player.block += 2;
-        player.update("I'm feeling strong!")
+        player.damage += 1;
+        player.block += 1;
+        player.update("I'm feeling strong!", true)
     } else if (clicked_id == "second-choice") {
         player.hp = player.max_hp;
         player.mp = player.max_mp;
-        player.update("I'm feeling healthy!")
+        player.update("I'm feeling healthy!", true)
     } else if (clicked_id == "third-choice") {
         blockCounter = 5;
         getBlockButton.innerText = `Block (${blockCounter})`
-        player.update("Neat! A shield!")
+        player.update("Neat! A shield!", true)
     }
     levelPopup();
     buttonSwitch(2000);
@@ -577,20 +639,19 @@ function sleep(ms) {
 // TODO: Add variety for different levels and different names
 // idea: use winCounter to adjust "difficulty"
 async function genEnemy() {
-    var MAX_HP = dice(10) + 10;
+    var MAX_HP = 10 + (winCounter * (dice(2) + 1));
     var HP = MAX_HP;
-    // var DAM = dice(2) + dice(2) + 1;
-    var DAM = ENEMYDAM; // for testing
-    var NAME = "Goblin";
+    // var DAM = (dice(2) + 1) + winCounter;
+    var DAM = 2;
+    var NAME = ["Goblin", "Bats", "Ghoul", "Orc", "Evil Monk", "Dragon"];
 
     buttonState(true, true, true);
     player.mage = false; // turn off spellbook; figure out something better
     
     updateCharacters("Ready", "Searching for foes...");
     await sleep(WAITTIME);
-    enemy = new Enemy(MAX_HP, HP, DAM, NAME);
+    enemy = new Enemy(MAX_HP, HP, DAM, NAME[winCounter]);
     buttonState(false, true, false);
-    player.mage = true; // turn spellbook back on
     updateCharacters("Ready", "Ready");
     
     // TODO: Finish and flush out enemy list
@@ -639,9 +700,9 @@ async function genEnemy() {
 
 // choose class based on button clicked
 function setClass(clicked_id) {
-    var MAX_HP = [12, 10, 8];
-    var MAX_MP = [8, 10, 12];
-    var DAMAGE = [2, 3, 4];
+    var MAX_HP = [16, 14, 12]; // fighter ranger mage
+    var MAX_MP = [10, 12, 14];
+    var DAMAGE = [4, 3, 3];
     var BLOCK = [4, 3, 2];
     var NAME = ["Fighter", "Ranger", "Mage"];
 
@@ -657,7 +718,6 @@ function setClass(clicked_id) {
             player = new Player(MAX_HP[1], MAX_HP[1], MAX_MP[1], MAX_MP[1], DAMAGE[1], BLOCK[1], NAME[1]); // Player(MAX-HP, HP, Damage, Block, Name)
         }
         if (clicked_id == "mage-button") {
-            mageFlag = true;
             player = new Player(MAX_HP[2], MAX_HP[2], MAX_MP[2], MAX_MP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
             abilButton.classList.add("splimg")
         }
@@ -669,26 +729,38 @@ function setClass(clicked_id) {
 }
 
 // general update player/enemy UI, takes actions as str. "Attacking", "Defending"
-function updateCharacters(p_action, e_action) {
-    player.update(p_action);
-    enemy.update(e_action);
+function updateCharacters(p_action, e_action, pAddSub, eAddSub) {
+    if (p_action == undefined) {
+        const pAction = document.getElementById("player-action")
+        p_action = pAction.innerHTML;
+    } else if (e_action == undefined) {
+        const eAction = document.getElementById("enemy-action")
+        e_action = eAction.innerHTML;
+    }
+
+    player.update(p_action, pAddSub);
+    enemy.update(e_action, eAddSub);
 }
 
 // TODO: hit enemy for half damage on success & 1.5 of gob damage to player on fail?
-function stunEnemy() {
+async function stunEnemy() {
+    saPopup();
     var getStunButton = document.getElementById("stun-button");
     var d4 = dice(4);
     var d2 = dice(2) + 1;
     
     if (d4 >= 3) { // pass check
+        spriteContainerHit("eSprite")
         stunFlag = true;
         stunCounter = d2;
         getStunButton.disabled = true;
         getStunButton.innerHTML = `Stun (${stunCounter})`
-        enemy.update(`*Stunned* (${stunCounter})`)
+        updateCharacters(`Success!`, `*Stunned* (${stunCounter})`, true, true)
+        await sleep(3000);
     } else if (d4 <= 2) { // fail check
+        player.update(`Failed!`);
+        await sleep(1500);
         enemyAttack();
-        console.log("Failed Stun")
     }
 }
 
@@ -697,7 +769,7 @@ function checkStun() {
     if (!stunFlag) {} else {
         stunCounter --;
         getStunButton.innerHTML = `Stun (${stunCounter})`
-        enemy.update(`*Stunned* (${stunCounter})`)
+        enemy.update(`*Stunned* (${stunCounter})`, true)
         if (stunCounter == 0) {
             stunFlag = false;
             getStunButton.disabled = false;
@@ -710,50 +782,55 @@ function enemyAttack() {
     if (player.hp > 0 && enemy.hp > 0 && !stunFlag) {
         player.hp = enemy.attack(player.hp);
         spriteContainerHit("pSprite")
-        updateCharacters("Flinches in pain", "Bites");
+        updateCharacters(`*Flinches* -(${enemy.damage})`, "Bite!", true, true);
     } 
     if (player.hp <= 0) {
         playerDeath();
     }
     checkStun();
     
-    async function playerDeath() { // as of now the enemy attacking is the only way to die
-        var getLevelUp = document.getElementById("levelContainer");
-    
-        getLevelUp.hidden = true;
-        updateCharacters("Piles of bones", "Victory laugh");
-        buttonState(true, true, true);
-        await sleep(4000);
-        newGame();
-    }
+
+}
+async function playerDeath() {
+    var getLevelUp = document.getElementById("levelContainer");
+
+    getLevelUp.hidden = true;
+    updateCharacters("Piles of bones", "Victory laugh", true, true);
+    buttonState(true, true, true);
+    await sleep(4000);
+    newGame();
 }
 
-// Flash container red when hit
+// TODO: Fix jerky animation in css, maybe use the curve?
 let intId;
 async function spriteContainerHit(spriteContainerId) {
 
     _setAnim();
     await sleep(1000);
-    _resetSpriteContainer();
+    _reset();
 
     function _setAnim() {
-        if (!intId) {
-        intId = setInterval(_flashCont, 500);    
-        }
+        if (!intId) {intId = setInterval(_flashCont, 500);}
     }
-    // Change background to red depending on container
+    
     function _flashCont() {
         const container = document.getElementById(spriteContainerId);
+        const pContainer = document.getElementById("pSprite");
+        const eContainer = document.getElementById("eSprite");
         switch(spriteContainerId) {
+            // Attack player anim
             case "pSprite":
-                container.className = container.className === "sprite" ? "pSpriteHit" : "sprite";
+                eContainer.className = eContainer.className === "enemySprite" ? "eSpriteAtk" : "enemySprite";
+                container.className = container.className === "playerSprite" ? "pSpriteHit" : "playerSprite";
                 break;
-            case "eSprite":
-                container.className = container.className === "sprite" ? "eSpriteHit" : "sprite";
+                // Attack enemy anim
+                case "eSprite":
+                pContainer.className = pContainer.className === "playerSprite" ? "pSpriteAtk" : "playerSprite";
+                container.className = container.className === "enemySprite" ? "eSpriteHit" : "enemySprite";
                 break;
         }
     }
-    function _resetSpriteContainer() {
+    function _reset() {
         clearInterval(intId);
         intId = null;
     }
@@ -773,29 +850,30 @@ async function attackEnemy() {
         } else {
             if (player.ranger) {
                 turnCounter = 1;
+            } else if (enemy.hp > 0) {
+                await sleep(2000);
+                enemyAttack();
+                await sleep(2000);
             }
-            await sleep(2000);
-            enemyAttack();
-            await sleep(2000);
         }
     } 
     checkVictory();
 
     function _textCheck() { // change text depending on class
         var ptext;
-        var etext = "*Winces*";
+        var etext = `*Wince* -(${player.damage})`;
         switch(player.name) {
             case "Fighter":
-                ptext = "Slashes!"
+                ptext = `Slash! +(${player.damage})`
                 break;
             case "Ranger":
-                ptext = "Shoots Arrow!"
+                ptext = `Loose arrow! +(${player.damage})`
                 break;
             case "Mage":
-                ptext = "Staff bash!"
+                ptext = `Bonk! +(${player.damage})`
                 break;
         }
-        updateCharacters(`${ptext}`, `${etext}`)
+        updateCharacters(`${ptext}`, `${etext}`, true, true)
     }
 }
 
@@ -807,7 +885,7 @@ async function checkVictory() {
         player.mage = false;
 
         buttonState(true, true, true);
-        updateCharacters("Victory Dance", "Pile of bones");
+        updateCharacters("Victory Dance", "Pile of bones", true, true);
         if (winCounter < winsNeeded) {
             getLevelUp.hidden = false;
             levelPopup();
@@ -819,7 +897,7 @@ async function checkVictory() {
             getLevelUp.hidden = true;
             buttonState(true, false, true);
             player.mage = false;
-            player.update("I win!!");
+            player.update("I win!!", true);
             await sleep(6000);
             newGame();
         }
@@ -830,7 +908,10 @@ async function blockEnemy() {
     var getBlockButton = document.getElementById("block-button");
     var blocked = player.blockAttack(enemy.damage); // player.block - enemy.damage -> 4 - 2
     var healCheck = player.hp + blocked;
+
+    saPopup(); // close popup
     if (blockCounter > 0) {
+        spriteContainerHit("pSprite")
         if (blocked >= 0) { // if greater than 0 heal for the amount
             if (healCheck >= player.max_hp) { // check if hp would be greater then max
                 player.hp = player.max_hp;
@@ -838,10 +919,14 @@ async function blockEnemy() {
             else {
                 player.hp += blocked;
             }
-            player.update(`You blocked all damage`);
-        } else if (blocked < 0) {
+            enemy.hp -= blocked;
+            updateCharacters(`Block! +(${blocked})`, `*Stagger* -(${blocked})`, true, true)
+            await sleep(3000)
+            checkVictory()
+        } else if (blocked < 0) { // block < enemy dam
             player.hp += blocked;
-            player.update(`Blocked ${enemy.damage} Damage`);
+            player.update(`Blocked ${enemy.damage} Damage`, true);
+            updateCharacters(`Blocked ${enemy.damage} Damage`, `*Bites* +${blocked}`)
             if (player.hp <= 0) {
                 playerDeath();
             }
@@ -849,7 +934,7 @@ async function blockEnemy() {
         blockCounter --;
         getBlockButton.innerText = `Block (${blockCounter})`;
     } else {
-        player.update("Your shield is broke!");
+        player.update("Your shield is broke!", true);
         getBlockButton.innerText = "*Broken*";
         getBlockButton.disabled = true;
     }
@@ -860,15 +945,14 @@ function newGame() { // reset game state
     stunCounter = 0;
     blockCounter = 5;
     stunFlag = false;
-    mageFlag = false;
     player = new Player("?", "?", "?", "?", "?", "?", "...");
     enemy = new Enemy("?", "?", "?", "...");
     updateCharacters("Choose Class", "Awaiting player choice");
     buttonState(true, false, true);
-    helpPopup();
     classPopup();
     genLevelCircle();
 }
 
 // starts new game on page load
 newGame();
+// helpPopup();
