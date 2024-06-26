@@ -62,7 +62,7 @@
 html {
   height: 100vh;
   background-color: #5D5323;
-  /* font-family: fantasy; */
+  /* font-family: fantasy; --> not good for all browsers*/
   font-family: Papyrus, Garamond, sans-serif;
 
 }
@@ -248,7 +248,12 @@ body {
   
   border-style: solid hidden solid;
   border-color: rgb(82, 82, 82);
+  
+  .barText {
+    color: red;
+  }
 }
+
 
 
 /* ----------- SPRITE HIT ------------ */

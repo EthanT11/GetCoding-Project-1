@@ -836,6 +836,14 @@ async function spriteContainerHit(spriteContainerId) {
     }
 
 }
+updateBar()
+function updateBar() {
+    const getBar = document.getElementById("blackBar");
+    const text = document.createElement("h3");
+    text.classList.add("barText")
+    text.innerHTML = "aaaaa"
+    getBar.append(text)
+}
 
 
 // attack button; increments winCounter each win
