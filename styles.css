@@ -62,7 +62,8 @@
 html {
   height: 100vh;
   background-color: #5D5323;
-  font-family: fantasy;
+  /* font-family: fantasy; */
+  font-family: Papyrus, Garamond, sans-serif;
 
 }
 body {
@@ -151,6 +152,7 @@ body {
   
   border-style: solid solid solid hidden;
   border-color: rgb(82, 82, 82);
+  
   
 }
 
