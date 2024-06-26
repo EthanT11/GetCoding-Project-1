@@ -242,14 +242,19 @@ body {
 /* ----------- Action Container/Black Bar ------------ */
 #blackBar {
   z-index: 2;
-  max-height: 2%;
   background-color: black;
   padding: 0.5rem;
   
   border-style: solid hidden solid;
   border-color: rgb(82, 82, 82);
+
+  text-align: center;
+
+  .pBarText {
+    color: green;
+  }
   
-  .barText {
+  .eBarText {
     color: red;
   }
 }

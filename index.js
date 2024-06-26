@@ -836,13 +836,20 @@ async function spriteContainerHit(spriteContainerId) {
     }
 
 }
-updateBar()
-function updateBar() {
+updateBar("Testing", "player")
+function updateBar(text, chara) {
     const getBar = document.getElementById("blackBar");
-    const text = document.createElement("h3");
-    text.classList.add("barText")
-    text.innerHTML = "aaaaa"
-    getBar.append(text)
+    const createEle = document.createElement("h3");
+    if (arguments[1] == "player") {
+        createEle.classList.add("pBarText");
+    } else if (arguments[1] == "enemy") {
+        createEle.classList.add("eBarText");
+    } else {
+        console.log(`Not a valid arg -> ${arguments[1]}\nTry "player" or "enemy"`)
+        return 1
+    }
+    createEle.innerHTML = text;
+    getBar.append(createEle);
 }
 
 
