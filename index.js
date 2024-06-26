@@ -836,17 +836,17 @@ async function spriteContainerHit(spriteContainerId) {
     }
 
 }
-updateBar("Testing", "player")
+updateBar("Testing", "butts")
 function updateBar(text, chara) {
     const getBar = document.getElementById("blackBar");
     const createEle = document.createElement("h3");
-    if (arguments[1] == "player") {
+    if (chara == "player") {
         createEle.classList.add("pBarText");
-    } else if (arguments[1] == "enemy") {
+    } else if (chara == "enemy") {
         createEle.classList.add("eBarText");
     } else {
-        console.log(`Not a valid arg -> ${arguments[1]}\nTry "player" or "enemy"`)
-        return 1
+        console.log(`Not a valid arg -> "${chara}": Try "player" or "enemy"`)
+        createEle.classList.add("pBarText"); // For now just to have some styling
     }
     createEle.innerHTML = text;
     getBar.append(createEle);
