@@ -838,18 +838,17 @@ async function spriteContainerHit(spriteContainerId) {
 }
 // updateBar("Around the World", "player")
 // updateBar("Enemy Turn", "enemy")
-updateBar("Player Turn", "player")
-function updateBar(text, chara) {
+updateBar("Player Turn", "green")
+function updateBar(text, color) {
     const getBar = document.getElementById("blackBar");
     const createEle = document.createElement("h3");
-    if (chara == "player") {
-        createEle.classList.add("pBarText");
-    } else if (chara == "enemy") {
-        createEle.classList.add("eBarText");
-    } else {
-        console.log(`Not a valid arg -> "${chara}": Try "player" or "enemy"`)
-        createEle.classList.add("pBarText"); // For now just to have some styling
+    createEle.style.color = color;
+
+    if (createEle.style.color == "") {
+        console.log(`${color}: Not a valid color`)
+        createEle.style.color = "orange"; // Default so text always has a color
     }
+    createEle.classList.add("barText");
     createEle.innerHTML = text;
     getBar.append(createEle);
 }
