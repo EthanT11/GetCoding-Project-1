@@ -836,7 +836,8 @@ async function spriteContainerHit(spriteContainerId) {
     }
 
 }
-updateBar("Testing", "butts")
+updateBar("Enemy Turn", "enemy")
+// updateBar("Player Turn", "player")
 function updateBar(text, chara) {
     const getBar = document.getElementById("blackBar");
     const createEle = document.createElement("h3");
