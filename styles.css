@@ -251,14 +251,14 @@ body {
   text-align: center;
 
   .pBarText {
-    color: lightgreen;
-    animation: p-long-slide 3s;
+    color: green;
+    animation: p-turn 3s;
     animation-iteration-count: infinite;
   }
   
   .eBarText {
     color: red;
-    animation: e-turn 2s;
+    animation: e-turn 3s;
     animation-iteration-count: infinite;
   }
 }
@@ -527,36 +527,93 @@ body {
   
 }
 
-@keyframes p-long-slide {
+/* @keyframes p-long-slide {
   0% {
+    transform: translateX(-50rem);
+    opacity: 0;
+    scale: 0.1;
   }
-  30% {
+  20% {
     
   }
+  40% {
+    transform: translateX(0);
+    scale: 1.5;
+    opacity: 100;
+  }
   60% {
+    transform: translateX(0);
+    scale: 1.5;
+    opacity: 100;
+  }
+  80% {
     
   }
   100% {
-    transform: translateX(-10rem);
+    transform: translateX(20rem);
+    scale: 1;
+    opacity: 0;
 
+  }
+} */
+
+@keyframes p-turn {
+  0% {
+    scale: 0.001;
+    transform: translateX(0);
+    opacity: 10;
+  }
+  10% {
+    transform: translateX(-40rem);
+  }
+  45% {
+    scale: 1.4;
+    opacity: 100%;
+  }
+  50% {
+    transform: translateX(0);
+  }
+  55% {
+    scale: 1.4;
+    opacity: 100%;
+  }
+  90% {
+    transform: translateX(40rem);
+  }
+  100% {
+    scale: 0.001;
+    transform: translateX(0);
+    opacity: 10;
   }
 }
 
+
 @keyframes e-turn {
   0% {
-    opacity: 0;
+    scale: 0.001;
+    transform: translateX(0);
+    opacity: 10;
+  }
+  10% {
+    transform: translateX(-40rem);
   }
   20% {}
-  40% {
+  30% {}
+  40% {}
+  50% {
+    scale: 1.4;
+    transform: translateX(0);
     opacity: 100%;
-    scale: 1.2;
   }
-  60% {
-    opacity: 100%;
-    scale: 1.2;
-  }
+  60% {}
+  70% {}
   80% {}
+  90% {
+    transform: translateX(40rem);
+  }
   100% {
-    opacity: 0;
+    scale: 0.001;
+    transform: translateX(0);
+    opacity: 10;
   }
 }
