@@ -251,8 +251,7 @@ body {
   text-align: center;
 
   .barText {
-    animation: p-turn 3s;
-    animation-iteration-count: infinite;
+    animation: go-around 5s 3;
   }
   
 }
@@ -521,14 +520,14 @@ body {
   
 }
 
-@keyframes p-turn {
+@keyframes go-around {
   0% {
     scale: 0.001;
     transform: translateX(0);
     opacity: 10;
   }
   10% {
-    transform: translateX(-40rem);
+    transform: translateX(-10rem);
   }
   45% {
     scale: 1.4;
@@ -542,38 +541,7 @@ body {
     opacity: 100%;
   }
   90% {
-    transform: translateX(40rem);
-  }
-  100% {
-    scale: 0.001;
-    transform: translateX(0);
-    opacity: 10;
-  }
-}
-
-
-@keyframes e-turn {
-  0% {
-    scale: 0.001;
-    transform: translateX(0);
-    opacity: 10;
-  }
-  10% {
-    transform: translateX(-40rem);
-  }
-  20% {}
-  30% {}
-  40% {}
-  50% {
-    scale: 1.4;
-    transform: translateX(0);
-    opacity: 100%;
-  }
-  60% {}
-  70% {}
-  80% {}
-  90% {
-    transform: translateX(40rem);
+    transform: translateX(10rem);
   }
   100% {
     scale: 0.001;

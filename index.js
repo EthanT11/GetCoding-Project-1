@@ -233,6 +233,7 @@ class Player {
         }
     }
     attack(enemyHp) {
+        updateBar(`${player.name} Attacks!`, "green")
         if (this.ranger) {
             var dblDam = dice(2); // TODO: Probably make the chances lower...
             if (dblDam == 2) {
@@ -554,6 +555,7 @@ class Enemy {
         this._setHpMeter();
     }
     attack(playerHp) {
+        updateBar(`${enemy.name} Attacks!`, "red")
         return playerHp -= this.damage; // returns player hp value
     }
     _updateAction(action) {
@@ -600,10 +602,10 @@ class Enemy {
 // amounts dependent on class?
 // TODO: Accumulate levels if never choosen? OR disable menu buttons until a choice is made
 async function levelUp(clicked_id) {
-    var getLevelUp = document.getElementById("levelContainer");
-    var getBlockButton = document.getElementById("block-button");
-    console.log("Level Up!");
+    const getLevelUp = document.getElementById("levelContainer");
+    const getBlockButton = document.getElementById("block-button");
     getLevelUp.hidden = true;
+    updateBar("Level up!", "green");
 
     if (clicked_id == "first-choice") {
         player.max_hp += 2;
@@ -643,7 +645,7 @@ async function genEnemy() {
     var HP = MAX_HP;
     // var DAM = (dice(2) + 1) + winCounter;
     var DAM = 2;
-    var NAME = ["Goblin", "Bats", "Ghoul", "Orc", "Evil Monk", "Dragon"];
+    var NAME = ["Goblin", "Bat", "Ghoul", "Orc", "Evil Monk", "Dragon"];
 
     buttonState(true, true, true);
     player.mage = false; // turn off spellbook; figure out something better
@@ -676,8 +678,8 @@ async function genEnemy() {
                 "hp": 0,
                 "dam": 0
             },
-            "bats": {
-                "name": "Bats",
+            "bat": {
+                "name": "Bat",
                 "max_hp": 0,
                 "hp": 0,
                 "dam": 0
@@ -723,6 +725,7 @@ function setClass(clicked_id) {
         }
         genEnemy();
         classPopup();
+        updateBar(`${player.name}'s Turn`, "lightgreen")
     } else {
         return console.log("Already picked a class");
     }
@@ -836,12 +839,11 @@ async function spriteContainerHit(spriteContainerId) {
     }
 
 }
-// updateBar("Around the World", "player")
-// updateBar("Enemy Turn", "enemy")
-updateBar("Player Turn", "green")
+
 function updateBar(text, color) {
     const getBar = document.getElementById("blackBar");
     const createEle = document.createElement("h3");
+    getBar.innerHTML = "";
     createEle.style.color = color;
 
     if (createEle.style.color == "") {
@@ -903,6 +905,7 @@ async function checkVictory() {
         buttonState(true, true, true);
         updateCharacters("Victory Dance", "Pile of bones", true, true);
         if (winCounter < winsNeeded) {
+            updateBar("Victorious!!", "green");
             getLevelUp.hidden = false;
             levelPopup();
             
@@ -963,9 +966,10 @@ function newGame() { // reset game state
     stunFlag = false;
     player = new Player("?", "?", "?", "?", "?", "?", "...");
     enemy = new Enemy("?", "?", "?", "...");
-    updateCharacters("Choose Class", "Awaiting player choice");
+    updateCharacters("...", "...");
     buttonState(true, false, true);
     classPopup();
+    updateBar("Choose your Class", "lightgreen");
     genLevelCircle();
 }
 
