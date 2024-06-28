@@ -727,6 +727,7 @@ function setClass(clicked_id) {
         }
         genEnemy();
         classPopup();
+        audioElement.play(); // Has to activate on a user interacting with the dom; maybe find a better place to put it or start it?
         updateBar(`${player.name}'s Turn`, "lightgreen")
     } else {
         return console.log("Already picked a class");
@@ -963,6 +964,7 @@ async function blockEnemy() {
 }
 
 const audioElement = new Audio("audio/8_Bit_Nostalgia.mp3") // Background music
+audioElement.volume = 0.5;
 function newGame() { // reset game state
     winCounter = 0;
     stunCounter = 0;
@@ -975,12 +977,13 @@ function newGame() { // reset game state
     classPopup();
     updateBar("Choose your Class", "lightgreen");
     genLevelCircle();
-    audioElement.muted = false;
-    audioElement.play();
 }
 
-audioElement.muted = true;
-audioElement.volume = 1;
+const volSlider = document.getElementById("volumeSlider");
+volSlider.oninput = function() {
+    const value = volSlider.value;
+    audioElement.volume = value/100;
+}
 
 // starts new game on page load
 newGame();
