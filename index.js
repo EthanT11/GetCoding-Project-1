@@ -748,9 +748,9 @@ function updateCharacters(p_action, e_action, pAddSub, eAddSub) {
 // TODO: hit enemy for half damage on success & 1.5 of gob damage to player on fail?
 async function stunEnemy() {
     saPopup();
-    var getStunButton = document.getElementById("stun-button");
-    var d4 = dice(4);
-    var d2 = dice(2) + 1;
+    const getStunButton = document.getElementById("stun-button");
+    const d4 = dice(4);
+    const d2 = dice(2) + 1;
     
     if (d4 >= 3) { // pass check
         spriteContainerHit("eSprite")
@@ -768,7 +768,7 @@ async function stunEnemy() {
 }
 
 function checkStun() {
-    var getStunButton = document.getElementById("stun-button");
+    const getStunButton = document.getElementById("stun-button");
     if (!stunFlag) {} else {
         stunCounter --;
         getStunButton.innerHTML = `Stun (${stunCounter})`
@@ -809,8 +809,8 @@ async function playerDeath() {
 // TODO: Fix jerky animation in css, maybe use the curve?
 let intId;
 async function spriteContainerHit(spriteContainerId) {
-    soundEffect.play()
     _setAnim();
+    soundEffect.play()
     await sleep(1000);
     _reset();
 
@@ -922,9 +922,9 @@ async function checkVictory() {
         }
     } else {
         await sleep(3000);
-        updateCharacters("Ready", "Ready", true, true)
-        updateBar(`${player.name}'s Turn`, "lightgreen")
-        disableActionButtons(false)
+        updateCharacters("Ready", "Ready", true, true);
+        disableActionButtons(false);
+        updateBar(`${player.name}'s Turn`, "lightgreen");
     }
 }
 async function blockEnemy() {
