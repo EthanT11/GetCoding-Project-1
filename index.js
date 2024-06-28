@@ -480,6 +480,7 @@ async function spellAttack(clicked_id) {
     if (!canUse) { // check if player has enough mp
         console.log("not enough mp")
     } else {
+        disableActionButtons(true)
         _castSpell();
     }
     // helper funcs
