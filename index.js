@@ -95,7 +95,9 @@ function helpPopup() {
     Everytime you attack/use an ability/spell the enemy will attack back!
 
     Make sure to keep an eye on your Health(Green bar) and for Mages also
-    your Magic(blue bar).`;
+    your Magic(blue bar).
+    
+- Music in the background from https://www.FesliyanStudios.com`;
         popup.append(helpText);
     }
 }
@@ -233,7 +235,7 @@ class Player {
         }
     }
     attack(enemyHp) {
-        updateBar(`${player.name} Attacks!`, "green")
+        updateBar(`${player.name} Attacks!`, "lightgreen")
         if (this.ranger) {
             var dblDam = dice(2); // TODO: Probably make the chances lower...
             if (dblDam == 2) {
@@ -313,8 +315,8 @@ class Player {
         getPlayerSWins.innerHTML = `Wins: ${winCounter}`;
     }
     _setMeter(meter) {
-        var getHpMeter = document.getElementById(meter);
-        var attributes;
+        const getHpMeter = document.getElementById(meter);
+        let attributes;
         switch(meter) {
             case "playerHp-meter":
                 attributes = {
@@ -514,7 +516,6 @@ async function spellAttack(clicked_id) {
     }
 }
 
-
 class Enemy {
     constructor(max_hp, hp, damage, name) {
         this.max_hp = max_hp;
@@ -605,7 +606,7 @@ async function levelUp(clicked_id) {
     const getLevelUp = document.getElementById("levelContainer");
     const getBlockButton = document.getElementById("block-button");
     getLevelUp.hidden = true;
-    updateBar("Level up!", "green");
+    updateBar("Level up!", "lightgreen");
 
     if (clicked_id == "first-choice") {
         player.max_hp += 2;
@@ -624,7 +625,8 @@ async function levelUp(clicked_id) {
     }
     levelPopup();
     buttonSwitch(2000);
-    player.update("Ready")
+    updateBar(`${player.name}'s Turn`, "lightgreen");
+    player.update("Ready");
 }
 
 // generate random number between 1 and x
@@ -781,7 +783,7 @@ function checkStun() {
     }
 }
 // enemy attack
-function enemyAttack() {
+async function enemyAttack() {
     if (player.hp > 0 && enemy.hp > 0 && !stunFlag) {
         player.hp = enemy.attack(player.hp);
         spriteContainerHit("pSprite")
@@ -791,8 +793,9 @@ function enemyAttack() {
         playerDeath();
     }
     checkStun();
-    
 
+    await sleep(2000);
+    updateBar(`${player.name}'s Turn`, "lightgreen")
 }
 async function playerDeath() {
     var getLevelUp = document.getElementById("levelContainer");
@@ -905,7 +908,7 @@ async function checkVictory() {
         buttonState(true, true, true);
         updateCharacters("Victory Dance", "Pile of bones", true, true);
         if (winCounter < winsNeeded) {
-            updateBar("Victorious!!", "green");
+            updateBar("Victorious!!", "lightgreen");
             getLevelUp.hidden = false;
             levelPopup();
             
@@ -913,10 +916,10 @@ async function checkVictory() {
             genEnemy();
             genLevelCircle();
         } else { // victory condition
-            getLevelUp.hidden = true;
             buttonState(true, false, true);
             player.mage = false;
             player.update("I win!!", true);
+            updateBar("Make me look cool! I won!")
             await sleep(6000);
             newGame();
         }
@@ -959,6 +962,7 @@ async function blockEnemy() {
     }
 }
 
+const audioElement = new Audio("audio/8_Bit_Nostalgia.mp3") // Background music
 function newGame() { // reset game state
     winCounter = 0;
     stunCounter = 0;
@@ -971,7 +975,12 @@ function newGame() { // reset game state
     classPopup();
     updateBar("Choose your Class", "lightgreen");
     genLevelCircle();
+    audioElement.muted = false;
+    audioElement.play();
 }
+
+audioElement.muted = true;
+audioElement.volume = 1;
 
 // starts new game on page load
 newGame();

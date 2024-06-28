@@ -510,13 +510,23 @@ body {
 }
 
 @keyframes slide-right {
-  from {transform: translateX(-4rem);}
-  to {transform: translateX(0rem);}
+  from {
+    transform: translateX(-4rem);
+    scale: 1.5;
+  }
+  to {
+    transform: translateX(0rem);
+  }
 }
 
 @keyframes slide-left {
-  from {transform: translateX(4rem);}
-  to {transform: translateX(0rem);}
+  from {
+    transform: translateX(4rem);
+    scale: 1.5;
+  }
+  to {
+    transform: translateX(0rem);
+  }
   
 }
 
@@ -524,7 +534,7 @@ body {
   0% {
     scale: 0.001;
     transform: translateX(0);
-    opacity: 10;
+    opacity: 10%;
   }
   10% {
     transform: translateX(-10rem);
@@ -546,6 +556,6 @@ body {
   100% {
     scale: 0.001;
     transform: translateX(0);
-    opacity: 10;
+    opacity: 10%;
   }
 }
