@@ -18,6 +18,7 @@ Retro quest is a turn based RPG where you pick a character class and fight your 
 ---
 ## Audio
 - Music in the background from https://www.FesliyanStudios.com
+- Sound effect from https://pixabay.com/
 
 ---
 ## Game loop

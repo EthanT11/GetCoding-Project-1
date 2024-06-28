@@ -809,7 +809,7 @@ async function playerDeath() {
 // TODO: Fix jerky animation in css, maybe use the curve?
 let intId;
 async function spriteContainerHit(spriteContainerId) {
-
+    soundEffect.play()
     _setAnim();
     await sleep(1000);
     _reset();
@@ -974,19 +974,26 @@ function disableActionButtons(bool) {
 }
 
 // Audio
-const audioElement = new Audio("audio/8_Bit_Nostalgia.mp3") // Background music
+const audioElement = new Audio("audio/8_Bit_Nostalgia.mp3"); // Background music
+const soundEffect = new Audio("audio/8-bit-explosion.mp3"); // Hit effect
+
 const volSlider = document.getElementById("volumeSlider");
+
 audioElement.volume = 0; // 0.25 | Turn back on
+soundEffect.volume = 0;
 volSlider.oninput = function() {
     const value = volSlider.value;
     audioElement.volume = value/100;
+    soundEffect.volume = value/100;
 }
 
 function muteAudio() {
      if (audioElement.muted) {
         audioElement.muted = false;
+        soundEffect.muted = false;
      }  else {
         audioElement.muted = true;
+        soundEffect.muted = true;
      }
 }
 

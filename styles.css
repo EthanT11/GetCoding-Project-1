@@ -531,7 +531,6 @@ body {
 @keyframes slide-right {
   from {
     transform: translateX(-4rem);
-    scale: 1.5;
   }
   to {
     transform: translateX(0rem);
