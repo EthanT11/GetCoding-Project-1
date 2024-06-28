@@ -15,7 +15,7 @@
 }
 
 /* --------------- Desktop -------------- */
-/* -------------------------------------- */
+/* ------------------------------------- */
 @media only screen and (min-width:668px) {
   
   /* ---------- HEADER ----------- */
@@ -51,6 +51,7 @@
     border-radius: 50%;
     border: solid;
     border-color: rgb(82, 82, 82);
+    
   }
   
 }
@@ -58,6 +59,12 @@
 /* -------------------------------------- */
 /* ------------ Used for all ------------ */
 /* -------------------------------------- */
+.btn:disabled {
+  background-color: rgb(82, 82, 82);
+  border-color: rgb(165, 165, 165);
+  opacity: 70%;
+  pointer-events: none;
+}
 
 html {
   height: 100vh;

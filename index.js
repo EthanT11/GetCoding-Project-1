@@ -152,11 +152,6 @@ function buttonState(actionState, chooseClass, blockState = blockFlag) {
     
 }
 
-async function buttonSwitch(time) { // disables buttons then enables them after x time.
-    buttonState(true, true, true);
-    await sleep(1250)
-    buttonState(false, true, false);
-}
 
 // -- Game Functions --
 
@@ -624,9 +619,9 @@ async function levelUp(clicked_id) {
         player.update("Neat! A shield!", true)
     }
     levelPopup();
-    buttonSwitch(2000);
     updateBar(`${player.name}'s Turn`, "lightgreen");
     player.update("Ready");
+    disableActionButtons(false)
 }
 
 // generate random number between 1 and x
@@ -649,13 +644,12 @@ async function genEnemy() {
     var DAM = 2;
     var NAME = ["Goblin", "Bat", "Ghoul", "Orc", "Evil Monk", "Dragon"];
 
-    buttonState(true, true, true);
     player.mage = false; // turn off spellbook; figure out something better
     
     updateCharacters("Ready", "Searching for foes...");
     await sleep(WAITTIME);
     enemy = new Enemy(MAX_HP, HP, DAM, NAME[winCounter]);
-    buttonState(false, true, false);
+
     updateCharacters("Ready", "Ready");
     
     // TODO: Finish and flush out enemy list
@@ -704,13 +698,13 @@ async function genEnemy() {
 
 // choose class based on button clicked
 function setClass(clicked_id) {
-    var MAX_HP = [16, 14, 12]; // fighter ranger mage
-    var MAX_MP = [10, 12, 14];
-    var DAMAGE = [4, 3, 3];
-    var BLOCK = [4, 3, 2];
-    var NAME = ["Fighter", "Ranger", "Mage"];
+    const MAX_HP = [16, 14, 12]; // fighter ranger mage
+    const MAX_MP = [10, 12, 14];
+    const DAMAGE = [4, 3, 3];
+    const BLOCK = [4, 3, 2];
+    const NAME = ["Fighter", "Ranger", "Mage"];
+    const abilButton = document.getElementById("abilities-button");
 
-    var abilButton = document.getElementById("abilities-button");
     
     // TODO fix spellbook not showing up
     if (!chooseClass) {
@@ -728,7 +722,8 @@ function setClass(clicked_id) {
         genEnemy();
         classPopup();
         audioElement.play(); // Has to activate on a user interacting with the dom; maybe find a better place to put it or start it?
-        updateBar(`${player.name}'s Turn`, "lightgreen")
+        updateBar(`${player.name}'s Turn`, "lightgreen");
+        disableActionButtons(false);
     } else {
         return console.log("Already picked a class");
     }
@@ -788,7 +783,7 @@ async function enemyAttack() {
     if (player.hp > 0 && enemy.hp > 0 && !stunFlag) {
         player.hp = enemy.attack(player.hp);
         spriteContainerHit("pSprite")
-        updateCharacters(`*Flinches* -(${enemy.damage})`, "Bite!", true, true);
+        updateCharacters(`*Flinches* -(${enemy.damage})`, `Bite!(${enemy.damage})`, true, true);
     } 
     if (player.hp <= 0) {
         playerDeath();
@@ -796,6 +791,7 @@ async function enemyAttack() {
     checkStun();
 
     await sleep(2000);
+    disableActionButtons(false);
     updateBar(`${player.name}'s Turn`, "lightgreen")
 }
 async function playerDeath() {
@@ -803,7 +799,7 @@ async function playerDeath() {
 
     getLevelUp.hidden = true;
     updateCharacters("Piles of bones", "Victory laugh", true, true);
-    buttonState(true, true, true);
+  
     await sleep(4000);
     newGame();
 }
@@ -860,13 +856,13 @@ function updateBar(text, color) {
 }
 
 
-// attack button; increments winCounter each win
+// attack button;
 async function attackEnemy() {
+    disableActionButtons(true);
     if (enemy.hp > 0) {
         enemy.hp = player.attack(enemy.hp);
         _textCheck();
         spriteContainerHit("eSprite");
-        buttonSwitch(1250);
         if (turnCounter > 0) {
             turnCounter --;
         } else {
@@ -906,7 +902,6 @@ async function checkVictory() {
         winCounter ++;
         player.mage = false;
 
-        buttonState(true, true, true);
         updateCharacters("Victory Dance", "Pile of bones", true, true);
         if (winCounter < winsNeeded) {
             updateBar("Victorious!!", "lightgreen");
@@ -917,7 +912,7 @@ async function checkVictory() {
             genEnemy();
             genLevelCircle();
         } else { // victory condition
-            buttonState(true, false, true);
+
             player.mage = false;
             player.update("I win!!", true);
             updateBar("Make me look cool! I won!")
@@ -963,8 +958,6 @@ async function blockEnemy() {
     }
 }
 
-const audioElement = new Audio("audio/8_Bit_Nostalgia.mp3") // Background music
-audioElement.volume = 0.5;
 function newGame() { // reset game state
     winCounter = 0;
     stunCounter = 0;
@@ -973,16 +966,34 @@ function newGame() { // reset game state
     player = new Player("?", "?", "?", "?", "?", "?", "...");
     enemy = new Enemy("?", "?", "?", "...");
     updateCharacters("...", "...");
-    buttonState(true, false, true);
     classPopup();
     updateBar("Choose your Class", "lightgreen");
     genLevelCircle();
+    disableActionButtons(true)
+}
+// disableButtons()
+function disableActionButtons(bool) {
+    const getAtkButt = document.getElementById("attack-button");
+    const getAbilButt = document.getElementById("abilities-button");
+    getAtkButt.disabled = bool;
+    getAbilButt.disabled = bool;
 }
 
+// Audio
+const audioElement = new Audio("audio/8_Bit_Nostalgia.mp3") // Background music
 const volSlider = document.getElementById("volumeSlider");
+audioElement.volume = 0; // 0.25 | Turn back on
 volSlider.oninput = function() {
     const value = volSlider.value;
     audioElement.volume = value/100;
+}
+
+function muteAudio() {
+     if (audioElement.muted) {
+        audioElement.muted = false;
+     }  else {
+        audioElement.muted = true;
+     }
 }
 
 // starts new game on page load

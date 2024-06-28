@@ -18,8 +18,8 @@
                     <a onclick="helpPopup()">Help</a>
                     <a href="https://github.com/EthanT11">Github</a>
                     <div class="volumeCont">
-                        <a>V</a>
-                        <input type="range" min="0" max="100" value="50" class="slider" id="volumeSlider">
+                        <a onclick="muteAudio()" id="muteButt">V</a>
+                        <input type="range" min="0" max="100" value="25" class="slider" id="volumeSlider">
                     </div>
                 </div>
             </div>
@@ -67,7 +67,7 @@
                 <table>
                     <tr>
                         <td><button id="block-button" class="popButton" disabled = true, onclick="blockEnemy()">Block</button></td>
-                        <td>Block damage equal to block stat</td>
+                        <td>Block & Heal damage</td>
                     </tr>
                     <tr>
                         <td><button id="stun-button" class="popButton" disabled = true, onclick="stunEnemy()">Stun</button></td>
