@@ -792,7 +792,7 @@ async function enemyAttack() {
     }
     checkStun();
 
-    await sleep(2000);
+    await sleep(3000);
     disableActionButtons(false);
     updateBar(`${player.name}'s Turn`, "lightgreen")
 }
@@ -871,9 +871,9 @@ async function attackEnemy() {
             if (player.ranger) {
                 turnCounter = 1;
             } else if (enemy.hp > 0) {
-                await sleep(2000);
+                await sleep(3000);
                 enemyAttack();
-                await sleep(2000);
+                await sleep(3000);
             }
         }
     } 
