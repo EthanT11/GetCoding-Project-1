@@ -270,7 +270,7 @@ body {
   text-align: center;
 
   .barText {
-    animation: go-around 5s 3;
+    animation: go-around 4s 3;
   }
   
 }

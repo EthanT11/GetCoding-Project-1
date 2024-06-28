@@ -496,7 +496,8 @@ async function spellAttack(clicked_id) {
                 stunEnemy();
             }
             spriteContainerHit("eSprite")
-            await sleep(2000)
+            updateBar(`${player.name} casts ${spellData.sname}`, "lightgreen")
+            await sleep(3000)
             enemy.hp = spellData.hpDam;
             player.mp = spellData.mpDam;
             enemyAttack();
@@ -897,7 +898,6 @@ async function attackEnemy() {
 }
 
 async function checkVictory() {
-    updateCharacters("Ready", "Ready")
     if (enemy.hp <= 0) { // check if enemyhp is 0. Level up & load next enemy
         var getLevelUp = document.getElementById("levelContainer");
         winCounter ++;
@@ -920,38 +920,31 @@ async function checkVictory() {
             await sleep(6000);
             newGame();
         }
+    } else {
+        await sleep(3000);
+        updateCharacters("Ready", "Ready", true, true)
+        updateBar(`${player.name}'s Turn`, "lightgreen")
+        disableActionButtons(false)
     }
 }
-
 async function blockEnemy() {
-    var getBlockButton = document.getElementById("block-button");
-    var blocked = player.blockAttack(enemy.damage); // player.block - enemy.damage -> 4 - 2
-    var healCheck = player.hp + blocked;
-
-    saPopup(); // close popup
+    saPopup();
     if (blockCounter > 0) {
-        spriteContainerHit("pSprite")
-        if (blocked >= 0) { // if greater than 0 heal for the amount
-            if (healCheck >= player.max_hp) { // check if hp would be greater then max
-                player.hp = player.max_hp;
-            } 
-            else {
-                player.hp += blocked;
-            }
-            enemy.hp -= blocked;
-            updateCharacters(`Block! +(${blocked})`, `*Stagger* -(${blocked})`, true, true)
-            await sleep(3000)
-            checkVictory()
-        } else if (blocked < 0) { // block < enemy dam
+        const getBlockButton = document.getElementById("block-button");
+        disableActionButtons(true);
+        let blocked = enemy.damage;
+        if (player.hp + blocked > player.max_hp) {
+            player.hp = player.max_hp;
+        } else {
             player.hp += blocked;
-            player.update(`Blocked ${enemy.damage} Damage`, true);
-            updateCharacters(`Blocked ${enemy.damage} Damage`, `*Bites* +${blocked}`)
-            if (player.hp <= 0) {
-                playerDeath();
-            }
+            enemy.hp -= blocked;
         }
         blockCounter --;
         getBlockButton.innerText = `Block (${blockCounter})`;
+        updateBar("Blocked!", "lightgreen")
+        spriteContainerHit("pSprite")
+        updateCharacters(`Blocked!+(${enemy.damage})`, `Ouch!-(${enemy.damage})`, true, true)
+        checkVictory();
     } else {
         player.update("Your shield is broke!", true);
         getBlockButton.innerText = "*Broken*";
