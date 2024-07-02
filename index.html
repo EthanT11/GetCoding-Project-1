@@ -4,6 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="styles.css">
+        <link rel="shortcut icon" href="#";> <!-- Fixes a weird error message in the console since I added audio -- 
+                                                    https://stackoverflow.com/questions/31075893/how-to-fix-favicon-ico-error-failed-to-load-resource-neterr-empty-response -->
         <title>GetCoding Project 1</title>
     </head>
 
@@ -15,6 +17,10 @@
                     <a onclick="newGame()">New Game</a>
                     <a onclick="helpPopup()">Help</a>
                     <a href="https://github.com/EthanT11">Github</a>
+                    <div class="volumeCont">
+                        <a onclick="muteAudio()" id="muteButt">V</a>
+                        <input type="range" min="0" max="100" value="25" class="slider" id="volumeSlider">
+                    </div>
                 </div>
             </div>
             <h1 id="title">Retro Quest</h1>
@@ -58,16 +64,7 @@
             </span>
             <span class="popuptext" id="abilPopup">
                 <h2 id="class">Abilities</h2>
-                <table>
-                    <tr>
-                        <td><button id="block-button" class="popButton" disabled = true, onclick="blockEnemy()">Block</button></td>
-                        <td>Block damage equal to block stat</td>
-                    </tr>
-                    <tr>
-                        <td><button id="stun-button" class="popButton" disabled = true, onclick="stunEnemy()">Stun</button></td>
-                        <td>50% chance to stun</td>
-                    </tr>
-                </table>
+
             </span>
             <span class="popuptext" id="spellPopup">
                 <h2 id="class">Spellbook</h2>
@@ -76,15 +73,15 @@
                 <h2 id="class">Level Up!</h2>
                 <table>
                     <tr>
-                        <td><button id="first-choice", onclick="levelUp(this.id)">Stats</button></td>
+                        <td><button id="first-choice" class="popButton" onclick="levelUp(this.id)">Stats</button></td>
                         <td>Increase Stats</td>
                     </tr>
                     <tr>
-                        <td><button id="second-choice", onclick="levelUp(this.id)">Heal</button></td>
+                        <td><button id="second-choice" class="popButton" onclick="levelUp(this.id)">Heal</button></td>
                         <td>Heal HP/MP to full</td>
                     </tr>
                     <tr>
-                        <td><button id="third-choice", onclick="levelUp(this.id)">Repair</button></td>
+                        <td><button id="third-choice" class="popButton" onclick="levelUp(this.id)">Repair</button></td>
                         <td>Repair your Shield</td>
                     </tr>
                 </table>
@@ -99,16 +96,30 @@
             </div>
 
             <div id="spritesContainer">
-                <span class="sprite" id="pSprite">
-                    <img class="playerSprite">
-                </span>
-                <span class="sprite", id="eSprite">
-                    <img class="enemySprite">
-            </div>
+                <span class="spriteAction">
+                    <span class="actionBorder">
+                        <span class="mainAction" id="pAct">
+                            <h3 id="player-action"></h3>
+                        </span>
+                        <span class="subAction" id="pSubAct"></span>
+                    </span>
 
-            <div id="actionContainer">
-                <div id="player-action"></div>
-                <div id="enemy-action"></div>
+                    <span class="actionBorder" id="eActBord">
+                        <span class="mainAction" id="eAct">
+                            <h3 id="enemy-action"></h3>
+                        </span>
+                        <span class="subAction" id="eSubAct"></span>
+                    </span>
+                </span>
+            </div>
+            
+            <div id="blackBar"></div>
+
+            <div class="sprites">
+                <span class="spritesCont">
+                    <img class="playerSprite" id="pSprite">
+                    <img class="enemySprite" id="eSprite">
+                </span>
             </div>
 
             <div id="charaContainer" >
@@ -134,11 +145,11 @@
                 </div>
 
             </div>
-        </div>
-        <div id="footer">
-            <button alt="Attack" id="attack-button" class="btn atkimg" onclick="attackEnemy()"></button>
-            <button alt="Abilities" id="abilities-button" class="btn ablimg" onclick="saPopup()"></button>
-            <button alt="Stats" id="stats-button" class="btn stsimg" onclick="popUp()"></button>
+            <div id="footer">
+                <button alt="Attack" id="attack-button" class="btn atkimg" onclick="attackEnemy()"></button>
+                <button alt="Abilities" id="abilities-button" class="btn ablimg" onclick="saPopup()"></button>
+                <button alt="Stats" id="stats-button" class="btn stsimg" onclick="popUp()"></button>
+            </div>
         </div>
         
         <script defer src="./index.js"></script>
