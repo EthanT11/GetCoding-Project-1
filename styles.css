@@ -15,7 +15,7 @@
 }
 
 /* --------------- Desktop -------------- */
-/* -------------------------------------- */
+/* ------------------------------------- */
 @media only screen and (min-width:668px) {
   
   /* ---------- HEADER ----------- */
@@ -51,6 +51,7 @@
     border-radius: 50%;
     border: solid;
     border-color: rgb(82, 82, 82);
+    
   }
   
 }
@@ -58,11 +59,19 @@
 /* -------------------------------------- */
 /* ------------ Used for all ------------ */
 /* -------------------------------------- */
+.btn:disabled {
+  background-color: rgb(82, 82, 82);
+  border-color: rgb(165, 165, 165);
+  opacity: 70%;
+  pointer-events: none;
+}
 
 html {
   height: 100vh;
   background-color: #5D5323;
-  font-family: fantasy;
+  /* font-family: fantasy; --> not good for all browsers*/
+  font-family: Papyrus, Garamond, sans-serif;
+
 }
 body {
   height: 100%;
@@ -73,6 +82,7 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* ------------ Header ------------ */
@@ -103,6 +113,18 @@ body {
   
 }
 
+.volumeCont {
+  display: flex;
+  align-items: center;
+}
+
+.slider {
+  width: 100%;
+  height: 50%;
+  outline: none;
+  opacity: 0.7;
+  
+}
 /* ---------- PROGRESS CONTAINER ----------- */
 #progressContainer {
   display: flex;
@@ -150,6 +172,7 @@ body {
   border-style: solid solid solid hidden;
   border-color: rgb(82, 82, 82);
   
+  
 }
 
 /* ---------- SPRITES & ACTION ----------- */
@@ -157,58 +180,75 @@ body {
   display: flex;
   flex: 1;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-around;
   background-image: url("/icons/background.svg");
   
   border-style: ridge;
   border-color: rgb(82, 82, 82);
-  
+  overflow: hidden;
+
   .spriteAction {
     display: flex;
     flex: 1;
     justify-content: space-around;
     align-items: center;
+    transform: translateY(-20%);
+    overflow: hidden;
 
     .actionBorder {
-      width: 40%;
-      height: 40%;
-      min-width: 40%;
-      max-width: 40%;
-      min-height: 50%;
-      max-height: 50%;
+      display: flex;
+      flex-direction: column;
+
+      min-width: 45%;
+      max-width: 45%;
+      min-height: 40%;
+      max-height: 40%;
+      overflow: hidden;
       text-align: center;
       
       border: double;
       border-color: rgb(82, 82, 82);
-      background-color: gray;
-      
-      #player-action {
-        color: lightgreen;
-        animation: slide-up 2s;
+      background-color: black;
+
+      .mainAction{
+        background-color: rgb(82, 82, 82);
+
+        #player-action {
+          color: lightgreen;
+          animation: slide-right 2s;
+        }
+        #enemy-action {
+          color: lightcoral;
+          animation: slide-left 2s;
+        }
+        
       }
       
-      #enemy-action {
-        color: lightcoral;
+      .subAction {
+        overflow: hidden;
         
-        animation: slide-up 2s;
+        .actionSubText {
+          opacity: 30%;
+          color: white;
+          animation: slide-up 1s;
+        }
       }
     }
-
   }
   
 }
 
 .sprites {
-  position: absolute;
-  width: 100%;
-  bottom: 32%;
-
+  position: relative;
+  max-height: 0%;
+  
   .spritesCont {
     display: flex;
-    justify-content: space-evenly;
-
+    justify-content: space-around;
+    transform: translateY(-90%);
+    overflow: hidden;
+    
     .playerSprite {
-      width: 20%;
       content: url("icons/mageSprite.svg");
     }
     
@@ -218,34 +258,41 @@ body {
   }
 }
 
-/* ----------- Action Container ------------ */
-#actionContainer {
+/* ----------- Action Container/Black Bar ------------ */
+#blackBar {
   z-index: 2;
-  max-height: 2%;
   background-color: black;
   padding: 0.5rem;
   
   border-style: solid hidden solid;
   border-color: rgb(82, 82, 82);
+
+  text-align: center;
+
+  .barText {
+    animation: go-around 4s 3;
+  }
+  
 }
+
 
 
 /* ----------- SPRITE HIT ------------ */
 .pSpriteHit {
-  border: double;
-  background-color: gray;
-  width: 50%;
-  margin: auto;
-  text-align: center;
-  background-color: red;
+  animation: slide-up 1s;
+  content: url("icons/mageSprite.svg");
+}
+.pSpriteAtk {
+  animation: slide-left 1s;
+  content: url("icons/mageSprite.svg");
 }
 .eSpriteHit {
-  border: double;
-  background-color: gray;
-  width: 50%;
-  margin: auto;
-  text-align: center;
-  background-color: red;
+  animation: slide-up 1s;
+  content: url("icons/goblin.svg");
+}
+.eSpriteAtk {
+  animation: slide-right 1s;
+  content: url("icons/goblin.svg");
 }
 
 /* ----------- TEXT ------------ */
@@ -338,6 +385,10 @@ body {
   color: black;
   font-family: fantasy;
   cursor: pointer;
+}
+.popButton:disabled {
+  background-color: rgb(82, 82, 82);
+  pointer-events: none;
 }
 
 .popup {
@@ -482,6 +533,51 @@ body {
 }
 
 @keyframes slide-right {
-  from {transform: translateX(-4rem);}
-  to {transform: translateX(0rem);}
+  from {
+    transform: translateX(-4rem);
+  }
+  to {
+    transform: translateX(0rem);
+  }
+}
+
+@keyframes slide-left {
+  from {
+    transform: translateX(4rem);
+    scale: 1.5;
+  }
+  to {
+    transform: translateX(0rem);
+  }
+  
+}
+
+@keyframes go-around {
+  0% {
+    scale: 0.001;
+    transform: translateX(0);
+    opacity: 10%;
+  }
+  10% {
+    transform: translateX(-10rem);
+  }
+  45% {
+    scale: 1.4;
+    opacity: 100%;
+  }
+  50% {
+    transform: translateX(0);
+  }
+  55% {
+    scale: 1.4;
+    opacity: 100%;
+  }
+  90% {
+    transform: translateX(10rem);
+  }
+  100% {
+    scale: 0.001;
+    transform: translateX(0);
+    opacity: 10%;
+  }
 }
