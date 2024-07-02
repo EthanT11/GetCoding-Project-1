@@ -181,8 +181,9 @@ body {
   flex: 1;
   flex-direction: column;
   justify-content: space-around;
-  background-image: url("/icons/background.svg");
+  background-image: url("icons/background.svg");
   
+
   border-style: ridge;
   border-color: rgb(82, 82, 82);
   overflow: hidden;
@@ -271,6 +272,7 @@ body {
 
   .barText {
     animation: go-around 4s 3;
+    pointer-events: none;
   }
   
 }
