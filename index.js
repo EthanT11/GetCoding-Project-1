@@ -23,12 +23,12 @@ function dropDown() {
 
 // Adds closing button to popups
 function genButton(popup) {
-    const button = document.createElement("button")
-    button.classList.add("closebtn")
+    const button = document.createElement("button");
+    button.classList.add("closebtn");
     button.onclick = _close;
     popup.append(button)
     function _close() {
-        popup.classList.toggle("show")
+        popup.classList.toggle("show");
     }
 }
 
@@ -48,10 +48,19 @@ function classPopup() {
 
 function saPopup() {
     let popup;
-    if (player.name == "Mage") {
-        popup = document.getElementById("spellPopup");
-    } else {
-        popup = document.getElementById("abilPopup");
+    switch (player.name) {
+        case "Mage":
+            popup = document.getElementById("spellPopup");
+            break;
+        case "Ranger":
+            popup = document.getElementById("abilPopup");
+            break;
+        case "Fighter":
+            popup = document.getElementById("abilPopup");
+            break;
+        default:
+            console.log("Unreachable")
+            newGame();
     }
     genButton(popup)
     popup.classList.toggle("show");
@@ -174,7 +183,6 @@ var spellCount;
 var spellBookFlag;
 
 var turnCounter = 0;
-var rangerFlag = false;
 var setRanger;
 
 var ENEMYDAM = 2; // for testing; enemy damage
@@ -192,15 +200,14 @@ class Player {
         this.damage = damage;
         this.block = block;
         this.name = name;
-        
-        this.ranger = rangerFlag;
 
         this.textList = [];
-        if (this.ranger) {
+        if (this.name == "Ranger") {
             setRanger = true;
         }
+        
     }
-    
+
     // Update HP and Action on UI
     update(playerAction, addSub) {
         // get player menu container elements
@@ -214,7 +221,6 @@ class Player {
         // TODO: try and use turnCounter for stun instead? 
         if (this.ranger && this.name == "Ranger") {
             if (setRanger) {
-                getAttackButton.innerHTML = "Quick Atk";
                 turnCounter = 1;
                 setRanger = false;
             }
@@ -712,14 +718,15 @@ function setClass(clicked_id) {
     if (!chooseClass) {
         if (clicked_id == "fight-button") {
             player = new Player(MAX_HP[0], MAX_HP[0], MAX_MP[0], MAX_MP[0], DAMAGE[0], BLOCK[0], NAME[0]); // Player(MAX-HP, HP, Damage, Block, Name)
+            abilButton.classList.toggle("ablimg");
         }
         if (clicked_id == "range-button") {
-            rangerFlag = true;
             player = new Player(MAX_HP[1], MAX_HP[1], MAX_MP[1], MAX_MP[1], DAMAGE[1], BLOCK[1], NAME[1]); // Player(MAX-HP, HP, Damage, Block, Name)
+            abilButton.classList.add("ablimg");
         }
         if (clicked_id == "mage-button") {
             player = new Player(MAX_HP[2], MAX_HP[2], MAX_MP[2], MAX_MP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
-            abilButton.classList.add("splimg")
+            abilButton.classList.add("splimg");
         }
         genEnemy();
         classPopup();
