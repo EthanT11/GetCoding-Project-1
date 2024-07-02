@@ -415,14 +415,64 @@ let spells = {
     healSpell: new Spell(hData._name, hData._dam, hData._cost, hData._info), // negative damage for healing
 }
 
-// TODO: Clean up the code, VERY messy from all the trial and error
-_createSpellBook()
-async function _createSpellBook() {
-    const spellPopup = document.getElementById("spellPopup");
-    const tabel = document.createElement("table");
-    spellPopup.appendChild(tabel)
+createAbilities()
+function createAbilities() {
+    const abilPop = document.getElementById("abilPopup");
+    const table = document.createElement("table");
+    abilPop.appendChild(table)
 
-    const header = tabel.createTHead();
+    const header = table.createTHead();
+    let headNames = ["Name", "Info"]
+
+    for (let i = 0; i < headNames.length; i++) {
+        header.appendChild(document.createElement("th")).appendChild(document.createTextNode(headNames[i]))
+    }
+
+    const abilities = {
+        "Block": {
+            name: "Block",
+            id: "block-button",
+            onclick: blockEnemy,
+            info: "Block & Heal damage"
+        },
+        "Stun": {
+            name: "Stun",
+            id: "stun-button",
+            onclick: stunEnemy,
+            info: "50% chance to stun"
+        }
+    }
+    abilityNames = [abilities.Block, abilities.Stun]
+    
+    for (let i = 0; i < abilityNames.length; i++) {
+        const tr = table.insertRow();
+        let ability = abilityNames[i];
+        for (let j = 0; j < 4; j++) {
+            const td = tr.insertCell(j);
+            if (j == 0) {
+                abilButt = document.createElement("button");
+                abilButt.id = ability.id;
+                abilButt.innerHTML = ability.name
+                abilButt.classList.add("popButton");
+                abilButt.onclick = ability.onclick
+                td.appendChild(abilButt)
+            }
+            if (j == 1) {
+                td.appendChild(document.createTextNode(`${ability.info}`))
+            }
+        }
+    }
+}
+
+// TODO: Clean up the code, VERY messy from all the trial and error
+// TODO: Make spellbook generate on playerclass rather then always
+_createSpellBook()
+function _createSpellBook() {
+    const spellPopup = document.getElementById("spellPopup");
+    const table = document.createElement("table");
+    spellPopup.appendChild(table)
+
+    const header = table.createTHead();
     let nameList = ["Name", "Damage", "Cost", "Info"]
 
     for (let i = 0; i < nameList.length; i++) {
@@ -434,7 +484,7 @@ async function _createSpellBook() {
 
 
     for (let i = 0; i < spellList.length; i++) {
-        const tr = tabel.insertRow();
+        const tr = table.insertRow();
         let _spell = spellList[i]
         
         for (let j = 0; j < 4; j++) {
