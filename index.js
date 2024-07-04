@@ -112,8 +112,6 @@ function helpPopup() {
 }
 
 // generate level circles
-// TODO: Look into just changing the background color property of a class
-// rather then just switching ID's
 function genLevelCircle() {
     const getProgressCont = document.getElementById("progressContainer");
     let style = "circle";
@@ -140,34 +138,11 @@ function clearElement(element) {
     document.getElementById(element).innerHTML = "";
 }
 
-// switches active buttons between class and fight menu; boolean
-// TODO: try and remove block flag and chooseClass flag
-function buttonState(actionState, chooseClass, blockState = blockFlag) {
-    var classState;
-    
-    classState = !chooseClass ? false : true;
-    document.getElementById("fight-button").disabled = classState;
-    document.getElementById("range-button").disabled = classState;
-    document.getElementById("mage-button").disabled = classState;
-    
-    blockFlag = blockState;
-    document.getElementById("attack-button").disabled = actionState;
-    document.getElementById("block-button").disabled = blockFlag;
-    document.getElementById("stun-button").disabled = actionState;
-    
-    if (stunCounter == 0) {
-        document.getElementById("stun-button").innerText = "Stun";
-    }
-    
-}
-
-
 // -- Game Functions --
 
 // init
-var player;
-var enemy;
-var chooseClass = false;
+let player;
+let enemy;
 
 var winCounter = 0;
 var winsNeeded = 6;
@@ -190,7 +165,6 @@ var WAITTIME = 1000; // change enemy gen time
 
 var actionTextCount = 0;
 
-// TODO: Maybe add the flags to the player constructor?? Might cause a lot of issues
 class Player {
     constructor(max_hp, hp, max_mp, mp, damage, block, name) {
         this.max_hp = max_hp;
@@ -783,39 +757,33 @@ function setClass(clicked_id) {
     const abilButton = document.getElementById("abilities-button");
     abilButton.innerHTML = "";
 
-    
-    // TODO fix spellbook not showing up
-    if (!chooseClass) {
-        if (clicked_id == "fight-button") {
-            player = new Player(MAX_HP[0], MAX_HP[0], MAX_MP[0], MAX_MP[0], DAMAGE[0], BLOCK[0], NAME[0]); // Player(MAX-HP, HP, Damage, Block, Name)
-            if (abilButton.classList.contains("splimg")) {
-                abilButton.classList.remove("splimg")
-            }
-            abilButton.classList.toggle("ablimg");
+    if (clicked_id == "fight-button") {
+        player = new Player(MAX_HP[0], MAX_HP[0], MAX_MP[0], MAX_MP[0], DAMAGE[0], BLOCK[0], NAME[0]); // Player(MAX-HP, HP, Damage, Block, Name)
+        if (abilButton.classList.contains("splimg")) {
+            abilButton.classList.remove("splimg")
         }
-        if (clicked_id == "range-button") {
-            player = new Player(MAX_HP[1], MAX_HP[1], MAX_MP[1], MAX_MP[1], DAMAGE[1], BLOCK[1], NAME[1]); // Player(MAX-HP, HP, Damage, Block, Name)
-            if (abilButton.classList.contains("splimg")) {
-                abilButton.classList.remove("splimg");
-            }
-            abilButton.classList.add("ablimg");
-        }
-        if (clicked_id == "mage-button") {
-            player = new Player(MAX_HP[2], MAX_HP[2], MAX_MP[2], MAX_MP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
-            if (abilButton.classList.contains("ablimg")) {
-                abilButton.classList.remove("ablimg")
-            }
-            abilButton.classList.toggle("splimg");
-        }
-        genEnemy();
-        classPopup();
-        audioElement.play();
-        audioElement.loop = true; // Has to activate on a user interacting with the dom; maybe find a better place to put it or start it?
-        updateBar(`${player.name}'s Turn`, "lightgreen");
-        disableActionButtons(false);
-    } else {
-        return console.log("Already picked a class");
+        abilButton.classList.toggle("ablimg");
     }
+    if (clicked_id == "range-button") {
+        player = new Player(MAX_HP[1], MAX_HP[1], MAX_MP[1], MAX_MP[1], DAMAGE[1], BLOCK[1], NAME[1]); // Player(MAX-HP, HP, Damage, Block, Name)
+        if (abilButton.classList.contains("splimg")) {
+            abilButton.classList.remove("splimg");
+        }
+        abilButton.classList.add("ablimg");
+    }
+    if (clicked_id == "mage-button") {
+        player = new Player(MAX_HP[2], MAX_HP[2], MAX_MP[2], MAX_MP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
+        if (abilButton.classList.contains("ablimg")) {
+            abilButton.classList.remove("ablimg")
+        }
+        abilButton.classList.toggle("splimg");
+    }
+    genEnemy();
+    classPopup();
+    audioElement.play();
+    audioElement.loop = true; // Has to activate on a user interacting with the dom; maybe find a better place to put it or start it?
+    updateBar(`${player.name}'s Turn`, "lightgreen");
+    disableActionButtons(false);
 }
 
 // general update player/enemy UI, takes actions as str. "Attacking", "Defending"
@@ -832,7 +800,6 @@ function updateCharacters(p_action, e_action, pAddSub, eAddSub) {
     enemy.update(e_action, eAddSub);
 }
 
-// TODO: hit enemy for half damage on success & 1.5 of gob damage to player on fail?
 async function stunEnemy() {
     saPopup();
     const getStunButton = document.getElementById("stun-button");
@@ -893,7 +860,6 @@ async function playerDeath() {
     newGame();
 }
 
-// TODO: Fix jerky animation in css, maybe use the curve?
 let intId;
 async function spriteContainerHit(spriteContainerId) {
     _setAnim();
