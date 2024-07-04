@@ -157,7 +157,7 @@ let spellData = {};
 
 
 // Sleep Timers
-const GENTIME = 1000;
+const GENTIME = 6000;
 
 class Player {
     constructor(max_hp, hp, max_mp, mp, damage, block, name) {
@@ -632,9 +632,9 @@ class Enemy {
 // amounts dependent on class?
 // TODO: Accumulate levels if never choosen? OR disable menu buttons until a choice is made
 async function levelUp(clicked_id) {
-    const getLevelUp = document.getElementById("levelContainer");
+  
     const getBlockButton = document.getElementById("block-button");
-    getLevelUp.hidden = true;
+
     updateBar("Level up!", "lightgreen");
 
     if (clicked_id == "first-choice") {
@@ -677,11 +677,12 @@ async function genEnemy() {
 
     player.mage = false; // turn off spellbook; figure out something better
     
-    updateCharacters("Ready", "Searching for foes...");
-    
     enemy = new Enemy(MAX_HP, MAX_HP, DAM, NAME[winCounter]);
+    updateCharacters("Ready", "Searching for foes...");
+    updateBar("Searching...", "lightgreen")
     await sleep(GENTIME);
     updateCharacters("Ready", "Ready");
+    updateBar(`${player.name}'s Turn`, "lightgreen");
     disableActionButtons(false);
 }
 
@@ -715,12 +716,10 @@ function setClass(clicked_id) {
         }
         abilButton.classList.toggle("splimg");
     }
-    genEnemy(); // i am here 
+    genEnemy();
     classPopup();
     audioElement.play();
     audioElement.loop = true; // Has to activate on a user interacting with the dom; maybe find a better place to put it or start it?
-    updateBar(`${player.name}'s Turn`, "lightgreen");
-  
 }
 
 // general update player/enemy UI, takes actions as str. "Attacking", "Defending"
@@ -791,9 +790,6 @@ async function enemyAttack() {
     
 }
 async function playerDeath() {
-    var getLevelUp = document.getElementById("levelContainer");
-
-    getLevelUp.hidden = true;
     updateCharacters("Piles of bones", "Victory laugh", true, true);
   
 
@@ -883,14 +879,13 @@ async function attackEnemy() {
 
 async function checkVictory() {
     if (enemy.hp <= 0) { // check if enemyhp is 0. Level up & load next enemy
-        var getLevelUp = document.getElementById("levelContainer");
         winCounter ++;
         player.mage = false;
 
         updateCharacters("Victory Dance", "Pile of bones", true, true);
         if (winCounter < winsNeeded) {
             updateBar("Victorious!!", "lightgreen");
-            getLevelUp.hidden = false;
+            
             levelPopup();
             
             genEnemy();
