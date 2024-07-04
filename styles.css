@@ -500,7 +500,7 @@ body {
 .show {display:block;}
 
 /* images for menu buttons */
-.atkimg, .ablimg, .stsimg {
+.atkimg, .ablimg, .stsimg, .splimg {
   background-position: center;
   background-repeat: no-repeat;
 }
@@ -509,7 +509,6 @@ body {
 }
 .ablimg {
   background-image: url("icons/abilityIcon.svg");
-  background-size: 3rem;
 }
 .splimg {
   background-image: url("icons/spellIcon.svg");
