@@ -429,20 +429,39 @@ function createAbilities() {
     }
 
     const abilities = {
-        "Block": {
-            name: "Block",
-            id: "block-button",
-            onclick: blockEnemy,
-            info: "Block & Heal damage"
+        "Abilities": {
+            "Block": {
+                name: "Block",
+                id: "block-button",
+                onclick: blockEnemy,
+                info: "Block & Heal damage",
+                tag: "yes"
+            },
+            "Stun": {
+                name: "Stun",
+                id: "stun-button",
+                onclick: stunEnemy,
+                info: "50% chance to stun",
+                tag: "yes"
+            }
         },
-        "Stun": {
-            name: "Stun",
-            id: "stun-button",
-            onclick: stunEnemy,
-            info: "50% chance to stun"
+        "Spells": {
+            "testSpell": {
+                name: "testspell",
+                tag: "Mage"
+            }
+
         }
     }
-    abilityNames = [abilities.Block, abilities.Stun]
+    let keys = Object.keys(abilities.Abilities)
+    let size = keys.length;
+    let abilityNames = []
+
+    for (let i = 0; i < size; i++) {
+        // abilityNames.append(keys[i])
+    }
+    abilityNames = [abilities.Abilities.Block, abilities.Abilities.Stun]
+
     
     for (let i = 0; i < abilityNames.length; i++) {
         const tr = table.insertRow();
@@ -780,7 +799,8 @@ function setClass(clicked_id) {
         }
         genEnemy();
         classPopup();
-        audioElement.play(); // Has to activate on a user interacting with the dom; maybe find a better place to put it or start it?
+        audioElement.play();
+        audioElement.loop = true; // Has to activate on a user interacting with the dom; maybe find a better place to put it or start it?
         updateBar(`${player.name}'s Turn`, "lightgreen");
         disableActionButtons(false);
     } else {
