@@ -155,10 +155,9 @@ let blockFlag = false;
 
 let spellData = {};
 
-var ENEMYDAM = 2; // for testing; enemy damage
-var WAITTIME = 1000; // change enemy gen time
 
-var actionTextCount = 0;
+// Sleep Timers
+const GENTIME = 1000;
 
 class Player {
     constructor(max_hp, hp, max_mp, mp, damage, block, name) {
@@ -513,7 +512,7 @@ async function spellAttack(clicked_id) {
     if (!canUse) { // check if player has enough mp
         console.log("not enough mp")
     } else {
-        disableActionButtons(true)
+        
         _castSpell();
     }
     // helper funcs
@@ -530,7 +529,7 @@ async function spellAttack(clicked_id) {
             }
             spriteContainerHit("eSprite")
             updateBar(`${player.name} casts ${spellData.sname}`, "lightgreen")
-            await sleep(3000)
+            
             enemy.hp = spellData.hpDam;
             player.mp = spellData.mpDam;
             enemyAttack();
@@ -656,7 +655,7 @@ async function levelUp(clicked_id) {
     levelPopup();
     updateBar(`${player.name}'s Turn`, "lightgreen");
     player.update("Ready");
-    disableActionButtons(false)
+   
 }
 
 // generate random number between 1 and x
@@ -671,64 +670,19 @@ function sleep(ms) {
 
 // generate random enemy
 // TODO: Add variety for different levels and different names
-// idea: use winCounter to adjust "difficulty"
 async function genEnemy() {
-    var MAX_HP = 10 + (winCounter * (dice(2) + 1));
-    var HP = MAX_HP;
-    // var DAM = (dice(2) + 1) + winCounter;
-    var DAM = 2;
+    const MAX_HP = 10 + (winCounter * (dice(2) + 1));
+    const DAM = (dice(2) + 1) + winCounter;
     var NAME = ["Goblin", "Bat", "Ghoul", "Orc", "Evil Monk", "Dragon"];
 
     player.mage = false; // turn off spellbook; figure out something better
     
     updateCharacters("Ready", "Searching for foes...");
-    await sleep(WAITTIME);
-    enemy = new Enemy(MAX_HP, HP, DAM, NAME[winCounter]);
-
-    updateCharacters("Ready", "Ready");
     
-    // TODO: Finish and flush out enemy list
-    function _getEnemy() {
-        let max_hp = [(dice(10) + winCounter)]
-        let enemyList = {
-            "goblin": {
-                "name": "Goblin",
-                "max_hp": 0,
-                "hp": 0,
-                "dam": 0
-            },
-            "orc": {
-                "name": "Orc",
-                "max_hp": 0,
-                "hp": 0,
-                "dam": 0
-            },
-            "ghoul": {
-                "name": "Ghoul",
-                "max_hp": 0,
-                "hp": 0,
-                "dam": 0
-            },
-            "bat": {
-                "name": "Bat",
-                "max_hp": 0,
-                "hp": 0,
-                "dam": 0
-            },
-            "evilMonk": {
-                "name": "Evil Monk",
-                "max_hp": 0,
-                "hp": 0,
-                "dam": 0
-            },
-            "dragon": {
-                "name": "Dragon",
-                "max_hp": 0,
-                "hp": 0,
-                "dam": 0
-            },
-        };
-    }
+    enemy = new Enemy(MAX_HP, MAX_HP, DAM, NAME[winCounter]);
+    await sleep(GENTIME);
+    updateCharacters("Ready", "Ready");
+    disableActionButtons(false);
 }
 
 // choose class based on button clicked
@@ -739,8 +693,7 @@ function setClass(clicked_id) {
     const BLOCK = [4, 3, 2];
     const NAME = ["Fighter", "Ranger", "Mage"];
     const abilButton = document.getElementById("abilities-button");
-    abilButton.innerHTML = "";
-
+    abilButton.classList.toggle("ablimg");
     if (clicked_id == "fight-button") {
         player = new Player(MAX_HP[0], MAX_HP[0], MAX_MP[0], MAX_MP[0], DAMAGE[0], BLOCK[0], NAME[0]); // Player(MAX-HP, HP, Damage, Block, Name)
         if (abilButton.classList.contains("splimg")) {
@@ -762,12 +715,12 @@ function setClass(clicked_id) {
         }
         abilButton.classList.toggle("splimg");
     }
-    genEnemy();
+    genEnemy(); // i am here 
     classPopup();
     audioElement.play();
     audioElement.loop = true; // Has to activate on a user interacting with the dom; maybe find a better place to put it or start it?
     updateBar(`${player.name}'s Turn`, "lightgreen");
-    disableActionButtons(false);
+  
 }
 
 // general update player/enemy UI, takes actions as str. "Attacking", "Defending"
@@ -797,10 +750,10 @@ async function stunEnemy() {
         getStunButton.disabled = true;
         getStunButton.innerHTML = `Stun (${stunCounter})`
         updateCharacters(`Success!`, `*Stunned* (${stunCounter})`, true, true)
-        await sleep(3000);
+        
     } else if (d4 <= 2) { // fail check
         player.update(`Failed!`);
-        await sleep(1500);
+    
         enemyAttack();
     }
 }
@@ -820,19 +773,22 @@ function checkStun() {
 }
 // enemy attack
 async function enemyAttack() {
+    await sleep(3000);
     if (player.hp > 0 && enemy.hp > 0 && !stunFlag) {
+        updateBar(`${enemy.name} Attacks!`, "red")
         player.hp = enemy.attack(player.hp);
         spriteContainerHit("pSprite")
         updateCharacters(`*Flinches* -(${enemy.damage})`, `Bite!(${enemy.damage})`, true, true);
+        await sleep(3000)
     } 
     if (player.hp <= 0) {
         playerDeath();
+    } else {
+        checkStun();
+        updateBar(`${player.name}'s Turn`, "lightgreen");
+        disableActionButtons(false);
     }
-    checkStun();
-
-    await sleep(3000);
-    disableActionButtons(false);
-    updateBar(`${player.name}'s Turn`, "lightgreen")
+    
 }
 async function playerDeath() {
     var getLevelUp = document.getElementById("levelContainer");
@@ -840,15 +796,15 @@ async function playerDeath() {
     getLevelUp.hidden = true;
     updateCharacters("Piles of bones", "Victory laugh", true, true);
   
-    await sleep(4000);
+
     newGame();
 }
 
 let intId;
 async function spriteContainerHit(spriteContainerId) {
     _setAnim();
-    soundEffect.play()
-    await sleep(1000);
+    soundEffect.play();
+    await sleep(1000)
     _reset();
 
     function _setAnim() {
@@ -898,21 +854,18 @@ function updateBar(text, color) {
 // attack button;
 async function attackEnemy() {
     disableActionButtons(true);
+    enemy.hp = player.attack(enemy.hp);
+    _textCheck();
+    spriteContainerHit("eSprite");
     if (enemy.hp > 0) {
-        enemy.hp = player.attack(enemy.hp);
-        _textCheck();
-        spriteContainerHit("eSprite");
-
-        await sleep(3000);
         enemyAttack();
-        await sleep(3000);
-
-    } 
-    checkVictory();
+    }  else {
+        checkVictory();
+    }
 
     function _textCheck() { // change text depending on class
-        var ptext;
-        var etext = `*Wince* -(${player.damage})`;
+        let ptext;
+        let etext = `*Wince* -(${player.damage})`;
         switch(player.name) {
             case "Fighter":
                 ptext = `Slash! +(${player.damage})`
@@ -940,7 +893,6 @@ async function checkVictory() {
             getLevelUp.hidden = false;
             levelPopup();
             
-            await sleep(3000)
             genEnemy();
             genLevelCircle();
         } else { // victory condition
@@ -948,13 +900,13 @@ async function checkVictory() {
             player.mage = false;
             player.update("I win!!", true);
             updateBar("Make me look cool! I won!")
-            await sleep(6000);
+
             newGame();
         }
     } else {
-        await sleep(3000);
+
         updateCharacters("Ready", "Ready", true, true);
-        disableActionButtons(false);
+       
         updateBar(`${player.name}'s Turn`, "lightgreen");
     }
 }
@@ -962,7 +914,7 @@ async function blockEnemy() {
     saPopup();
     if (blockCounter > 0) {
         const getBlockButton = document.getElementById("block-button");
-        disableActionButtons(true);
+        
         let blocked = enemy.damage;
         if (player.hp + blocked > player.max_hp) {
             player.hp = player.max_hp;
@@ -990,11 +942,12 @@ function newGame() { // reset game state
     stunFlag = false;
     player = new Player("?", "?", "?", "?", "?", "?", "...");
     enemy = new Enemy("?", "?", "?", "...");
+    disableActionButtons(true)
     updateCharacters("...", "...");
     classPopup();
     updateBar("Choose your Class", "lightgreen");
     genLevelCircle();
-    disableActionButtons(true)
+    
 }
 // disableButtons()
 function disableActionButtons(bool) {
