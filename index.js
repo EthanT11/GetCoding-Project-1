@@ -66,9 +66,17 @@ function saPopup() {
     popup.classList.toggle("show");
 }
 
+let levelFlag = false;
 function levelPopup() {
     const popup = document.getElementById("levelPopup");
     popup.classList.toggle("show");
+    if (popup.classList.contains("show")) {
+        levelFlag = true;
+        disableActionButtons(true);
+    } else {
+        levelFlag = false;
+        disableActionButtons(false)
+    }
 }
 
 
@@ -157,7 +165,8 @@ let spellData = {};
 
 
 // Sleep Timers
-const GENTIME = 6000;
+const GENTIME = 1000;
+const TURNTIME = 1000;
 
 class Player {
     constructor(max_hp, hp, max_mp, mp, damage, block, name) {
@@ -630,9 +639,8 @@ class Enemy {
 
 // add randomness to amounts dependent on difficulty?
 // amounts dependent on class?
-// TODO: Accumulate levels if never choosen? OR disable menu buttons until a choice is made
+// TODO: generate buttons through js rather then hard code to easily add more or adjust
 async function levelUp(clicked_id) {
-  
     const getBlockButton = document.getElementById("block-button");
 
     updateBar("Level up!", "lightgreen");
@@ -653,7 +661,6 @@ async function levelUp(clicked_id) {
         player.update("Neat! A shield!", true)
     }
     levelPopup();
-    updateBar(`${player.name}'s Turn`, "lightgreen");
     player.update("Ready");
    
 }
@@ -683,7 +690,9 @@ async function genEnemy() {
     await sleep(GENTIME);
     updateCharacters("Ready", "Ready");
     updateBar(`${player.name}'s Turn`, "lightgreen");
-    disableActionButtons(false);
+    if (levelFlag) {} else{
+        disableActionButtons(false);
+    }
 }
 
 // choose class based on button clicked
@@ -772,13 +781,13 @@ function checkStun() {
 }
 // enemy attack
 async function enemyAttack() {
-    await sleep(3000);
+    await sleep(TURNTIME);
     if (player.hp > 0 && enemy.hp > 0 && !stunFlag) {
         updateBar(`${enemy.name} Attacks!`, "red")
         player.hp = enemy.attack(player.hp);
         spriteContainerHit("pSprite")
         updateCharacters(`*Flinches* -(${enemy.damage})`, `Bite!(${enemy.damage})`, true, true);
-        await sleep(3000)
+        await sleep(TURNTIME);
     } 
     if (player.hp <= 0) {
         playerDeath();
