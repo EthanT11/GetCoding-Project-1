@@ -144,21 +144,16 @@ function clearElement(element) {
 let player;
 let enemy;
 
-var winCounter = 0;
-var winsNeeded = 6;
+let winCounter = 0;
+const winsNeeded = 6;
 
-var stunCounter = 0;
-var stunFlag = false;
+let stunCounter = 0;
+let stunFlag = false;
 
-var blockCounter = 0;
-var blockFlag = false;
+let blockCounter = 0;
+let blockFlag = false;
 
-var spellData = {};
-var spellCount;
-var spellBookFlag;
-
-var turnCounter = 0;
-var setRanger;
+let spellData = {};
 
 var ENEMYDAM = 2; // for testing; enemy damage
 var WAITTIME = 1000; // change enemy gen time
@@ -176,9 +171,6 @@ class Player {
         this.name = name;
 
         this.textList = [];
-        if (this.name == "Ranger") {
-            setRanger = true;
-        }
         
     }
 
@@ -191,14 +183,6 @@ class Player {
         this._updateContainer(playerAction, addSub);
         this._updateStats();
         
-        // set amount of actions to 2
-        // TODO: try and use turnCounter for stun instead? 
-        if (this.ranger && this.name == "Ranger") {
-            if (setRanger) {
-                turnCounter = 1;
-                setRanger = false;
-            }
-        }
         
         // check if block button should be active based on hp
         if (!blockFlag) {
@@ -918,17 +902,11 @@ async function attackEnemy() {
         enemy.hp = player.attack(enemy.hp);
         _textCheck();
         spriteContainerHit("eSprite");
-        if (turnCounter > 0) {
-            turnCounter --;
-        } else {
-            if (player.ranger) {
-                turnCounter = 1;
-            } else if (enemy.hp > 0) {
-                await sleep(3000);
-                enemyAttack();
-                await sleep(3000);
-            }
-        }
+
+        await sleep(3000);
+        enemyAttack();
+        await sleep(3000);
+
     } 
     checkVictory();
 
