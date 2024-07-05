@@ -75,7 +75,9 @@ function levelPopup() {
         disableActionButtons(true);
     } else {
         levelFlag = false;
-        disableActionButtons(false)
+        if (!genFlag) {} else {
+            disableActionButtons(false)
+        }
     }
 }
 
@@ -153,7 +155,6 @@ let player;
 let enemy;
 
 let winCounter = 0;
-const winsNeeded = 6;
 
 let stunCounter = 0;
 let stunFlag = false;
@@ -164,9 +165,10 @@ let blockFlag = false;
 let spellData = {};
 
 
+const winsNeeded = 1;
 // Sleep Timers
-const GENTIME = 1000;
-const TURNTIME = 1000;
+const GENTIME = 4000/2;
+const TURNTIME = 3000/2; // 3000 optimal for animation
 
 class Player {
     constructor(max_hp, hp, max_mp, mp, damage, block, name) {
@@ -643,8 +645,6 @@ class Enemy {
 async function levelUp(clicked_id) {
     const getBlockButton = document.getElementById("block-button");
 
-    updateBar("Level up!", "lightgreen");
-
     if (clicked_id == "first-choice") {
         player.max_hp += 2;
         player.max_mp += 2;
@@ -662,7 +662,6 @@ async function levelUp(clicked_id) {
     }
     levelPopup();
     player.update("Ready");
-   
 }
 
 // generate random number between 1 and x
@@ -675,19 +674,20 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+let genFlag = false;
 // generate random enemy
 // TODO: Add variety for different levels and different names
 async function genEnemy() {
     const MAX_HP = 10 + (winCounter * (dice(2) + 1));
     const DAM = (dice(2) + 1) + winCounter;
     var NAME = ["Goblin", "Bat", "Ghoul", "Orc", "Evil Monk", "Dragon"];
-
-    player.mage = false; // turn off spellbook; figure out something better
     
     enemy = new Enemy(MAX_HP, MAX_HP, DAM, NAME[winCounter]);
     updateCharacters("Ready", "Searching for foes...");
     updateBar("Searching...", "lightgreen")
+    genFlag = true;
     await sleep(GENTIME);
+    genFlag = false;
     updateCharacters("Ready", "Ready");
     updateBar(`${player.name}'s Turn`, "lightgreen");
     if (levelFlag) {} else{
@@ -840,17 +840,23 @@ async function spriteContainerHit(spriteContainerId) {
 
 }
 
-function updateBar(text, color) {
+function updateBar(text, color, style) {
     const getBar = document.getElementById("blackBar");
     const createEle = document.createElement("h3");
     getBar.innerHTML = "";
     createEle.style.color = color;
 
-    if (createEle.style.color == "") {
-        console.log(`${color}: Not a valid color`)
+    if (createEle.style.color == "" || createEle.style.color == undefined) {
+        console.log(`${color}: Not a valid color`);
         createEle.style.color = "orange"; // Default so text always has a color
     }
-    createEle.classList.add("barText");
+
+    if (style == undefined || style == "default") {
+        createEle.classList.add("barText");    
+    } else if (style == "party") {
+        createEle.classList.add("partyText")
+    }
+
     createEle.innerHTML = text;
     getBar.append(createEle);
 }
@@ -889,22 +895,18 @@ async function attackEnemy() {
 async function checkVictory() {
     if (enemy.hp <= 0) { // check if enemyhp is 0. Level up & load next enemy
         winCounter ++;
-        player.mage = false;
-
         updateCharacters("Victory Dance", "Pile of bones", true, true);
         if (winCounter < winsNeeded) {
             updateBar("Victorious!!", "lightgreen");
-            
             levelPopup();
-            
+            await sleep(4000)
             genEnemy();
             genLevelCircle();
         } else { // victory condition
 
-            player.mage = false;
             player.update("I win!!", true);
-            updateBar("Make me look cool! I won!")
-
+            updateBar("Make me look cool! I won!", "yellow", "party")
+            await sleep(6000)
             newGame();
         }
     } else {
