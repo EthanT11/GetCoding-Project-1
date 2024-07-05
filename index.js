@@ -75,7 +75,7 @@ function levelPopup() {
         disableActionButtons(true);
     } else {
         levelFlag = false;
-        if (!genFlag) {} else {
+        if (genFlag) {} else {
             disableActionButtons(false)
         }
     }
@@ -165,7 +165,7 @@ let blockFlag = false;
 let spellData = {};
 
 
-const winsNeeded = 1;
+const winsNeeded = 3;
 // Sleep Timers
 const GENTIME = 4000/2;
 const TURNTIME = 3000/2; // 3000 optimal for animation
@@ -680,14 +680,19 @@ let genFlag = false;
 async function genEnemy() {
     const MAX_HP = 10 + (winCounter * (dice(2) + 1));
     const DAM = (dice(2) + 1) + winCounter;
-    var NAME = ["Goblin", "Bat", "Ghoul", "Orc", "Evil Monk", "Dragon"];
+    const NAME = ["Goblin", "Bat", "Ghoul", "Orc", "Evil Monk", "Dragon"];
     
     enemy = new Enemy(MAX_HP, MAX_HP, DAM, NAME[winCounter]);
-    updateCharacters("Ready", "Searching for foes...");
+    stunCounter = 0;
+    stunFlag = false;
+    checkStun();
+    updateCharacters("Ready", "...");
     updateBar("Searching...", "lightgreen")
+
     genFlag = true;
     await sleep(GENTIME);
     genFlag = false;
+
     updateCharacters("Ready", "Ready");
     updateBar(`${player.name}'s Turn`, "lightgreen");
     if (levelFlag) {} else{
@@ -750,33 +755,33 @@ async function stunEnemy() {
     const getStunButton = document.getElementById("stun-button");
     const d4 = dice(4);
     const d2 = dice(2) + 1;
-    
+    disableActionButtons(true);
     if (d4 >= 3) { // pass check
-        spriteContainerHit("eSprite")
         stunFlag = true;
         stunCounter = d2;
         getStunButton.disabled = true;
         getStunButton.innerHTML = `Stun (${stunCounter})`
-        updateCharacters(`Success!`, `*Stunned* (${stunCounter})`, true, true)
+        spriteContainerHit("eSprite");
+        updateCharacters(`Success!`, `*Stunned* (${stunCounter})`, true, true);
+        disableActionButtons(false);
         
     } else if (d4 <= 2) { // fail check
         player.update(`Failed!`);
-    
         enemyAttack();
     }
 }
 
 function checkStun() {
     const getStunButton = document.getElementById("stun-button");
+    if (stunCounter == 0) {
+        stunFlag = false;
+        getStunButton.disabled = false;
+        getStunButton.innerHTML = "Stun";
+    }
     if (!stunFlag) {} else {
         stunCounter --;
         getStunButton.innerHTML = `Stun (${stunCounter})`
         enemy.update(`*Stunned* (${stunCounter})`, true)
-        if (stunCounter == 0) {
-            stunFlag = false;
-            getStunButton.disabled = false;
-            getStunButton.innerHTML = "Stun";
-        }
     }
 }
 // enemy attack
@@ -905,8 +910,8 @@ async function checkVictory() {
         } else { // victory condition
 
             player.update("I win!!", true);
-            updateBar("Make me look cool! I won!", "yellow", "party")
-            await sleep(6000)
+            updateBar("You beat the game, Congratulations", "yellow", "party")
+            await sleep(12000)
             newGame();
         }
     } else {
