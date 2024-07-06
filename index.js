@@ -6,10 +6,9 @@ function dropDown() {
   // Close dropdown menu
   window.onclick = function(event) {
     if (!event.target.matches('.dropbtn')) {
-      var dropdowns = document.getElementsByClassName("dropdown-content");
-      var i;
-      for (i = 0; i < dropdowns.length; i++) {
-          var openDropdown = dropdowns[i];
+      const dropdowns = document.getElementsByClassName("dropdown-content");
+      for (let i = 0; i < dropdowns.length; i++) {
+          const openDropdown = dropdowns[i];
           if (openDropdown.classList.contains('show')) {
               openDropdown.classList.remove('show');
             }
@@ -221,10 +220,10 @@ class Player {
     }
     _updateContainer(playerAction, addSub = false) {
         // get player container elements
-        var getPlayerAction = document.getElementById("player-action");
-        var getPlayerHp = document.getElementById("player-hp");
-        var getPlayerMp = document.getElementById("player-mp");
-        var getPlayerName = document.getElementById("player-name");
+        const getPlayerAction = document.getElementById("player-action");
+        const getPlayerHp = document.getElementById("player-hp");
+        const getPlayerMp = document.getElementById("player-mp");
+        const getPlayerName = document.getElementById("player-name");
 
         // set player container elements
         getPlayerAction.innerHTML = playerAction;
@@ -266,13 +265,12 @@ class Player {
         }
     }
     _updateStats() {
-        // get player stats container elements
-        var getPlayerSClass = document.getElementById("s-class");
-        var getPlayerSHp = document.getElementById("s-hp");
-        var getPlayerSMp = document.getElementById("s-mp");
-        var getPlayerSDamage = document.getElementById("s-dam");
-        var getPlayerSBlock = document.getElementById("s-block");
-        var getPlayerSWins = document.getElementById("s-wins");
+        // get player stats cconstainer elements
+        const getPlayerSClass = document.getElementById("s-class");
+        const getPlayerSHp = document.getElementById("s-hp");
+        const getPlayerSMp = document.getElementById("s-mp");
+        const getPlayerSDamage = document.getElementById("s-dam");
+        const getPlayerSWins = document.getElementById("s-wins");
         
         // set player stats container elements
         getPlayerSClass.innerHTML = `Class: ${this.name}`;
@@ -324,8 +322,8 @@ class Spell {
         this.stun = canStun;  
     }
     attack(hp, playerMp) { // returns spelldata[hp, mpleft]
-        var hpLeft = hp -= this.damage;
-        var mpLeft = playerMp -= this.cost;
+        const hpLeft = hp -= this.damage;
+        const mpLeft = playerMp -= this.cost;
         spellData = {
             sname: this.name,
             hpDam: hpLeft,
@@ -479,7 +477,7 @@ async function spellAttack(clicked_id) {
         }
     }
     function _checkCost(spell, hp, mp) {  // check if spell can be used
-        var check = spell.checkCost(player.mp);
+        const check = spell.checkCost(player.mp);
         if (check) {
             canUse = true;
             spell.attack(hp, mp);
@@ -497,13 +495,13 @@ class Enemy {
     }
     // Update HP and Action on UI
     update(enemyAction, addSub) {
-        var getEnemyAction = document.getElementById("enemy-action");
-        var getEnemyHp = document.getElementById("enemy-hp");
-        var getEnemyName = document.getElementById("enemy-name");
+        const getEnemyAction = document.getElementById("enemy-action");
+        const getEnemyHp = document.getElementById("enemy-hp");
+        const getEnemyName = document.getElementById("enemy-name");
 
-        var getEnemySName = document.getElementById("e-class");
-        var getEnemySHp = document.getElementById("e-hp")
-        var getEmemySDam = document.getElementById("e-dam")
+        const getEnemySName = document.getElementById("e-class");
+        const getEnemySHp = document.getElementById("e-hp")
+        const getEmemySDam = document.getElementById("e-dam")
         
         getEnemyHp.innerHTML = `${this.hp} / ${this.max_hp}`;
         getEnemyName.innerHTML = this.name;
@@ -554,7 +552,7 @@ class Enemy {
         }
     }
     _setHpMeter() {
-        var getHpMeter = document.getElementById("enemy-meter");
+        const getHpMeter = document.getElementById("enemy-meter");
         let attributes = {
             "min": "0",
             "max": this.max_hp,
@@ -885,7 +883,7 @@ async function blockEnemy() {
 }
 
 function doubleShot() {
-    console.log("hello world")
+    
 }
 
 createAbilities()
