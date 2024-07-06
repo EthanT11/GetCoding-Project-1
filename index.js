@@ -194,7 +194,7 @@ class Player {
         
         // check if block button should be active based on hp
         if (getBlockButton == null) {
-            console.log(`blockFlag skipped: No block button`)
+            // console.log(`blockFlag skipped: No block button`)
         } else {
             if (!blockFlag) {
                 if (player.hp < player.max_hp && blockCounter > 0) {
@@ -208,8 +208,8 @@ class Player {
     attack(enemyHp) {
         updateBar(`${player.name} Attacks!`, "lightgreen")
         if (player.name == "Ranger") {
-            var dblDam = dice(2); // TODO: Probably make the chances lower...
-            if (dblDam == 2) {
+            const dblDam = dice(4);
+            if (dblDam >= 4) {
                 console.log("DOUBLE DAMAGE!!!!")
                 return enemyHp -= this.damage * 2;
             } else {
@@ -705,7 +705,7 @@ async function stunEnemy() {
 function checkStun() {
     const getStunButton = document.getElementById("stun-button");
     if (getStunButton == null) {
-        console.log(`checkStun skipped: No stun button`)
+        // console.log(`checkStun skipped: No stun button`)
     } else {
         if (stunCounter == 0) {
             stunFlag = false;
@@ -804,8 +804,10 @@ function updateBar(text, color, style) {
 
 // attack button;
 async function attackEnemy() {
+    let oldHp = enemy.hp;
     disableActionButtons(true);
     enemy.hp = player.attack(enemy.hp);
+    let curHp = enemy.hp;
     _textCheck();
     spriteContainerHit("eSprite");
     if (enemy.hp > 0) {
@@ -815,17 +817,18 @@ async function attackEnemy() {
     }
 
     function _textCheck() { // change text depending on class
+        let damage = oldHp - curHp
         let ptext;
-        let etext = `*Wince* -(${player.damage})`;
+        let etext = `*Wince* -(${damage})`;
         switch(player.name) {
             case "Fighter":
-                ptext = `Slash! +(${player.damage})`
+                ptext = `Slash! +(${damage})`
                 break;
             case "Ranger":
-                ptext = `Loose arrow! +(${player.damage})`
+                ptext = `Loose arrow! +(${damage})`
                 break;
             case "Mage":
-                ptext = `Bonk! +(${player.damage})`
+                ptext = `Bonk! +(${damage})`
                 break;
         }
         updateCharacters(`${ptext}`, `${etext}`, true, true)
