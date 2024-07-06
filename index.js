@@ -632,7 +632,7 @@ async function genEnemy() {
 function setClass(clicked_id) {
     const MAX_HP = [16, 14, 12]; // fighter ranger mage
     const MAX_MP = [10, 12, 24];
-    const DAMAGE = [4, 3, 3];
+    const DAMAGE = [4, 3, 2];
     const NAME = ["Fighter", "Ranger", "Mage"];
     const abilButton = document.getElementById("abilities-button");
     abilButton.classList.toggle("ablimg");
