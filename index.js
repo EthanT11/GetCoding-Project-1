@@ -204,8 +204,10 @@ class Player {
             }
         }
     }
-    attack(enemyHp) {
-        updateBar(`${player.name} Attacks!`, "lightgreen")
+    attack(enemyHp, update = true) {
+        if (update) {
+            updateBar(`${player.name} Attacks!`, "lightgreen")
+        } 
         if (player.name == "Ranger") {
             const dblDam = dice(4);
             if (dblDam >= 4) {
@@ -516,7 +518,7 @@ class Enemy {
             // pass
         }
         
-        if (enemyAction == undefined) {
+        if (enemyAction == undefined || enemyAction == "") {
             // pass
         } else {
             getEnemyAction.innerHTML = enemyAction;
@@ -801,18 +803,25 @@ function updateBar(text, color, style) {
 
 
 // attack button;
-async function attackEnemy() {
+async function attackEnemy(atkBack = true, update = true) {
     let oldHp = enemy.hp;
     disableActionButtons(true);
-    enemy.hp = player.attack(enemy.hp);
+    enemy.hp = player.attack(enemy.hp, update);
     let curHp = enemy.hp;
     _textCheck();
     spriteContainerHit("eSprite");
-    if (enemy.hp > 0) {
-        enemyAttack();
-    }  else {
-        checkVictory();
+
+    if (!atkBack) {
+        // Skip enemy turn and victory check for now
+    } else {
+        if (enemy.hp > 0) {
+            enemyAttack();
+        }  else {
+            checkVictory();
+        }
+
     }
+
 
     function _textCheck() { // change text depending on class
         let damage = oldHp - curHp
@@ -882,8 +891,13 @@ async function blockEnemy() {
     }
 }
 
-function doubleShot() {
+async function doubleShot() {
+    saPopup();
     
+    attackEnemy(false)
+    enemy.update();
+    await sleep(1500) //
+    attackEnemy(true, false)
 }
 
 createAbilities()
