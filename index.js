@@ -186,25 +186,28 @@ class Player {
     // Update HP and Action on UI
     update(playerAction, addSub) {
         // get player menu container elements
-        var getAttackButton = document.getElementById("attack-button");
-        var getBlockButton = document.getElementById("block-button");
+        const getBlockButton = document.getElementById("block-button");
         
         this._updateContainer(playerAction, addSub);
         this._updateStats();
         
         
         // check if block button should be active based on hp
-        if (!blockFlag) {
-            if (player.hp < player.max_hp && blockCounter > 0) {
-                getBlockButton.disabled = false;
-            } else {
-                getBlockButton.disabled = true;
+        if (getBlockButton == null) {
+            console.log(`blockFlag skipped: No block button`)
+        } else {
+            if (!blockFlag) {
+                if (player.hp < player.max_hp && blockCounter > 0) {
+                    getBlockButton.disabled = false;
+                } else {
+                    getBlockButton.disabled = true;
+                }
             }
         }
     }
     attack(enemyHp) {
         updateBar(`${player.name} Attacks!`, "lightgreen")
-        if (this.ranger) {
+        if (player.name == "Ranger") {
             var dblDam = dice(2); // TODO: Probably make the chances lower...
             if (dblDam == 2) {
                 console.log("DOUBLE DAMAGE!!!!")
@@ -657,6 +660,7 @@ function setClass(clicked_id) {
         }
         abilButton.classList.toggle("splimg");
     }
+    createAbilities()
     genEnemy();
     classPopup();
     audioElement.play();
@@ -700,15 +704,19 @@ async function stunEnemy() {
 
 function checkStun() {
     const getStunButton = document.getElementById("stun-button");
-    if (stunCounter == 0) {
-        stunFlag = false;
-        getStunButton.disabled = false;
-        getStunButton.innerHTML = "Stun";
-    }
-    if (!stunFlag) {} else {
-        stunCounter --;
-        getStunButton.innerHTML = `Stun (${stunCounter})`
-        enemy.update(`*Stunned* (${stunCounter})`, true)
+    if (getStunButton == null) {
+        console.log(`checkStun skipped: No stun button`)
+    } else {
+        if (stunCounter == 0) {
+            stunFlag = false;
+            getStunButton.disabled = false;
+            getStunButton.innerHTML = "Stun";
+        }
+        if (!stunFlag) {} else {
+            stunCounter --;
+            getStunButton.innerHTML = `Stun (${stunCounter})`
+            enemy.update(`*Stunned* (${stunCounter})`, true)
+        }
     }
 }
 // enemy attack
@@ -873,12 +881,21 @@ async function blockEnemy() {
     }
 }
 
-createAbilities()
-function createAbilities() {
-    const abilPop = document.getElementById("abilPopup");
-    const table = document.createElement("table");
-    abilPop.appendChild(table)
+function doubleShot() {
+    console.log("hello world")
+}
 
+createAbilities()
+function createAbilities(type) {
+    const abilPop = document.getElementById("abilPopup");
+    abilPop.innerHTML = "";
+
+    const h2 = document.createElement("h2");
+    const table = document.createElement("table");
+    h2.innerHTML = "Abilities";
+    h2.id = "class";
+    abilPop.append(h2);
+    abilPop.appendChild(table);
     const header = table.createTHead();
     let headNames = ["Name", "Info"]
 
@@ -887,33 +904,50 @@ function createAbilities() {
     }
 
     const abilities = {
-        "Abilities": {
-            "Block": {
-                name: "Block",
-                id: "block-button",
-                onclick: blockEnemy,
-                info: "Block & Heal damage",
-                tag: "yes"
-            },
-            "Stun": {
-                name: "Stun",
-                id: "stun-button",
-                onclick: stunEnemy,
-                info: "50% chance to stun",
-                tag: "yes"
-            }
+        "Block": {
+            name: "Block",
+            id: "block-button",
+            onclick: blockEnemy,
+            info: "Block & Heal damage",
+            tag: "yes"
+        },
+        "Stun": {
+            name: "Stun",
+            id: "stun-button",
+            onclick: stunEnemy,
+            info: "50% chance to stun",
+            tag: "yes"
+        },
+        "DoubleShot": {
+            name: "Double Shot",
+            id: "ds-button",
+            onclick: doubleShot,
+            info: "testing"
+        },
+        "null": {
+            name: "null",
+            id: "null",
+            onclick: "i am null",
+            info: "null"
         }
     }
-    let keys = Object.keys(abilities.Abilities)
-    let size = keys.length;
+
     let abilityNames = []
-
-    for (let i = 0; i < size; i++) {
-        // abilityNames.append(keys[i])
+    // maybe add tag to ability info and iterate through that ranger, mage etc
+    if (!player) {
+        abilityNames = [abilities.Block, abilities.Stun];
+    } else {
+        if (player.name == "Fighter") {
+            abilityNames = [abilities.Block, abilities.Stun]
+        } else if (player.name == "Ranger") {
+            abilityNames = [abilities.Stun, abilities.DoubleShot]
+        } else if (player.name == "Mage") {
+            abilityNames = [abilities.null]
+        } else {
+            throw new Error(`Error: ${player.name} is not a valid class`)
+        }
     }
-    abilityNames = [abilities.Abilities.Block, abilities.Abilities.Stun]
 
-    
     for (let i = 0; i < abilityNames.length; i++) {
         const tr = table.insertRow();
         let ability = abilityNames[i];
@@ -932,6 +966,7 @@ function createAbilities() {
             }
         }
     }
+    
 }
 
 function newGame() { // reset game state
