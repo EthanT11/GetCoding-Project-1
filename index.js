@@ -690,8 +690,12 @@ async function stunEnemy() {
     if (d4 >= 3) { // pass check
         stunFlag = true;
         stunCounter = d2;
-        getStunButton.disabled = true;
-        getStunButton.innerHTML = `Stun (${stunCounter})`
+        if (player.name == "Mage") {
+            // skip button disabling
+        } else {
+            getStunButton.disabled = true;
+            getStunButton.innerHTML = `Stun (${stunCounter})`
+        }
         spriteContainerHit("eSprite");
         updateCharacters(`Success!`, `*Stunned* (${stunCounter})`, true, true);
         disableActionButtons(false);
