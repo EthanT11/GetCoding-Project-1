@@ -6,10 +6,9 @@ function dropDown() {
   // Close dropdown menu
   window.onclick = function(event) {
     if (!event.target.matches('.dropbtn')) {
-      var dropdowns = document.getElementsByClassName("dropdown-content");
-      var i;
-      for (i = 0; i < dropdowns.length; i++) {
-          var openDropdown = dropdowns[i];
+      const dropdowns = document.getElementsByClassName("dropdown-content");
+      for (let i = 0; i < dropdowns.length; i++) {
+          const openDropdown = dropdowns[i];
           if (openDropdown.classList.contains('show')) {
               openDropdown.classList.remove('show');
             }
@@ -66,9 +65,19 @@ function saPopup() {
     popup.classList.toggle("show");
 }
 
+let levelFlag = false;
 function levelPopup() {
     const popup = document.getElementById("levelPopup");
     popup.classList.toggle("show");
+    if (popup.classList.contains("show")) {
+        levelFlag = true;
+        disableActionButtons(true);
+    } else {
+        levelFlag = false;
+        if (genFlag) {} else {
+            disableActionButtons(false)
+        }
+    }
 }
 
 
@@ -112,8 +121,6 @@ function helpPopup() {
 }
 
 // generate level circles
-// TODO: Look into just changing the background color property of a class
-// rather then just switching ID's
 function genLevelCircle() {
     const getProgressCont = document.getElementById("progressContainer");
     let style = "circle";
@@ -140,106 +147,70 @@ function clearElement(element) {
     document.getElementById(element).innerHTML = "";
 }
 
-// switches active buttons between class and fight menu; boolean
-// TODO: try and remove block flag and chooseClass flag
-function buttonState(actionState, chooseClass, blockState = blockFlag) {
-    var classState;
-    
-    classState = !chooseClass ? false : true;
-    document.getElementById("fight-button").disabled = classState;
-    document.getElementById("range-button").disabled = classState;
-    document.getElementById("mage-button").disabled = classState;
-    
-    blockFlag = blockState;
-    document.getElementById("attack-button").disabled = actionState;
-    document.getElementById("block-button").disabled = blockFlag;
-    document.getElementById("stun-button").disabled = actionState;
-    
-    if (stunCounter == 0) {
-        document.getElementById("stun-button").innerText = "Stun";
-    }
-    
-}
-
-
 // -- Game Functions --
 
 // init
-var player;
-var enemy;
-var chooseClass = false;
+let player;
+let enemy;
 
-var winCounter = 0;
-var winsNeeded = 6;
+let winCounter = 0;
 
-var stunCounter = 0;
-var stunFlag = false;
+let stunCounter = 0;
+let stunFlag = false;
 
-var blockCounter = 0;
-var blockFlag = false;
+let blockCounter = 0;
+let blockFlag = false;
 
-var spellData = {};
-var spellCount;
-var spellBookFlag;
+let spellData = {};
 
-var turnCounter = 0;
-var setRanger;
 
-var ENEMYDAM = 2; // for testing; enemy damage
-var WAITTIME = 1000; // change enemy gen time
+const winsNeeded = 3;
+// Sleep Timers
+const GENTIME = 4000/2;
+const TURNTIME = 3000/2; // 3000 optimal for animation
 
-var actionTextCount = 0;
-
-// TODO: Maybe add the flags to the player constructor?? Might cause a lot of issues
 class Player {
-    constructor(max_hp, hp, max_mp, mp, damage, block, name) {
+    constructor(max_hp, hp, max_mp, mp, damage, name) {
         this.max_hp = max_hp;
         this.hp = hp;
         this.max_mp = max_mp;
         this.mp = mp;
         this.damage = damage;
-        this.block = block;
         this.name = name;
 
         this.textList = [];
-        if (this.name == "Ranger") {
-            setRanger = true;
-        }
         
     }
 
     // Update HP and Action on UI
     update(playerAction, addSub) {
         // get player menu container elements
-        var getAttackButton = document.getElementById("attack-button");
-        var getBlockButton = document.getElementById("block-button");
+        const getBlockButton = document.getElementById("block-button");
         
         this._updateContainer(playerAction, addSub);
         this._updateStats();
         
-        // set amount of actions to 2
-        // TODO: try and use turnCounter for stun instead? 
-        if (this.ranger && this.name == "Ranger") {
-            if (setRanger) {
-                turnCounter = 1;
-                setRanger = false;
-            }
-        }
         
         // check if block button should be active based on hp
-        if (!blockFlag) {
-            if (player.hp < player.max_hp && blockCounter > 0) {
-                getBlockButton.disabled = false;
-            } else {
-                getBlockButton.disabled = true;
+        if (getBlockButton == null) {
+            // console.log(`blockFlag skipped: No block button`)
+        } else {
+            if (!blockFlag) {
+                if (player.hp < player.max_hp && blockCounter > 0) {
+                    getBlockButton.disabled = false;
+                } else {
+                    getBlockButton.disabled = true;
+                }
             }
         }
     }
-    attack(enemyHp) {
-        updateBar(`${player.name} Attacks!`, "lightgreen")
-        if (this.ranger) {
-            var dblDam = dice(2); // TODO: Probably make the chances lower...
-            if (dblDam == 2) {
+    attack(enemyHp, update = true) {
+        if (update) {
+            updateBar(`${player.name} Attacks!`, "lightgreen")
+        } 
+        if (player.name == "Ranger") {
+            const dblDam = dice(4);
+            if (dblDam >= 4) {
                 console.log("DOUBLE DAMAGE!!!!")
                 return enemyHp -= this.damage * 2;
             } else {
@@ -249,15 +220,12 @@ class Player {
             return enemyHp -= this.damage; // returns enemy hp value
         }
     }
-    blockAttack(enemyDam) {
-        return this.block - enemyDam;
-    }
     _updateContainer(playerAction, addSub = false) {
         // get player container elements
-        var getPlayerAction = document.getElementById("player-action");
-        var getPlayerHp = document.getElementById("player-hp");
-        var getPlayerMp = document.getElementById("player-mp");
-        var getPlayerName = document.getElementById("player-name");
+        const getPlayerAction = document.getElementById("player-action");
+        const getPlayerHp = document.getElementById("player-hp");
+        const getPlayerMp = document.getElementById("player-mp");
+        const getPlayerName = document.getElementById("player-name");
 
         // set player container elements
         getPlayerAction.innerHTML = playerAction;
@@ -299,20 +267,18 @@ class Player {
         }
     }
     _updateStats() {
-        // get player stats container elements
-        var getPlayerSClass = document.getElementById("s-class");
-        var getPlayerSHp = document.getElementById("s-hp");
-        var getPlayerSMp = document.getElementById("s-mp");
-        var getPlayerSDamage = document.getElementById("s-dam");
-        var getPlayerSBlock = document.getElementById("s-block");
-        var getPlayerSWins = document.getElementById("s-wins");
+        // get player stats cconstainer elements
+        const getPlayerSClass = document.getElementById("s-class");
+        const getPlayerSHp = document.getElementById("s-hp");
+        const getPlayerSMp = document.getElementById("s-mp");
+        const getPlayerSDamage = document.getElementById("s-dam");
+        const getPlayerSWins = document.getElementById("s-wins");
         
         // set player stats container elements
         getPlayerSClass.innerHTML = `Class: ${this.name}`;
         getPlayerSHp.innerHTML = `Max HP: ${this.max_hp}`;
         getPlayerSMp.innerHTML = `Max MP: ${this.max_mp}`;
         getPlayerSDamage.innerHTML = `Damage: ${this.damage}`;
-        getPlayerSBlock.innerHTML = `Block: ${this.block}`;
         getPlayerSWins.innerHTML = `Wins: ${winCounter}`;
     }
     _setMeter(meter) {
@@ -358,8 +324,8 @@ class Spell {
         this.stun = canStun;  
     }
     attack(hp, playerMp) { // returns spelldata[hp, mpleft]
-        var hpLeft = hp -= this.damage;
-        var mpLeft = playerMp -= this.cost;
+        const hpLeft = hp -= this.damage;
+        const mpLeft = playerMp -= this.cost;
         spellData = {
             sname: this.name,
             hpDam: hpLeft,
@@ -378,26 +344,26 @@ let spellInfo = {
     fireData: {
         _name: "Fire",
         _dam: 8,
-        _cost: 2,
+        _cost: 8,
         _info: "Hurl a fireball!"
     },
     iceData: {
         _name: "Ice",
-        _dam: 2,
-        _cost: 1,
+        _dam: 4,
+        _cost: 4,
         _info: "Freeze the enemy!"
     },
     earthData: {
         _name: "Earth",
-        _dam: 4,
-        _cost: 3,
+        _dam: 5,
+        _cost: 6,
         _info: "Fling large rocks!",
         _canStun: true
     },
     healData: {
         _name: "Heal",
         _dam: -4,
-        _cost: 0,
+        _cost: 4,
         _info: "Cure wounds!"
     }
 }
@@ -415,56 +381,8 @@ let spells = {
     healSpell: new Spell(hData._name, hData._dam, hData._cost, hData._info), // negative damage for healing
 }
 
-createAbilities()
-function createAbilities() {
-    const abilPop = document.getElementById("abilPopup");
-    const table = document.createElement("table");
-    abilPop.appendChild(table)
-
-    const header = table.createTHead();
-    let headNames = ["Name", "Info"]
-
-    for (let i = 0; i < headNames.length; i++) {
-        header.appendChild(document.createElement("th")).appendChild(document.createTextNode(headNames[i]))
-    }
-
-    const abilities = {
-        "Block": {
-            name: "Block",
-            id: "block-button",
-            onclick: blockEnemy,
-            info: "Block & Heal damage"
-        },
-        "Stun": {
-            name: "Stun",
-            id: "stun-button",
-            onclick: stunEnemy,
-            info: "50% chance to stun"
-        }
-    }
-    abilityNames = [abilities.Block, abilities.Stun]
-    
-    for (let i = 0; i < abilityNames.length; i++) {
-        const tr = table.insertRow();
-        let ability = abilityNames[i];
-        for (let j = 0; j < 4; j++) {
-            const td = tr.insertCell(j);
-            if (j == 0) {
-                abilButt = document.createElement("button");
-                abilButt.id = ability.id;
-                abilButt.innerHTML = ability.name
-                abilButt.classList.add("popButton");
-                abilButt.onclick = ability.onclick
-                td.appendChild(abilButt)
-            }
-            if (j == 1) {
-                td.appendChild(document.createTextNode(`${ability.info}`))
-            }
-        }
-    }
-}
-
 // TODO: Clean up the code, VERY messy from all the trial and error
+// Probably redo at some point but works for now
 // TODO: Make spellbook generate on playerclass rather then always
 _createSpellBook()
 function _createSpellBook() {
@@ -536,7 +454,7 @@ async function spellAttack(clicked_id) {
     if (!canUse) { // check if player has enough mp
         console.log("not enough mp")
     } else {
-        disableActionButtons(true)
+        
         _castSpell();
     }
     // helper funcs
@@ -553,7 +471,7 @@ async function spellAttack(clicked_id) {
             }
             spriteContainerHit("eSprite")
             updateBar(`${player.name} casts ${spellData.sname}`, "lightgreen")
-            await sleep(3000)
+            
             enemy.hp = spellData.hpDam;
             player.mp = spellData.mpDam;
             enemyAttack();
@@ -561,7 +479,7 @@ async function spellAttack(clicked_id) {
         }
     }
     function _checkCost(spell, hp, mp) {  // check if spell can be used
-        var check = spell.checkCost(player.mp);
+        const check = spell.checkCost(player.mp);
         if (check) {
             canUse = true;
             spell.attack(hp, mp);
@@ -579,13 +497,13 @@ class Enemy {
     }
     // Update HP and Action on UI
     update(enemyAction, addSub) {
-        var getEnemyAction = document.getElementById("enemy-action");
-        var getEnemyHp = document.getElementById("enemy-hp");
-        var getEnemyName = document.getElementById("enemy-name");
+        const getEnemyAction = document.getElementById("enemy-action");
+        const getEnemyHp = document.getElementById("enemy-hp");
+        const getEnemyName = document.getElementById("enemy-name");
 
-        var getEnemySName = document.getElementById("e-class");
-        var getEnemySHp = document.getElementById("e-hp")
-        var getEmemySDam = document.getElementById("e-dam")
+        const getEnemySName = document.getElementById("e-class");
+        const getEnemySHp = document.getElementById("e-hp")
+        const getEmemySDam = document.getElementById("e-dam")
         
         getEnemyHp.innerHTML = `${this.hp} / ${this.max_hp}`;
         getEnemyName.innerHTML = this.name;
@@ -600,7 +518,7 @@ class Enemy {
             // pass
         }
         
-        if (enemyAction == undefined) {
+        if (enemyAction == undefined || enemyAction == "") {
             // pass
         } else {
             getEnemyAction.innerHTML = enemyAction;
@@ -636,7 +554,7 @@ class Enemy {
         }
     }
     _setHpMeter() {
-        var getHpMeter = document.getElementById("enemy-meter");
+        const getHpMeter = document.getElementById("enemy-meter");
         let attributes = {
             "min": "0",
             "max": this.max_hp,
@@ -654,18 +572,14 @@ class Enemy {
 
 // add randomness to amounts dependent on difficulty?
 // amounts dependent on class?
-// TODO: Accumulate levels if never choosen? OR disable menu buttons until a choice is made
+// TODO: generate buttons through js rather then hard code to easily add more or adjust
 async function levelUp(clicked_id) {
-    const getLevelUp = document.getElementById("levelContainer");
     const getBlockButton = document.getElementById("block-button");
-    getLevelUp.hidden = true;
-    updateBar("Level up!", "lightgreen");
 
     if (clicked_id == "first-choice") {
         player.max_hp += 2;
         player.max_mp += 2;
         player.damage += 1;
-        player.block += 1;
         player.update("I'm feeling strong!", true)
     } else if (clicked_id == "second-choice") {
         player.hp = player.max_hp;
@@ -676,10 +590,9 @@ async function levelUp(clicked_id) {
         getBlockButton.innerText = `Block (${blockCounter})`
         player.update("Neat! A shield!", true)
     }
+
     levelPopup();
-    updateBar(`${player.name}'s Turn`, "lightgreen");
     player.update("Ready");
-    disableActionButtons(false)
 }
 
 // generate random number between 1 and x
@@ -692,100 +605,66 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+let genFlag = false;
 // generate random enemy
 // TODO: Add variety for different levels and different names
-// idea: use winCounter to adjust "difficulty"
 async function genEnemy() {
-    var MAX_HP = 10 + (winCounter * (dice(2) + 1));
-    var HP = MAX_HP;
-    // var DAM = (dice(2) + 1) + winCounter;
-    var DAM = 2;
-    var NAME = ["Goblin", "Bat", "Ghoul", "Orc", "Evil Monk", "Dragon"];
-
-    player.mage = false; // turn off spellbook; figure out something better
+    const MAX_HP = 10 + (winCounter * (dice(2) + 1));
+    const DAM = (dice(2) + 1) + winCounter;
+    const NAME = ["Goblin", "Bat", "Ghoul", "Orc", "Evil Monk", "Dragon"];
     
-    updateCharacters("Ready", "Searching for foes...");
-    await sleep(WAITTIME);
-    enemy = new Enemy(MAX_HP, HP, DAM, NAME[winCounter]);
+    enemy = new Enemy(MAX_HP, MAX_HP, DAM, NAME[winCounter]);
+    stunCounter = 0;
+    stunFlag = false;
+    checkStun();
+    updateCharacters("Ready", "...");
+    updateBar("Searching...", "lightgreen")
+
+    genFlag = true;
+    await sleep(GENTIME);
+    genFlag = false;
 
     updateCharacters("Ready", "Ready");
-    
-    // TODO: Finish and flush out enemy list
-    function _getEnemy() {
-        let max_hp = [(dice(10) + winCounter)]
-        let enemyList = {
-            "goblin": {
-                "name": "Goblin",
-                "max_hp": 0,
-                "hp": 0,
-                "dam": 0
-            },
-            "orc": {
-                "name": "Orc",
-                "max_hp": 0,
-                "hp": 0,
-                "dam": 0
-            },
-            "ghoul": {
-                "name": "Ghoul",
-                "max_hp": 0,
-                "hp": 0,
-                "dam": 0
-            },
-            "bat": {
-                "name": "Bat",
-                "max_hp": 0,
-                "hp": 0,
-                "dam": 0
-            },
-            "evilMonk": {
-                "name": "Evil Monk",
-                "max_hp": 0,
-                "hp": 0,
-                "dam": 0
-            },
-            "dragon": {
-                "name": "Dragon",
-                "max_hp": 0,
-                "hp": 0,
-                "dam": 0
-            },
-        };
+    updateBar(`${player.name}'s Turn`, "lightgreen");
+    if (levelFlag) {} else{
+        disableActionButtons(false);
     }
 }
 
 // choose class based on button clicked
 function setClass(clicked_id) {
     const MAX_HP = [16, 14, 12]; // fighter ranger mage
-    const MAX_MP = [10, 12, 14];
-    const DAMAGE = [4, 3, 3];
-    const BLOCK = [4, 3, 2];
+    const MAX_MP = [10, 12, 24];
+    const DAMAGE = [4, 3, 2];
     const NAME = ["Fighter", "Ranger", "Mage"];
     const abilButton = document.getElementById("abilities-button");
-
-    
-    // TODO fix spellbook not showing up
-    if (!chooseClass) {
-        if (clicked_id == "fight-button") {
-            player = new Player(MAX_HP[0], MAX_HP[0], MAX_MP[0], MAX_MP[0], DAMAGE[0], BLOCK[0], NAME[0]); // Player(MAX-HP, HP, Damage, Block, Name)
-            abilButton.classList.toggle("ablimg");
+    abilButton.classList.toggle("ablimg");
+    if (clicked_id == "fight-button") {
+        player = new Player(MAX_HP[0], MAX_HP[0], MAX_MP[0], MAX_MP[0], DAMAGE[0], NAME[0]); // Player(MAX-HP, HP, Damage, Block, Name)
+        if (abilButton.classList.contains("splimg")) {
+            abilButton.classList.remove("splimg")
         }
-        if (clicked_id == "range-button") {
-            player = new Player(MAX_HP[1], MAX_HP[1], MAX_MP[1], MAX_MP[1], DAMAGE[1], BLOCK[1], NAME[1]); // Player(MAX-HP, HP, Damage, Block, Name)
-            abilButton.classList.add("ablimg");
-        }
-        if (clicked_id == "mage-button") {
-            player = new Player(MAX_HP[2], MAX_HP[2], MAX_MP[2], MAX_MP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
-            abilButton.classList.add("splimg");
-        }
-        genEnemy();
-        classPopup();
-        audioElement.play(); // Has to activate on a user interacting with the dom; maybe find a better place to put it or start it?
-        updateBar(`${player.name}'s Turn`, "lightgreen");
-        disableActionButtons(false);
-    } else {
-        return console.log("Already picked a class");
+        abilButton.classList.toggle("ablimg");
     }
+    if (clicked_id == "range-button") {
+        player = new Player(MAX_HP[1], MAX_HP[1], MAX_MP[1], MAX_MP[1], DAMAGE[1], NAME[1]); // Player(MAX-HP, HP, Damage, Block, Name)
+        if (abilButton.classList.contains("splimg")) {
+            abilButton.classList.remove("splimg");
+        }
+        abilButton.classList.add("ablimg");
+    }
+    if (clicked_id == "mage-button") {
+        player = new Player(MAX_HP[2], MAX_HP[2], MAX_MP[2], MAX_MP[2], DAMAGE[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
+        if (abilButton.classList.contains("ablimg")) {
+            abilButton.classList.remove("ablimg")
+        }
+        abilButton.classList.toggle("splimg");
+    }
+    createAbilities()
+    genEnemy();
+    classPopup();
+    audioElement.play();
+    audioElement.loop = true; // Has to activate on a user interacting with the dom; maybe find a better place to put it or start it?
 }
 
 // general update player/enemy UI, takes actions as str. "Attacking", "Defending"
@@ -802,73 +681,79 @@ function updateCharacters(p_action, e_action, pAddSub, eAddSub) {
     enemy.update(e_action, eAddSub);
 }
 
-// TODO: hit enemy for half damage on success & 1.5 of gob damage to player on fail?
 async function stunEnemy() {
     saPopup();
     const getStunButton = document.getElementById("stun-button");
     const d4 = dice(4);
     const d2 = dice(2) + 1;
-    
+    disableActionButtons(true);
     if (d4 >= 3) { // pass check
-        spriteContainerHit("eSprite")
         stunFlag = true;
         stunCounter = d2;
-        getStunButton.disabled = true;
-        getStunButton.innerHTML = `Stun (${stunCounter})`
-        updateCharacters(`Success!`, `*Stunned* (${stunCounter})`, true, true)
-        await sleep(3000);
+        if (player.name == "Mage") {
+            // skip button disabling
+        } else {
+            getStunButton.disabled = true;
+            getStunButton.innerHTML = `Stun (${stunCounter})`
+        }
+        spriteContainerHit("eSprite");
+        updateCharacters(`Success!`, `*Stunned* (${stunCounter})`, true, true);
+        disableActionButtons(false);
+        
     } else if (d4 <= 2) { // fail check
         player.update(`Failed!`);
-        await sleep(1500);
         enemyAttack();
     }
 }
 
 function checkStun() {
     const getStunButton = document.getElementById("stun-button");
-    if (!stunFlag) {} else {
-        stunCounter --;
-        getStunButton.innerHTML = `Stun (${stunCounter})`
-        enemy.update(`*Stunned* (${stunCounter})`, true)
+    if (getStunButton == null) {
+        // console.log(`checkStun skipped: No stun button`)
+    } else {
         if (stunCounter == 0) {
             stunFlag = false;
             getStunButton.disabled = false;
             getStunButton.innerHTML = "Stun";
         }
+        if (!stunFlag) {} else {
+            stunCounter --;
+            getStunButton.innerHTML = `Stun (${stunCounter})`
+            enemy.update(`*Stunned* (${stunCounter})`, true)
+        }
     }
 }
 // enemy attack
 async function enemyAttack() {
+    await sleep(TURNTIME);
     if (player.hp > 0 && enemy.hp > 0 && !stunFlag) {
+        updateBar(`${enemy.name} Attacks!`, "red")
         player.hp = enemy.attack(player.hp);
         spriteContainerHit("pSprite")
         updateCharacters(`*Flinches* -(${enemy.damage})`, `Bite!(${enemy.damage})`, true, true);
+        await sleep(TURNTIME);
     } 
     if (player.hp <= 0) {
         playerDeath();
+    } else {
+        checkStun();
+        updateBar(`${player.name}'s Turn`, "lightgreen");
+        disableActionButtons(false);
     }
-    checkStun();
-
-    await sleep(3000);
-    disableActionButtons(false);
-    updateBar(`${player.name}'s Turn`, "lightgreen")
+    
 }
 async function playerDeath() {
-    var getLevelUp = document.getElementById("levelContainer");
-
-    getLevelUp.hidden = true;
     updateCharacters("Piles of bones", "Victory laugh", true, true);
   
-    await sleep(4000);
+
     newGame();
 }
 
-// TODO: Fix jerky animation in css, maybe use the curve?
 let intId;
 async function spriteContainerHit(spriteContainerId) {
     _setAnim();
-    soundEffect.play()
-    await sleep(1000);
+    soundEffect.play();
+    await sleep(1000)
     _reset();
 
     function _setAnim() {
@@ -899,55 +784,62 @@ async function spriteContainerHit(spriteContainerId) {
 
 }
 
-function updateBar(text, color) {
+function updateBar(text, color, style) {
     const getBar = document.getElementById("blackBar");
     const createEle = document.createElement("h3");
     getBar.innerHTML = "";
     createEle.style.color = color;
 
-    if (createEle.style.color == "") {
-        console.log(`${color}: Not a valid color`)
+    if (createEle.style.color == "" || createEle.style.color == undefined) {
+        console.log(`${color}: Not a valid color`);
         createEle.style.color = "orange"; // Default so text always has a color
     }
-    createEle.classList.add("barText");
+
+    if (style == undefined || style == "default") {
+        createEle.classList.add("barText");    
+    } else if (style == "party") {
+        createEle.classList.add("partyText")
+    }
+
     createEle.innerHTML = text;
     getBar.append(createEle);
 }
 
 
 // attack button;
-async function attackEnemy() {
+async function attackEnemy(atkBack = true, update = true) {
+    let oldHp = enemy.hp;
     disableActionButtons(true);
-    if (enemy.hp > 0) {
-        enemy.hp = player.attack(enemy.hp);
-        _textCheck();
-        spriteContainerHit("eSprite");
-        if (turnCounter > 0) {
-            turnCounter --;
-        } else {
-            if (player.ranger) {
-                turnCounter = 1;
-            } else if (enemy.hp > 0) {
-                await sleep(3000);
-                enemyAttack();
-                await sleep(3000);
-            }
+    enemy.hp = player.attack(enemy.hp, update);
+    let curHp = enemy.hp;
+    _textCheck();
+    spriteContainerHit("eSprite");
+
+    if (!atkBack) {
+        // Skip enemy turn and victory check for now
+    } else {
+        if (enemy.hp > 0) {
+            enemyAttack();
+        }  else {
+            checkVictory();
         }
-    } 
-    checkVictory();
+
+    }
+
 
     function _textCheck() { // change text depending on class
-        var ptext;
-        var etext = `*Wince* -(${player.damage})`;
+        let damage = oldHp - curHp
+        let ptext;
+        let etext = `*Wince* -(${damage})`;
         switch(player.name) {
             case "Fighter":
-                ptext = `Slash! +(${player.damage})`
+                ptext = `Slash! +(${damage})`
                 break;
             case "Ranger":
-                ptext = `Loose arrow! +(${player.damage})`
+                ptext = `Loose arrow! +(${damage})`
                 break;
             case "Mage":
-                ptext = `Bonk! +(${player.damage})`
+                ptext = `Bonk! +(${damage})`
                 break;
         }
         updateCharacters(`${ptext}`, `${etext}`, true, true)
@@ -956,31 +848,25 @@ async function attackEnemy() {
 
 async function checkVictory() {
     if (enemy.hp <= 0) { // check if enemyhp is 0. Level up & load next enemy
-        var getLevelUp = document.getElementById("levelContainer");
         winCounter ++;
-        player.mage = false;
-
         updateCharacters("Victory Dance", "Pile of bones", true, true);
         if (winCounter < winsNeeded) {
             updateBar("Victorious!!", "lightgreen");
-            getLevelUp.hidden = false;
             levelPopup();
-            
-            await sleep(3000)
+            await sleep(4000)
             genEnemy();
             genLevelCircle();
         } else { // victory condition
 
-            player.mage = false;
             player.update("I win!!", true);
-            updateBar("Make me look cool! I won!")
-            await sleep(6000);
+            updateBar("You beat the game, Congratulations", "yellow", "party")
+            await sleep(12000)
             newGame();
         }
     } else {
-        await sleep(3000);
+
         updateCharacters("Ready", "Ready", true, true);
-        disableActionButtons(false);
+       
         updateBar(`${player.name}'s Turn`, "lightgreen");
     }
 }
@@ -988,7 +874,7 @@ async function blockEnemy() {
     saPopup();
     if (blockCounter > 0) {
         const getBlockButton = document.getElementById("block-button");
-        disableActionButtons(true);
+        
         let blocked = enemy.damage;
         if (player.hp + blocked > player.max_hp) {
             player.hp = player.max_hp;
@@ -1009,6 +895,99 @@ async function blockEnemy() {
     }
 }
 
+async function doubleShot() {
+    saPopup();
+    
+    attackEnemy(false)
+    enemy.update();
+    await sleep(1500) //
+    attackEnemy(true, false)
+}
+
+createAbilities()
+function createAbilities(type) {
+    const abilPop = document.getElementById("abilPopup");
+    abilPop.innerHTML = "";
+
+    const h2 = document.createElement("h2");
+    const table = document.createElement("table");
+    h2.innerHTML = "Abilities";
+    h2.id = "class";
+    abilPop.append(h2);
+    abilPop.appendChild(table);
+    const header = table.createTHead();
+    let headNames = ["Name", "Info"]
+
+    for (let i = 0; i < headNames.length; i++) {
+        header.appendChild(document.createElement("th")).appendChild(document.createTextNode(headNames[i]))
+    }
+
+    const abilities = {
+        "Block": {
+            name: "Block",
+            id: "block-button",
+            onclick: blockEnemy,
+            info: "Block & Heal damage",
+            tag: "yes"
+        },
+        "Stun": {
+            name: "Stun",
+            id: "stun-button",
+            onclick: stunEnemy,
+            info: "50% chance to stun",
+            tag: "yes"
+        },
+        "DoubleShot": {
+            name: "Double Shot",
+            id: "ds-button",
+            onclick: doubleShot,
+            info: "testing"
+        },
+        "null": {
+            name: "null",
+            id: "null",
+            onclick: "i am null",
+            info: "null"
+        }
+    }
+
+    let abilityNames = []
+    // maybe add tag to ability info and iterate through that ranger, mage etc
+    if (!player) {
+        abilityNames = [abilities.Block, abilities.Stun];
+    } else {
+        if (player.name == "Fighter") {
+            abilityNames = [abilities.Block, abilities.Stun]
+        } else if (player.name == "Ranger") {
+            abilityNames = [abilities.Stun, abilities.DoubleShot]
+        } else if (player.name == "Mage") {
+            abilityNames = [abilities.null]
+        } else {
+            throw new Error(`Error: ${player.name} is not a valid class`)
+        }
+    }
+
+    for (let i = 0; i < abilityNames.length; i++) {
+        const tr = table.insertRow();
+        let ability = abilityNames[i];
+        for (let j = 0; j < 4; j++) {
+            const td = tr.insertCell(j);
+            if (j == 0) {
+                abilButt = document.createElement("button");
+                abilButt.id = ability.id;
+                abilButt.innerHTML = ability.name
+                abilButt.classList.add("popButton");
+                abilButt.onclick = ability.onclick
+                td.appendChild(abilButt)
+            }
+            if (j == 1) {
+                td.appendChild(document.createTextNode(`${ability.info}`))
+            }
+        }
+    }
+    
+}
+
 function newGame() { // reset game state
     winCounter = 0;
     stunCounter = 0;
@@ -1016,11 +995,12 @@ function newGame() { // reset game state
     stunFlag = false;
     player = new Player("?", "?", "?", "?", "?", "?", "...");
     enemy = new Enemy("?", "?", "?", "...");
+    disableActionButtons(true)
     updateCharacters("...", "...");
     classPopup();
     updateBar("Choose your Class", "lightgreen");
     genLevelCircle();
-    disableActionButtons(true)
+    
 }
 // disableButtons()
 function disableActionButtons(bool) {

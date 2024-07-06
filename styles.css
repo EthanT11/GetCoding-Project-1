@@ -130,7 +130,7 @@ body {
   display: flex;
   justify-content: space-around;
   background-color: rgb(165, 165, 165);
-  background-image: url("/icons/background2.svg");
+  background-image: url("icons/background2.svg");
   border-style: solid hidden solid;
   border-color: rgb(82, 82, 82);
 }
@@ -269,10 +269,13 @@ body {
   border-color: rgb(82, 82, 82);
 
   text-align: center;
+  pointer-events: none;
 
   .barText {
     animation: go-around 4s 3;
-    pointer-events: none;
+  }
+  .partyText {
+    animation: party-time 4s infinite;
   }
   
 }
@@ -500,7 +503,7 @@ body {
 .show {display:block;}
 
 /* images for menu buttons */
-.atkimg, .ablimg, .stsimg {
+.atkimg, .ablimg, .stsimg, .splimg {
   background-position: center;
   background-repeat: no-repeat;
 }
@@ -509,7 +512,6 @@ body {
 }
 .ablimg {
   background-image: url("icons/abilityIcon.svg");
-  background-size: 3rem;
 }
 .splimg {
   background-image: url("icons/spellIcon.svg");
@@ -581,5 +583,39 @@ body {
     scale: 0.001;
     transform: translateX(0);
     opacity: 10%;
+  }
+}
+
+/*  Rainbow effect -> https://codepen.io/zak/pen/rWJzPy */
+@keyframes party-time{ 
+  100%,0%{
+    color: rgb(255,0,0);
+    transform: translateX(-10rem);
+    scale: 0.001;
+    opacity: 0;
+  }
+  8%{color: rgb(255,127,0);}
+  16%{color: rgb(255,255,0);}
+  25%{color: rgb(127,255,0);}
+  33%{color: rgb(0,255,0);}
+  41%{
+    color: rgb(0,255,127);
+    scale: 1;
+  }
+  50%{
+    color: rgb(0,255,255);
+    scale: 1.6;
+    transform: translateX(0);
+    opacity: 100%;
+  }
+  58%{color: rgb(0,127,255);}
+  66%{color: rgb(0,0,255);}
+  75%{color: rgb(127,0,255);}
+  83%{color: rgb(255,0,255);}
+  91%{
+    color: rgb(255,0,127);
+    scale: 0.001;
+    transform: translateX(10rem);
+    opacity: 50%;
   }
 }
