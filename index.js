@@ -171,13 +171,12 @@ const GENTIME = 4000/2;
 const TURNTIME = 3000/2; // 3000 optimal for animation
 
 class Player {
-    constructor(max_hp, hp, max_mp, mp, damage, block, name) {
+    constructor(max_hp, hp, max_mp, mp, damage, name) {
         this.max_hp = max_hp;
         this.hp = hp;
         this.max_mp = max_mp;
         this.mp = mp;
         this.damage = damage;
-        this.block = block;
         this.name = name;
 
         this.textList = [];
@@ -216,9 +215,6 @@ class Player {
         } else {
             return enemyHp -= this.damage; // returns enemy hp value
         }
-    }
-    blockAttack(enemyDam) {
-        return this.block - enemyDam;
     }
     _updateContainer(playerAction, addSub = false) {
         // get player container elements
@@ -280,7 +276,6 @@ class Player {
         getPlayerSHp.innerHTML = `Max HP: ${this.max_hp}`;
         getPlayerSMp.innerHTML = `Max MP: ${this.max_mp}`;
         getPlayerSDamage.innerHTML = `Damage: ${this.damage}`;
-        getPlayerSBlock.innerHTML = `Block: ${this.block}`;
         getPlayerSWins.innerHTML = `Wins: ${winCounter}`;
     }
     _setMeter(meter) {
@@ -346,26 +341,26 @@ let spellInfo = {
     fireData: {
         _name: "Fire",
         _dam: 8,
-        _cost: 2,
+        _cost: 8,
         _info: "Hurl a fireball!"
     },
     iceData: {
         _name: "Ice",
-        _dam: 2,
-        _cost: 1,
+        _dam: 4,
+        _cost: 4,
         _info: "Freeze the enemy!"
     },
     earthData: {
         _name: "Earth",
-        _dam: 4,
-        _cost: 3,
+        _dam: 5,
+        _cost: 6,
         _info: "Fling large rocks!",
         _canStun: true
     },
     healData: {
         _name: "Heal",
         _dam: -4,
-        _cost: 0,
+        _cost: 4,
         _info: "Cure wounds!"
     }
 }
@@ -383,75 +378,8 @@ let spells = {
     healSpell: new Spell(hData._name, hData._dam, hData._cost, hData._info), // negative damage for healing
 }
 
-createAbilities()
-function createAbilities() {
-    const abilPop = document.getElementById("abilPopup");
-    const table = document.createElement("table");
-    abilPop.appendChild(table)
-
-    const header = table.createTHead();
-    let headNames = ["Name", "Info"]
-
-    for (let i = 0; i < headNames.length; i++) {
-        header.appendChild(document.createElement("th")).appendChild(document.createTextNode(headNames[i]))
-    }
-
-    const abilities = {
-        "Abilities": {
-            "Block": {
-                name: "Block",
-                id: "block-button",
-                onclick: blockEnemy,
-                info: "Block & Heal damage",
-                tag: "yes"
-            },
-            "Stun": {
-                name: "Stun",
-                id: "stun-button",
-                onclick: stunEnemy,
-                info: "50% chance to stun",
-                tag: "yes"
-            }
-        },
-        "Spells": {
-            "testSpell": {
-                name: "testspell",
-                tag: "Mage"
-            }
-
-        }
-    }
-    let keys = Object.keys(abilities.Abilities)
-    let size = keys.length;
-    let abilityNames = []
-
-    for (let i = 0; i < size; i++) {
-        // abilityNames.append(keys[i])
-    }
-    abilityNames = [abilities.Abilities.Block, abilities.Abilities.Stun]
-
-    
-    for (let i = 0; i < abilityNames.length; i++) {
-        const tr = table.insertRow();
-        let ability = abilityNames[i];
-        for (let j = 0; j < 4; j++) {
-            const td = tr.insertCell(j);
-            if (j == 0) {
-                abilButt = document.createElement("button");
-                abilButt.id = ability.id;
-                abilButt.innerHTML = ability.name
-                abilButt.classList.add("popButton");
-                abilButt.onclick = ability.onclick
-                td.appendChild(abilButt)
-            }
-            if (j == 1) {
-                td.appendChild(document.createTextNode(`${ability.info}`))
-            }
-        }
-    }
-}
-
 // TODO: Clean up the code, VERY messy from all the trial and error
+// Probably redo at some point but works for now
 // TODO: Make spellbook generate on playerclass rather then always
 _createSpellBook()
 function _createSpellBook() {
@@ -649,7 +577,6 @@ async function levelUp(clicked_id) {
         player.max_hp += 2;
         player.max_mp += 2;
         player.damage += 1;
-        player.block += 1;
         player.update("I'm feeling strong!", true)
     } else if (clicked_id == "second-choice") {
         player.hp = player.max_hp;
@@ -660,6 +587,7 @@ async function levelUp(clicked_id) {
         getBlockButton.innerText = `Block (${blockCounter})`
         player.update("Neat! A shield!", true)
     }
+
     levelPopup();
     player.update("Ready");
 }
@@ -703,28 +631,27 @@ async function genEnemy() {
 // choose class based on button clicked
 function setClass(clicked_id) {
     const MAX_HP = [16, 14, 12]; // fighter ranger mage
-    const MAX_MP = [10, 12, 14];
+    const MAX_MP = [10, 12, 24];
     const DAMAGE = [4, 3, 3];
-    const BLOCK = [4, 3, 2];
     const NAME = ["Fighter", "Ranger", "Mage"];
     const abilButton = document.getElementById("abilities-button");
     abilButton.classList.toggle("ablimg");
     if (clicked_id == "fight-button") {
-        player = new Player(MAX_HP[0], MAX_HP[0], MAX_MP[0], MAX_MP[0], DAMAGE[0], BLOCK[0], NAME[0]); // Player(MAX-HP, HP, Damage, Block, Name)
+        player = new Player(MAX_HP[0], MAX_HP[0], MAX_MP[0], MAX_MP[0], DAMAGE[0], NAME[0]); // Player(MAX-HP, HP, Damage, Block, Name)
         if (abilButton.classList.contains("splimg")) {
             abilButton.classList.remove("splimg")
         }
         abilButton.classList.toggle("ablimg");
     }
     if (clicked_id == "range-button") {
-        player = new Player(MAX_HP[1], MAX_HP[1], MAX_MP[1], MAX_MP[1], DAMAGE[1], BLOCK[1], NAME[1]); // Player(MAX-HP, HP, Damage, Block, Name)
+        player = new Player(MAX_HP[1], MAX_HP[1], MAX_MP[1], MAX_MP[1], DAMAGE[1], NAME[1]); // Player(MAX-HP, HP, Damage, Block, Name)
         if (abilButton.classList.contains("splimg")) {
             abilButton.classList.remove("splimg");
         }
         abilButton.classList.add("ablimg");
     }
     if (clicked_id == "mage-button") {
-        player = new Player(MAX_HP[2], MAX_HP[2], MAX_MP[2], MAX_MP[2], DAMAGE[2], BLOCK[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
+        player = new Player(MAX_HP[2], MAX_HP[2], MAX_MP[2], MAX_MP[2], DAMAGE[2], NAME[2]); // Player(MAX-HP, HP, Damage, Block, Name)
         if (abilButton.classList.contains("ablimg")) {
             abilButton.classList.remove("ablimg")
         }
@@ -943,6 +870,67 @@ async function blockEnemy() {
         player.update("Your shield is broke!", true);
         getBlockButton.innerText = "*Broken*";
         getBlockButton.disabled = true;
+    }
+}
+
+createAbilities()
+function createAbilities() {
+    const abilPop = document.getElementById("abilPopup");
+    const table = document.createElement("table");
+    abilPop.appendChild(table)
+
+    const header = table.createTHead();
+    let headNames = ["Name", "Info"]
+
+    for (let i = 0; i < headNames.length; i++) {
+        header.appendChild(document.createElement("th")).appendChild(document.createTextNode(headNames[i]))
+    }
+
+    const abilities = {
+        "Abilities": {
+            "Block": {
+                name: "Block",
+                id: "block-button",
+                onclick: blockEnemy,
+                info: "Block & Heal damage",
+                tag: "yes"
+            },
+            "Stun": {
+                name: "Stun",
+                id: "stun-button",
+                onclick: stunEnemy,
+                info: "50% chance to stun",
+                tag: "yes"
+            }
+        }
+    }
+    let keys = Object.keys(abilities.Abilities)
+    let size = keys.length;
+    let abilityNames = []
+
+    for (let i = 0; i < size; i++) {
+        // abilityNames.append(keys[i])
+    }
+    abilityNames = [abilities.Abilities.Block, abilities.Abilities.Stun]
+
+    
+    for (let i = 0; i < abilityNames.length; i++) {
+        const tr = table.insertRow();
+        let ability = abilityNames[i];
+        for (let j = 0; j < 4; j++) {
+            const td = tr.insertCell(j);
+            if (j == 0) {
+                abilButt = document.createElement("button");
+                abilButt.id = ability.id;
+                abilButt.innerHTML = ability.name
+                abilButt.classList.add("popButton");
+                abilButt.onclick = ability.onclick
+                td.appendChild(abilButt)
+            }
+            if (j == 1) {
+                td.appendChild(document.createTextNode(`${ability.info}`))
+            }
+        }
     }
 }
 
