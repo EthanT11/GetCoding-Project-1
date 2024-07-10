@@ -6,11 +6,11 @@ function dropDown() {
   // Close dropdown menu
   window.onclick = function(event) {
     if (!event.target.matches('.dropbtn')) {
-      const dropdowns = document.getElementsByClassName("dropdown-content");
-      for (let i = 0; i < dropdowns.length; i++) {
-          const openDropdown = dropdowns[i];
-          if (openDropdown.classList.contains('show')) {
-              openDropdown.classList.remove('show');
+        const dropdowns = document.getElementsByClassName("dropdown-content");
+        for (let i = 0; i < dropdowns.length; i++) {
+            const openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
             }
         }
     }
@@ -230,8 +230,18 @@ class Player {
         // set player container elements
         getPlayerAction.innerHTML = playerAction;
         getPlayerName.innerHTML = this.name;
-        getPlayerHp.innerHTML = `${this.hp} / ${this.max_hp}`;
-        getPlayerMp.innerHTML = `${this.mp} / ${this.max_mp}`;
+
+
+        if (this.hp < 0) {
+            getPlayerHp.innerHTML = `0 / ${this.max_hp}`;
+        } else {
+            getPlayerHp.innerHTML = `${this.hp} / ${this.max_hp}`;
+        }
+        if (this.mp < 0) {
+            getPlayerMp.innerHTML = `0 / ${this.max_mp}`;
+        } else {
+            getPlayerMp.innerHTML = `${this.mp} / ${this.max_mp}`;
+        }
 
         if (addSub == true) {
             this._updateAction(playerAction);
@@ -460,8 +470,12 @@ async function spellAttack(clicked_id) {
     // helper funcs
     async function _castSpell() {
         saPopup() // close popup
-        if (clicked_id == "Heal"){ // TODO: rework heal, quickly threw it together to help testing
+        console.log("closed popup")
+        if (clicked_id == "Heal"){
             player.hp = spellData.hpDam;
+            if (player.hp > player.max_hp) { // check for overheal
+                player.hp = player.max_hp;
+            }
             player.mp = spellData.mpDam;
             enemyAttack();
             checkVictory();
@@ -505,7 +519,12 @@ class Enemy {
         const getEnemySHp = document.getElementById("e-hp")
         const getEmemySDam = document.getElementById("e-dam")
         
-        getEnemyHp.innerHTML = `${this.hp} / ${this.max_hp}`;
+        if (this.hp < 0) {
+            getEnemyHp.innerHTML = `0 / ${this.max_hp}`;
+        } else {
+            getEnemyHp.innerHTML = `${this.hp} / ${this.max_hp}`;
+        }
+
         getEnemyName.innerHTML = this.name;
         
         getEnemySName.innerHTML = `Type: ${this.name}`;
@@ -682,14 +701,18 @@ function updateCharacters(p_action, e_action, pAddSub, eAddSub) {
 }
 
 async function stunEnemy() {
-    saPopup();
+    if (player.name == "Mage") {
+        // Quick fix for Earthspell not closing popup
+    } else {
+        saPopup();
+    }
     const getStunButton = document.getElementById("stun-button");
     const d4 = dice(4);
     const d2 = dice(2) + 1;
     disableActionButtons(true);
     if (d4 >= 3) { // pass check
         stunFlag = true;
-        stunCounter = d2;
+        const stunCounter = d2;
         if (player.name == "Mage") {
             // skip button disabling
         } else {
@@ -698,6 +721,9 @@ async function stunEnemy() {
         }
         spriteContainerHit("eSprite");
         updateCharacters(`Success!`, `*Stunned* (${stunCounter})`, true, true);
+        updateBar(`${player.name} stuns ${enemy.name}`, "lightgreen")
+        await sleep(3000)
+        updateBar(`${player.name}'s Turn`, "lightgreen");
         disableActionButtons(false);
         
     } else if (d4 <= 2) { // fail check
@@ -884,9 +910,10 @@ async function blockEnemy() {
         }
         blockCounter --;
         getBlockButton.innerText = `Block (${blockCounter})`;
-        updateBar("Blocked!", "lightgreen")
+        updateBar(`${player.name} blocks!`, "lightgreen")
         spriteContainerHit("pSprite")
         updateCharacters(`Blocked!+(${enemy.damage})`, `Ouch!-(${enemy.damage})`, true, true)
+        await sleep(3000);
         checkVictory();
     } else {
         player.update("Your shield is broke!", true);
@@ -898,14 +925,15 @@ async function blockEnemy() {
 async function doubleShot() {
     saPopup();
     
-    attackEnemy(false)
+    attackEnemy(false, false)
+    updateBar(`${player.name} used Double Shot`, "lightgreen")
     enemy.update();
     await sleep(1500) //
     attackEnemy(true, false)
 }
 
 createAbilities()
-function createAbilities(type) {
+function createAbilities() {
     const abilPop = document.getElementById("abilPopup");
     abilPop.innerHTML = "";
 
@@ -1016,8 +1044,8 @@ const soundEffect = new Audio("audio/8-bit-explosion.mp3"); // Hit effect
 
 const volSlider = document.getElementById("volumeSlider");
 
-audioElement.volume = 0; // 0.25 | Turn back on
-soundEffect.volume = 0;
+audioElement.volume = 0.25;
+soundEffect.volume = 0.25;
 volSlider.oninput = function() {
     const value = volSlider.value;
     audioElement.volume = value/100;
@@ -1025,10 +1053,16 @@ volSlider.oninput = function() {
 }
 
 function muteAudio() {
+    const getVolumeCont = document.getElementById("volumeCont");
+    const getMuteButt = document.getElementById("muteButt");
+    getMuteButt.innerHTML = "";
+    getVolumeCont.classList.toggle("muted")
      if (audioElement.muted) {
+        getMuteButt.innerHTML = "BGM -on-"
         audioElement.muted = false;
         soundEffect.muted = false;
      }  else {
+        getMuteButt.innerHTML = "BGM -off-"
         audioElement.muted = true;
         soundEffect.muted = true;
      }
