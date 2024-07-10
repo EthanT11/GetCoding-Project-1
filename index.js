@@ -692,7 +692,7 @@ async function stunEnemy() {
     disableActionButtons(true);
     if (d4 >= 3) { // pass check
         stunFlag = true;
-        stunCounter = d2;
+        const stunCounter = d2;
         if (player.name == "Mage") {
             // skip button disabling
         } else {
@@ -701,6 +701,9 @@ async function stunEnemy() {
         }
         spriteContainerHit("eSprite");
         updateCharacters(`Success!`, `*Stunned* (${stunCounter})`, true, true);
+        updateBar(`${player.name} stuns ${enemy.name}`, "lightgreen")
+        await sleep(3000)
+        updateBar(`${player.name}'s Turn`, "lightgreen");
         disableActionButtons(false);
         
     } else if (d4 <= 2) { // fail check
@@ -887,9 +890,10 @@ async function blockEnemy() {
         }
         blockCounter --;
         getBlockButton.innerText = `Block (${blockCounter})`;
-        updateBar("Blocked!", "lightgreen")
+        updateBar(`${player.name} blocks!`, "lightgreen")
         spriteContainerHit("pSprite")
         updateCharacters(`Blocked!+(${enemy.damage})`, `Ouch!-(${enemy.damage})`, true, true)
+        await sleep(3000);
         checkVictory();
     } else {
         player.update("Your shield is broke!", true);
@@ -901,7 +905,8 @@ async function blockEnemy() {
 async function doubleShot() {
     saPopup();
     
-    attackEnemy(false)
+    attackEnemy(false, false)
+    updateBar(`${player.name} used Double Shot`, "lightgreen")
     enemy.update();
     await sleep(1500) //
     attackEnemy(true, false)
