@@ -6,11 +6,11 @@ function dropDown() {
   // Close dropdown menu
   window.onclick = function(event) {
     if (!event.target.matches('.dropbtn')) {
-      const dropdowns = document.getElementsByClassName("dropdown-content");
-      for (let i = 0; i < dropdowns.length; i++) {
-          const openDropdown = dropdowns[i];
-          if (openDropdown.classList.contains('show')) {
-              openDropdown.classList.remove('show');
+        const dropdowns = document.getElementsByClassName("dropdown-content");
+        for (let i = 0; i < dropdowns.length; i++) {
+            const openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
             }
         }
     }
@@ -629,8 +629,7 @@ let genFlag = false;
 // TODO: Add variety for different levels and different names
 async function genEnemy() {
     const MAX_HP = 10 + (winCounter * (dice(2) + 1));
-    // const DAM = (dice(2) + 1) + winCounter;
-    const DAM = 10
+    const DAM = (dice(2) + 1) + winCounter;
     const NAME = ["Goblin", "Bat", "Ghoul", "Orc", "Evil Monk", "Dragon"];
     
     enemy = new Enemy(MAX_HP, MAX_HP, DAM, NAME[winCounter]);
@@ -1045,8 +1044,8 @@ const soundEffect = new Audio("audio/8-bit-explosion.mp3"); // Hit effect
 
 const volSlider = document.getElementById("volumeSlider");
 
-audioElement.volume = 0; // 0.25 | Turn back on
-soundEffect.volume = 0;
+audioElement.volume = 0.25;
+soundEffect.volume = 0.25;
 volSlider.oninput = function() {
     const value = volSlider.value;
     audioElement.volume = value/100;
@@ -1054,10 +1053,16 @@ volSlider.oninput = function() {
 }
 
 function muteAudio() {
+    const getVolumeCont = document.getElementById("volumeCont");
+    const getMuteButt = document.getElementById("muteButt");
+    getMuteButt.innerHTML = "";
+    getVolumeCont.classList.toggle("muted")
      if (audioElement.muted) {
+        getMuteButt.innerHTML = "BGM -on-"
         audioElement.muted = false;
         soundEffect.muted = false;
      }  else {
+        getMuteButt.innerHTML = "BGM -off-"
         audioElement.muted = true;
         soundEffect.muted = true;
      }
