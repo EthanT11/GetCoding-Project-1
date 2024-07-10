@@ -460,8 +460,11 @@ async function spellAttack(clicked_id) {
     // helper funcs
     async function _castSpell() {
         saPopup() // close popup
-        if (clicked_id == "Heal"){ // TODO: rework heal, quickly threw it together to help testing
+        if (clicked_id == "Heal"){
             player.hp = spellData.hpDam;
+            if (player.hp > player.max_hp) { // check for overheal
+                player.hp = player.max_hp;
+            }
             player.mp = spellData.mpDam;
             enemyAttack();
             checkVictory();
@@ -905,7 +908,7 @@ async function doubleShot() {
 }
 
 createAbilities()
-function createAbilities(type) {
+function createAbilities() {
     const abilPop = document.getElementById("abilPopup");
     abilPop.innerHTML = "";
 
