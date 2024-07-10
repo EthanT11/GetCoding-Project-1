@@ -460,6 +460,7 @@ async function spellAttack(clicked_id) {
     // helper funcs
     async function _castSpell() {
         saPopup() // close popup
+        console.log("closed popup")
         if (clicked_id == "Heal"){
             player.hp = spellData.hpDam;
             if (player.hp > player.max_hp) { // check for overheal
@@ -685,7 +686,11 @@ function updateCharacters(p_action, e_action, pAddSub, eAddSub) {
 }
 
 async function stunEnemy() {
-    saPopup();
+    if (player.name == "Mage") {
+        // Quick fix for Earthspell not closing popup
+    } else {
+        saPopup();
+    }
     const getStunButton = document.getElementById("stun-button");
     const d4 = dice(4);
     const d2 = dice(2) + 1;
