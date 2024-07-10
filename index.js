@@ -230,8 +230,18 @@ class Player {
         // set player container elements
         getPlayerAction.innerHTML = playerAction;
         getPlayerName.innerHTML = this.name;
-        getPlayerHp.innerHTML = `${this.hp} / ${this.max_hp}`;
-        getPlayerMp.innerHTML = `${this.mp} / ${this.max_mp}`;
+
+
+        if (this.hp < 0) {
+            getPlayerHp.innerHTML = `0 / ${this.max_hp}`;
+        } else {
+            getPlayerHp.innerHTML = `${this.hp} / ${this.max_hp}`;
+        }
+        if (this.mp < 0) {
+            getPlayerMp.innerHTML = `0 / ${this.max_mp}`;
+        } else {
+            getPlayerMp.innerHTML = `${this.mp} / ${this.max_mp}`;
+        }
 
         if (addSub == true) {
             this._updateAction(playerAction);
@@ -509,7 +519,12 @@ class Enemy {
         const getEnemySHp = document.getElementById("e-hp")
         const getEmemySDam = document.getElementById("e-dam")
         
-        getEnemyHp.innerHTML = `${this.hp} / ${this.max_hp}`;
+        if (this.hp < 0) {
+            getEnemyHp.innerHTML = `0 / ${this.max_hp}`;
+        } else {
+            getEnemyHp.innerHTML = `${this.hp} / ${this.max_hp}`;
+        }
+
         getEnemyName.innerHTML = this.name;
         
         getEnemySName.innerHTML = `Type: ${this.name}`;
@@ -614,7 +629,8 @@ let genFlag = false;
 // TODO: Add variety for different levels and different names
 async function genEnemy() {
     const MAX_HP = 10 + (winCounter * (dice(2) + 1));
-    const DAM = (dice(2) + 1) + winCounter;
+    // const DAM = (dice(2) + 1) + winCounter;
+    const DAM = 10
     const NAME = ["Goblin", "Bat", "Ghoul", "Orc", "Evil Monk", "Dragon"];
     
     enemy = new Enemy(MAX_HP, MAX_HP, DAM, NAME[winCounter]);
