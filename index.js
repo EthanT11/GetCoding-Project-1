@@ -34,25 +34,26 @@ function genButton(popup) {
 // TODO: Fix stats popup close button from being in the middle
 // pretty sure its appending itself to the last made div holding
 // the enemy container
-function pCheck () {
+async function pCheck () {
     let arr;
     let getClasses = document.getElementsByClassName("show")
     arr = Array.prototype.slice.call(getClasses)
+    console.log(`getclasses: ${getClasses}`)
     console.log(arr)
     if (arr == "") {
         console.log("Array is Empty")
     } else {
         let objId = arr[0].id
         let pop = document.getElementById(objId)
-        if (objId == "classPopup" || "levelPopup" || undefined) {
+        if (objId == "classPopup" || objId == "levelPopup" || objId == undefined) {
             console.log(`Cannot remove ${objId}`)
         } else {
             pop.classList.toggle("show");
         }
     }
 }
-function popUp() {
-    pCheck()
+async function popUp() {
+    await pCheck()
     const popup = document.getElementById("statsPopup");
     genButton(popup)
     popup.classList.toggle("show");
@@ -539,26 +540,30 @@ async function stunEnemy() {
     const getStunButton = document.getElementById("stun-button");
     const d4 = dice(4);
     const d2 = dice(2) + 1;
-    disableActionButtons(true);
-    if (d4 >= 3) { // pass check
-        stunFlag = true;
-        const stunCounter = d2;
-        if (player.name == "Mage") {
-            // skip button disabling
-        } else {
-            getStunButton.disabled = true;
-            getStunButton.innerHTML = `Stun (${stunCounter})`
+    if (player.mp < abilities.Stun.cost) {
+        console.log("Not enough MP")
+    } else {
+        disableActionButtons(true);
+        if (d4 >= 3) { // pass check
+            stunFlag = true;
+            const stunCounter = d2;
+            if (player.name == "Mage") {
+                // skip button disabling
+            } else {
+                getStunButton.disabled = true;
+                getStunButton.innerHTML = `Stun (${stunCounter})`
+            }
+            spriteContainerHit("eSprite");
+            updateCharacters(`Success!`, `*Stunned* (${stunCounter})`, true, true);
+            updateBar(`${player.name} stuns ${enemy.name}`, "lightgreen")
+            await sleep(3000)
+            updateBar(`${player.name}'s Turn`, "lightgreen");
+            disableActionButtons(false);
+            
+        } else if (d4 <= 2) { // fail check
+            player.update(`Failed!`);
+            enemyAttack();
         }
-        spriteContainerHit("eSprite");
-        updateCharacters(`Success!`, `*Stunned* (${stunCounter})`, true, true);
-        updateBar(`${player.name} stuns ${enemy.name}`, "lightgreen")
-        await sleep(3000)
-        updateBar(`${player.name}'s Turn`, "lightgreen");
-        disableActionButtons(false);
-        
-    } else if (d4 <= 2) { // fail check
-        player.update(`Failed!`);
-        enemyAttack();
     }
 }
 
@@ -751,12 +756,16 @@ async function blockEnemy() {
 
 async function doubleShot() {
     saPopup();
-    
-    attackEnemy(false, false)
-    updateBar(`${player.name} used Double Shot`, "lightgreen")
-    enemy.update();
-    await sleep(1500) //
-    attackEnemy(true, false)
+    if (player.mp < abilities.DoubleShot.cost) {
+        console.log("Not enough MP");
+    } else {
+        player.mp -= abilities.DoubleShot.cost;
+        attackEnemy(false, false)
+        updateBar(`${player.name} used Double Shot`, "lightgreen")
+        enemy.update();
+        await sleep(1500) //
+        attackEnemy(true, false)
+    }
 }
 // 443
 function splAtk(clicked_id) {
@@ -836,12 +845,14 @@ let abilities = {
         id: "stun-button",
         onclick: stunEnemy,
         info: "50% chance to Stun",
+        cost: 5
     },
     "DoubleShot": {
         name: "Double Shot",
         id: "ds-button",
         onclick: doubleShot,
-        info: "Fire two arrows"
+        info: "Fire two arrows",
+        cost: 5
     },
     "null": {
         name: "null",
@@ -926,7 +937,7 @@ function createAbilities() {
     const table = document.createElement("table");
     abilPop.appendChild(table);
     const header = table.createTHead();
-    let headNames = ["Name", "Info"]
+    let headNames = ["Name", "Cost", "Info"]
     if (player.name == "Mage") {
         headNames = ["Name", "Damage", "Cost", "Info"]
     }
@@ -961,6 +972,13 @@ function createAbilities() {
                 }
             } else {
                 if (j == 1) {
+                    if (ability.cost == undefined) {
+                        td.appendChild(document.createTextNode(`0`))
+                    } else {
+                        td.appendChild(document.createTextNode(`${ability.cost}`))
+                    }
+                }
+                if (j == 2) {
                     td.appendChild(document.createTextNode(`${ability.info}`))
                 }
             }
