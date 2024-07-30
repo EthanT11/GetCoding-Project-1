@@ -22,7 +22,7 @@ Retro quest is a turn based RPG where you pick a character class and fight your 
 
 ---
 ## Game loop
-The goal is to kill **10** monsters.
+The goal is to kill **5** monsters.
 
 You first choose a class and that will set your starting stats and abilities - *Fighter*, *Ranger*, or *Mage*.
 > On the bottom of the screen is your action bar - *Attack*, *Abilities*, and *Stats*.
