@@ -543,6 +543,7 @@ async function stunEnemy() {
     if (player.mp < abilities.Stun.cost) {
         console.log("Not enough MP")
     } else {
+        player.mp -= abilities.Stun.cost;
         disableActionButtons(true);
         if (d4 >= 3) { // pass check
             stunFlag = true;
