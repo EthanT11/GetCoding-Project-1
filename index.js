@@ -34,21 +34,38 @@ function genButton(popup) {
 // TODO: Fix stats popup close button from being in the middle
 // pretty sure its appending itself to the last made div holding
 // the enemy container
-let pcheck = function () {
-    
+function pCheck () {
+    let arr;
+    let getClasses = document.getElementsByClassName("show")
+    arr = Array.prototype.slice.call(getClasses)
+    console.log(arr)
+    if (arr == "") {
+        console.log("Array is Empty")
+    } else {
+        let objId = arr[0].id
+        let pop = document.getElementById(objId)
+        if (objId == "classPopup" || "levelPopup" || undefined) {
+            console.log(`Cannot remove ${objId}`)
+        } else {
+            pop.classList.toggle("show");
+        }
+    }
 }
 function popUp() {
+    pCheck()
     const popup = document.getElementById("statsPopup");
     genButton(popup)
     popup.classList.toggle("show");
 }
 
 function classPopup() {
+    pCheck()
     const popup = document.getElementById("classPopup");
     popup.classList.toggle("show");
 }
 
 function saPopup() {
+    pCheck()
     let popup;
     popup = document.getElementById("abilPopup");
     genButton(popup)
@@ -57,6 +74,7 @@ function saPopup() {
 
 let levelFlag = false;
 function levelPopup() {
+    pCheck()
     const popup = document.getElementById("levelPopup");
     popup.classList.toggle("show");
     if (popup.classList.contains("show")) {
@@ -68,16 +86,19 @@ function levelPopup() {
             disableActionButtons(false)
         }
     }
+    pCheck()
 }
 
 
 function helpPopup() {
+    pCheck()
     const popup = document.getElementById("helpPopup");
     popup.innerHTML = "";
     genButton(popup);
     _genHeader();
     _genText();
     popup.classList.toggle("show");
+    pCheck()
 
     // create h2 element
     function _genHeader() {
@@ -150,9 +171,6 @@ let stunFlag = false;
 
 let blockCounter = 0;
 let blockFlag = false;
-
-let spellData = {};
-
 
 const winsNeeded = 3;
 // Sleep Timers
@@ -958,6 +976,7 @@ function newGame() { // reset game state
     stunFlag = false;
     player = new Player("?", "?", "?", "?", "?", "?", "...");
     enemy = new Enemy("?", "?", "?", "...");
+    pCheck()
     disableActionButtons(true)
     updateCharacters("...", "...");
     classPopup();
