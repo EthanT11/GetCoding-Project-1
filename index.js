@@ -121,7 +121,7 @@ function helpPopup() {
     Pick between three classes for your character; Fighter, Ranger, or Mage.
 
 - Objective -
-    Get 10 wins in a row.
+    Get 5 wins in a row.
     Each win highlights a circle below the title.
 
 - Fighting -
@@ -178,10 +178,10 @@ let stunFlag = false;
 let blockCounter = 0;
 let blockFlag = false;
 
-const winsNeeded = 3;
+const winsNeeded = 5;
 // Sleep Timers
-const GENTIME = 4000/2;
-const TURNTIME = 3000/2; // 3000 optimal for animation
+const GENTIME = 4000;
+const TURNTIME = 3000; // 3000 optimal for animation
 
 class Player {
     constructor(max_hp, hp, max_mp, mp, damage, name) {
@@ -425,6 +425,18 @@ class Enemy {
     }
 }
 
+// TODO: try and generate levels through this later?
+let levelOps = {
+    Stats: {
+        name: "Stats",
+        info: "Increase your stats"
+    },
+    Heal: {
+        name: "Heal",
+        info: "Heal your HP/MP"
+    }
+}
+
 function createLevelPopup() {
     const levelPop = document.getElementById("levelPopup");
     levelPop.innerHTML = "";
@@ -443,7 +455,12 @@ function createLevelPopup() {
         header.appendChild(document.createElement("th")).appendChild(document.createTextNode(headNames[i]))
     }
 
-    let choices = ["Stats", "Heal", "Shield"];
+    let choices = [];
+    if (player.name == "Mage") {
+        choices = [levelOps.Stats, levelOps.Heal];
+    } else {
+        choices = [levelOps.Stats, levelOps.Heal]; // TODO add shield fix
+    }
     for (let i = 0; i < choices.length; i++) {
         const tr = table.insertRow();
         let choice = choices[i];
@@ -453,12 +470,12 @@ function createLevelPopup() {
                 levelButt = document.createElement("button");
                 levelButt.id = i;
                 levelButt.onclick = levelUp
-                levelButt.innerHTML = `${choice}`
+                levelButt.innerHTML = `${choice.name}`
                 levelButt.classList.add("popButton");
                 td.appendChild(levelButt)
             }
             if (j == 1) {
-                td.appendChild(document.createTextNode(`blahhhh`))
+                td.appendChild(document.createTextNode(choice.info))
             }
         }
     }
