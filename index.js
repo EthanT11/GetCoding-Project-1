@@ -38,15 +38,13 @@ async function pCheck () {
     let arr;
     let getClasses = document.getElementsByClassName("show")
     arr = Array.prototype.slice.call(getClasses)
-    console.log(`getclasses: ${getClasses}`)
-    console.log(arr)
     if (arr == "") {
-        console.log("Array is Empty")
+        // skip
     } else {
         let objId = arr[0].id
         let pop = document.getElementById(objId)
         if (objId == "classPopup" || objId == "levelPopup" || objId == undefined) {
-            console.log(`Cannot remove ${objId}`)
+            // skip so we don't close important popups
         } else {
             pop.classList.toggle("show");
         }
@@ -225,7 +223,7 @@ class Player {
         if (player.name == "Ranger") {
             const dblDam = dice(4);
             if (dblDam >= 4) {
-                console.log("DOUBLE DAMAGE!!!!")
+                player.update("Double Damage!", true)
                 return enemyHp -= this.damage * 2;
             } else {
                 return enemyHp -= this.damage;
@@ -481,12 +479,8 @@ function createLevelPopup() {
     }
 }
 
-// add randomness to amounts dependent on difficulty?
-// amounts dependent on class?
-// TODO: generate buttons through js rather then hard code to easily add more or adjust
 async function levelUp(clicked_id) {
     clicked_id = clicked_id.srcElement.id
-    console.log(clicked_id)
     if (clicked_id == 0) {
         player.max_hp += 2;
         player.max_mp += 2;
@@ -597,7 +591,7 @@ async function stunEnemy() {
     const d4 = dice(4);
     const d2 = dice(2) + 1;
     if (player.mp < abilities.Stun.cost) {
-        console.log("Not enough MP")
+        player.update("Not enough MP")
     } else {
         player.mp -= abilities.Stun.cost;
         disableActionButtons(true);
@@ -814,7 +808,7 @@ async function blockEnemy() {
 async function doubleShot() {
     saPopup(true);
     if (player.mp < abilities.DoubleShot.cost) {
-        console.log("Not enough MP");
+        player.update("Not enough MP");
     } else {
         player.mp -= abilities.DoubleShot.cost;
         attackEnemy(false, false)
