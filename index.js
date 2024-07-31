@@ -52,6 +52,7 @@ async function pCheck () {
         }
     }
 }
+
 async function popUp() {
     await pCheck()
     const popup = document.getElementById("statsPopup");
@@ -65,12 +66,15 @@ function classPopup() {
     popup.classList.toggle("show");
 }
 
-function saPopup() {
-    pCheck()
-    let popup;
-    popup = document.getElementById("abilPopup");
-    genButton(popup)
-    popup.classList.toggle("show");
+function saPopup(close = false) {
+    const popup = document.getElementById("abilPopup");
+    if (close) {
+        popup.classList.remove("show");
+    } else {
+        pCheck()
+        genButton(popup)
+        popup.classList.toggle("show");
+    }
 }
 
 let levelFlag = false;
@@ -535,7 +539,7 @@ async function stunEnemy() {
     if (player.name == "Mage") {
         // Quick fix for Earthspell not closing popup
     } else {
-        saPopup();
+        saPopup(true);
     }
     const getStunButton = document.getElementById("stun-button");
     const d4 = dice(4);
@@ -730,7 +734,7 @@ async function checkVictory() {
     }
 }
 async function blockEnemy() {
-    saPopup();
+    saPopup(true);
     if (blockCounter > 0) {
         const getBlockButton = document.getElementById("block-button");
         
@@ -756,7 +760,7 @@ async function blockEnemy() {
 }
 
 async function doubleShot() {
-    saPopup();
+    saPopup(true);
     if (player.mp < abilities.DoubleShot.cost) {
         console.log("Not enough MP");
     } else {
@@ -770,7 +774,7 @@ async function doubleShot() {
 }
 // 443
 function splAtk(clicked_id) {
-    saPopup();
+    saPopup(true);
     clicked_id = clicked_id.srcElement.id;
     let cost;
     let dam;
