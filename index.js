@@ -80,6 +80,7 @@ function saPopup(close = false) {
 let levelFlag = false;
 function levelPopup() {
     pCheck()
+    createLevelPopup();
     const popup = document.getElementById("levelPopup");
     popup.classList.toggle("show");
     if (popup.classList.contains("show")) {
@@ -424,22 +425,61 @@ class Enemy {
     }
 }
 
+function createLevelPopup() {
+    const levelPop = document.getElementById("levelPopup");
+    levelPop.innerHTML = "";
+
+    const h2 = document.createElement("h2");
+    h2.innerHTML = "Level Up!";
+    h2.id = "class";
+    levelPop.append(h2);
+
+    const table = document.createElement("table");
+    levelPop.appendChild(table);
+    const header = table.createTHead();
+    let headNames = ["Choose", "Info"];
+
+    for (let i = 0; i < headNames.length; i++) {
+        header.appendChild(document.createElement("th")).appendChild(document.createTextNode(headNames[i]))
+    }
+
+    let choices = ["Stats", "Heal", "Shield"];
+    for (let i = 0; i < choices.length; i++) {
+        const tr = table.insertRow();
+        let choice = choices[i];
+        for (let j = 0; j < 4; j++) {
+            const td = tr.insertCell(j);
+            if (j == 0) {
+                levelButt = document.createElement("button");
+                levelButt.id = i;
+                levelButt.onclick = levelUp
+                levelButt.innerHTML = `${choice}`
+                levelButt.classList.add("popButton");
+                td.appendChild(levelButt)
+            }
+            if (j == 1) {
+                td.appendChild(document.createTextNode(`blahhhh`))
+            }
+        }
+    }
+}
+
 // add randomness to amounts dependent on difficulty?
 // amounts dependent on class?
 // TODO: generate buttons through js rather then hard code to easily add more or adjust
 async function levelUp(clicked_id) {
-    const getBlockButton = document.getElementById("block-button");
-
-    if (clicked_id == "first-choice") {
+    clicked_id = clicked_id.srcElement.id
+    console.log(clicked_id)
+    if (clicked_id == 0) {
         player.max_hp += 2;
         player.max_mp += 2;
         player.damage += 1;
         player.update("I'm feeling strong!", true)
-    } else if (clicked_id == "second-choice") {
+    } else if (clicked_id == 1) {
         player.hp = player.max_hp;
         player.mp = player.max_mp;
         player.update("I'm feeling healthy!", true)
-    } else if (clicked_id == "third-choice") {
+    } else if (clicked_id == 2) {
         blockCounter = 5;
         getBlockButton.innerText = `Block (${blockCounter})`
         player.update("Neat! A shield!", true)
@@ -448,6 +488,7 @@ async function levelUp(clicked_id) {
     levelPopup();
     player.update("Ready");
 }
+
 
 // generate random number between 1 and x
 function dice(max) {
@@ -461,7 +502,6 @@ function sleep(ms) {
 
 let genFlag = false;
 // generate random enemy
-// TODO: Add variety for different levels and different names
 async function genEnemy() {
     const MAX_HP = 10 + (winCounter * (dice(2) + 1));
     const DAM = (dice(2) + 1) + winCounter;
@@ -536,11 +576,6 @@ function updateCharacters(p_action, e_action, pAddSub, eAddSub) {
 }
 
 async function stunEnemy() {
-    if (player.name == "Mage") {
-        // Quick fix for Earthspell not closing popup
-    } else {
-        saPopup(true);
-    }
     const getStunButton = document.getElementById("stun-button");
     const d4 = dice(4);
     const d2 = dice(2) + 1;
@@ -575,7 +610,7 @@ async function stunEnemy() {
 function checkStun() {
     const getStunButton = document.getElementById("stun-button");
     if (getStunButton == null) {
-        // console.log(`checkStun skipped: No stun button`)
+        console.log(`checkStun skipped: No stun button`)
     } else {
         if (stunCounter == 0) {
             stunFlag = false;
@@ -805,13 +840,11 @@ function splAtk(clicked_id) {
     }
     
     if (player.mp < cost) {
-        console.log("Not enough MP")
-        // TODO add this to back
+        player.update("Not enough MP")
     } else {
         if (clicked_id == "heal-button") {
             if (player.hp == player.max_hp) {
-                console.log("Already Full")
-                // TODO add to console
+                player.update("Already full HP")
             } else {
                 updateBar(`${player.name} casts ${text}!`, "lightgreen")
                 player.hp -= dam;
@@ -825,7 +858,11 @@ function splAtk(clicked_id) {
             
         } else {
             if (canStun) {
-                // TODO: Stun Enemy
+                if(stunFlag) {
+                    enemy.update("Enemy already stunned", true)
+                } else {
+                    stunEnemy()
+                }
             }
             canStun = false;
             spriteContainerHit("eSprite");
@@ -1017,7 +1054,7 @@ function disableActionButtons(bool) {
 
 // Audio
 const audioElement = new Audio("audio/8_Bit_Nostalgia.mp3"); // Background music
-const soundEffect = new Audio("audio/8-bit-explosion.mp3"); // Hit effect
+const soundEffect = new Audio("audio/8-bit-explosion.mp3"); // Hit sound
 
 const volSlider = document.getElementById("volumeSlider");
 
