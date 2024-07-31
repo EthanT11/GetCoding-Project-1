@@ -34,39 +34,51 @@ function genButton(popup) {
 // TODO: Fix stats popup close button from being in the middle
 // pretty sure its appending itself to the last made div holding
 // the enemy container
-function popUp() {
+async function pCheck () {
+    let arr;
+    let getClasses = document.getElementsByClassName("show")
+    arr = Array.prototype.slice.call(getClasses)
+    if (arr == "") {
+        // skip
+    } else {
+        let objId = arr[0].id
+        let pop = document.getElementById(objId)
+        if (objId == "classPopup" || objId == "levelPopup" || objId == undefined) {
+            // skip so we don't close important popups
+        } else {
+            pop.classList.toggle("show");
+        }
+    }
+}
+
+async function popUp() {
+    await pCheck()
     const popup = document.getElementById("statsPopup");
     genButton(popup)
     popup.classList.toggle("show");
 }
 
 function classPopup() {
+    pCheck()
     const popup = document.getElementById("classPopup");
     popup.classList.toggle("show");
 }
 
-function saPopup() {
-    let popup;
-    switch (player.name) {
-        case "Mage":
-            popup = document.getElementById("spellPopup");
-            break;
-        case "Ranger":
-            popup = document.getElementById("abilPopup");
-            break;
-        case "Fighter":
-            popup = document.getElementById("abilPopup");
-            break;
-        default:
-            console.log("Unreachable")
-            newGame();
+function saPopup(close = false) {
+    const popup = document.getElementById("abilPopup");
+    if (close) {
+        popup.classList.remove("show");
+    } else {
+        pCheck()
+        genButton(popup)
+        popup.classList.toggle("show");
     }
-    genButton(popup)
-    popup.classList.toggle("show");
 }
 
 let levelFlag = false;
 function levelPopup() {
+    pCheck()
+    createLevelPopup();
     const popup = document.getElementById("levelPopup");
     popup.classList.toggle("show");
     if (popup.classList.contains("show")) {
@@ -78,16 +90,19 @@ function levelPopup() {
             disableActionButtons(false)
         }
     }
+    pCheck()
 }
 
 
 function helpPopup() {
+    pCheck()
     const popup = document.getElementById("helpPopup");
     popup.innerHTML = "";
     genButton(popup);
     _genHeader();
     _genText();
     popup.classList.toggle("show");
+    pCheck()
 
     // create h2 element
     function _genHeader() {
@@ -104,7 +119,7 @@ function helpPopup() {
     Pick between three classes for your character; Fighter, Ranger, or Mage.
 
 - Objective -
-    Get 10 wins in a row.
+    Get 5 wins in a row.
     Each win highlights a circle below the title.
 
 - Fighting -
@@ -161,13 +176,10 @@ let stunFlag = false;
 let blockCounter = 0;
 let blockFlag = false;
 
-let spellData = {};
-
-
-const winsNeeded = 3;
+const winsNeeded = 5;
 // Sleep Timers
-const GENTIME = 4000/2;
-const TURNTIME = 3000/2; // 3000 optimal for animation
+const GENTIME = 4000;
+const TURNTIME = 3000; // 3000 optimal for animation
 
 class Player {
     constructor(max_hp, hp, max_mp, mp, damage, name) {
@@ -211,7 +223,7 @@ class Player {
         if (player.name == "Ranger") {
             const dblDam = dice(4);
             if (dblDam >= 4) {
-                console.log("DOUBLE DAMAGE!!!!")
+                player.update("Double Damage!", true)
                 return enemyHp -= this.damage * 2;
             } else {
                 return enemyHp -= this.damage;
@@ -323,184 +335,6 @@ class Player {
     }
 }
 
-// Class for spell creation; takes name, damage, and cost
-// Creates a button and places in spell menu
-class Spell {
-    constructor(name, damage, cost, info, canStun = false) {
-        this.name = name;
-        this.damage = damage;
-        this.cost = cost;
-        this.info = info;
-        this.stun = canStun;  
-    }
-    attack(hp, playerMp) { // returns spelldata[hp, mpleft]
-        const hpLeft = hp -= this.damage;
-        const mpLeft = playerMp -= this.cost;
-        spellData = {
-            sname: this.name,
-            hpDam: hpLeft,
-            mpDam: mpLeft,
-            canStun: this.stun,
-        };
-        return spellData;
-    }
-    checkCost(playerMp) {
-        return playerMp >= this.cost;
-    }
-}
-// spell information: name, damage, cost, info, canStun
-// may be redundent but helps me keep it a bit organized
-let spellInfo = {
-    fireData: {
-        _name: "Fire",
-        _dam: 8,
-        _cost: 8,
-        _info: "Hurl a fireball!"
-    },
-    iceData: {
-        _name: "Ice",
-        _dam: 4,
-        _cost: 4,
-        _info: "Freeze the enemy!"
-    },
-    earthData: {
-        _name: "Earth",
-        _dam: 5,
-        _cost: 6,
-        _info: "Fling large rocks!",
-        _canStun: true
-    },
-    healData: {
-        _name: "Heal",
-        _dam: -4,
-        _cost: 4,
-        _info: "Cure wounds!"
-    }
-}
-
-// shorten call
-let fData = spellInfo.fireData;
-let iData = spellInfo.iceData;
-let eData = spellInfo.earthData;
-let hData = spellInfo.healData;
-// spell list
-let spells = {
-    fireSpell: new Spell(fData._name, fData._dam, fData._cost, fData._info),
-    iceSpell: new Spell(iData._name, iData._dam, iData._cost, iData._info),
-    earthSpell: new Spell(eData._name, eData._dam, eData._cost, eData._info, eData._canStun),
-    healSpell: new Spell(hData._name, hData._dam, hData._cost, hData._info), // negative damage for healing
-}
-
-// TODO: Clean up the code, VERY messy from all the trial and error
-// Probably redo at some point but works for now
-// TODO: Make spellbook generate on playerclass rather then always
-_createSpellBook()
-function _createSpellBook() {
-    const spellPopup = document.getElementById("spellPopup");
-    const table = document.createElement("table");
-    spellPopup.appendChild(table)
-
-    const header = table.createTHead();
-    let nameList = ["Name", "Damage", "Cost", "Info"]
-
-    for (let i = 0; i < nameList.length; i++) {
-        header.appendChild(document.createElement("th")).appendChild(document.createTextNode(nameList[i]))
-    }
-
-
-    let spellList = [spells.fireSpell, spells.iceSpell, spells.earthSpell, spells.healSpell];
-
-
-    for (let i = 0; i < spellList.length; i++) {
-        const tr = table.insertRow();
-        let _spell = spellList[i]
-        
-        for (let j = 0; j < 4; j++) {
-            const td = tr.insertCell(j);
-            if (j == 0) {
-                spellButt = document.createElement("button")
-                spellButt.id = _spell.name
-                spellButt.innerHTML = _spell.name
-                spellButt.classList.add("popButton");
-                spellButt.onclick = spellAttack
-                td.appendChild(spellButt)
-            }
-            if (j == 1) {
-                td.appendChild(document.createTextNode(`${_spell.damage}`))
-            }
-            if (j == 2) {
-                td.appendChild(document.createTextNode(`${_spell.cost}`))
-            }
-            if (j == 3) {
-                td.appendChild(document.createTextNode(`${_spell.info}`))
-            }
-        }
-    }
-
-}
-
-// main spell function
-async function spellAttack(clicked_id) {
-    canUse = false;
-    spellData = {}; // NOTE: Already set as list in global scope but use this to keep it clear
-    clicked_id = clicked_id.srcElement.id;
-    
-    if (clicked_id == "Fire") { // Maybe burning effect?
-        _checkCost(spells.fireSpell, enemy.hp, player.mp);
-    } else if (clicked_id == "Ice") { // maybe reduce damage?
-        _checkCost(spells.iceSpell, enemy.hp, player.mp);
-    } else if (clicked_id == "Earth") { // Damages & chance to stun
-        _checkCost(spells.earthSpell, enemy.hp, player.mp)
-    } else if (clicked_id == "Heal") {  // Heals player
-        _checkCost(spells.healSpell, player.hp, player.mp);
-    }
-    
-    if (!stunFlag) { // TODO: figure out something better, probably in the update rework
-        updateCharacters(`${clicked_id}!`, "Ouch!", true, true);
-    } else {
-        updateCharacters(`${clicked_id}!`, `*Stunned* (${stunCounter})`, true, true);
-    }
-    
-    if (!canUse) { // check if player has enough mp
-        console.log("not enough mp")
-    } else {
-        
-        _castSpell();
-    }
-    // helper funcs
-    async function _castSpell() {
-        saPopup() // close popup
-        console.log("closed popup")
-        if (clicked_id == "Heal"){
-            player.hp = spellData.hpDam;
-            if (player.hp > player.max_hp) { // check for overheal
-                player.hp = player.max_hp;
-            }
-            player.mp = spellData.mpDam;
-            enemyAttack();
-            checkVictory();
-        } else {
-            if (spellData.canStun == true) { // check if spell can stun
-                stunEnemy();
-            }
-            spriteContainerHit("eSprite")
-            updateBar(`${player.name} casts ${spellData.sname}`, "lightgreen")
-            
-            enemy.hp = spellData.hpDam;
-            player.mp = spellData.mpDam;
-            enemyAttack();
-            checkVictory();
-        }
-    }
-    function _checkCost(spell, hp, mp) {  // check if spell can be used
-        const check = spell.checkCost(player.mp);
-        if (check) {
-            canUse = true;
-            spell.attack(hp, mp);
-        }
-    }
-}
-
 class Enemy {
     constructor(max_hp, hp, damage, name) {
         this.max_hp = max_hp;
@@ -589,22 +423,74 @@ class Enemy {
     }
 }
 
-// add randomness to amounts dependent on difficulty?
-// amounts dependent on class?
-// TODO: generate buttons through js rather then hard code to easily add more or adjust
-async function levelUp(clicked_id) {
-    const getBlockButton = document.getElementById("block-button");
+// TODO: try and generate levels through this later?
+let levelOps = {
+    Stats: {
+        name: "Stats",
+        info: "Increase your stats"
+    },
+    Heal: {
+        name: "Heal",
+        info: "Heal your HP/MP"
+    }
+}
 
-    if (clicked_id == "first-choice") {
+function createLevelPopup() {
+    const levelPop = document.getElementById("levelPopup");
+    levelPop.innerHTML = "";
+
+    const h2 = document.createElement("h2");
+    h2.innerHTML = "Level Up!";
+    h2.id = "class";
+    levelPop.append(h2);
+
+    const table = document.createElement("table");
+    levelPop.appendChild(table);
+    const header = table.createTHead();
+    let headNames = ["Choose", "Info"];
+
+    for (let i = 0; i < headNames.length; i++) {
+        header.appendChild(document.createElement("th")).appendChild(document.createTextNode(headNames[i]))
+    }
+
+    let choices = [];
+    if (player.name == "Mage") {
+        choices = [levelOps.Stats, levelOps.Heal];
+    } else {
+        choices = [levelOps.Stats, levelOps.Heal]; // TODO add shield fix
+    }
+    for (let i = 0; i < choices.length; i++) {
+        const tr = table.insertRow();
+        let choice = choices[i];
+        for (let j = 0; j < 4; j++) {
+            const td = tr.insertCell(j);
+            if (j == 0) {
+                levelButt = document.createElement("button");
+                levelButt.id = i;
+                levelButt.onclick = levelUp
+                levelButt.innerHTML = `${choice.name}`
+                levelButt.classList.add("popButton");
+                td.appendChild(levelButt)
+            }
+            if (j == 1) {
+                td.appendChild(document.createTextNode(choice.info))
+            }
+        }
+    }
+}
+
+async function levelUp(clicked_id) {
+    clicked_id = clicked_id.srcElement.id
+    if (clicked_id == 0) {
         player.max_hp += 2;
         player.max_mp += 2;
         player.damage += 1;
         player.update("I'm feeling strong!", true)
-    } else if (clicked_id == "second-choice") {
+    } else if (clicked_id == 1) {
         player.hp = player.max_hp;
         player.mp = player.max_mp;
         player.update("I'm feeling healthy!", true)
-    } else if (clicked_id == "third-choice") {
+    } else if (clicked_id == 2) {
         blockCounter = 5;
         getBlockButton.innerText = `Block (${blockCounter})`
         player.update("Neat! A shield!", true)
@@ -613,6 +499,7 @@ async function levelUp(clicked_id) {
     levelPopup();
     player.update("Ready");
 }
+
 
 // generate random number between 1 and x
 function dice(max) {
@@ -626,7 +513,6 @@ function sleep(ms) {
 
 let genFlag = false;
 // generate random enemy
-// TODO: Add variety for different levels and different names
 async function genEnemy() {
     const MAX_HP = 10 + (winCounter * (dice(2) + 1));
     const DAM = (dice(2) + 1) + winCounter;
@@ -701,41 +587,41 @@ function updateCharacters(p_action, e_action, pAddSub, eAddSub) {
 }
 
 async function stunEnemy() {
-    if (player.name == "Mage") {
-        // Quick fix for Earthspell not closing popup
-    } else {
-        saPopup();
-    }
     const getStunButton = document.getElementById("stun-button");
     const d4 = dice(4);
     const d2 = dice(2) + 1;
-    disableActionButtons(true);
-    if (d4 >= 3) { // pass check
-        stunFlag = true;
-        const stunCounter = d2;
-        if (player.name == "Mage") {
-            // skip button disabling
-        } else {
-            getStunButton.disabled = true;
-            getStunButton.innerHTML = `Stun (${stunCounter})`
+    if (player.mp < abilities.Stun.cost) {
+        player.update("Not enough MP")
+    } else {
+        player.mp -= abilities.Stun.cost;
+        disableActionButtons(true);
+        if (d4 >= 3) { // pass check
+            stunFlag = true;
+            const stunCounter = d2;
+            if (player.name == "Mage") {
+                // skip button disabling
+            } else {
+                getStunButton.disabled = true;
+                getStunButton.innerHTML = `Stun (${stunCounter})`
+            }
+            spriteContainerHit("eSprite");
+            updateCharacters(`Success!`, `*Stunned* (${stunCounter})`, true, true);
+            updateBar(`${player.name} stuns ${enemy.name}`, "lightgreen")
+            await sleep(3000)
+            updateBar(`${player.name}'s Turn`, "lightgreen");
+            disableActionButtons(false);
+            
+        } else if (d4 <= 2) { // fail check
+            player.update(`Failed!`);
+            enemyAttack();
         }
-        spriteContainerHit("eSprite");
-        updateCharacters(`Success!`, `*Stunned* (${stunCounter})`, true, true);
-        updateBar(`${player.name} stuns ${enemy.name}`, "lightgreen")
-        await sleep(3000)
-        updateBar(`${player.name}'s Turn`, "lightgreen");
-        disableActionButtons(false);
-        
-    } else if (d4 <= 2) { // fail check
-        player.update(`Failed!`);
-        enemyAttack();
     }
 }
 
 function checkStun() {
     const getStunButton = document.getElementById("stun-button");
     if (getStunButton == null) {
-        // console.log(`checkStun skipped: No stun button`)
+        console.log(`checkStun skipped: No stun button`)
     } else {
         if (stunCounter == 0) {
             stunFlag = false;
@@ -890,14 +776,11 @@ async function checkVictory() {
             newGame();
         }
     } else {
-
         updateCharacters("Ready", "Ready", true, true);
-       
-        updateBar(`${player.name}'s Turn`, "lightgreen");
     }
 }
 async function blockEnemy() {
-    saPopup();
+    saPopup(true);
     if (blockCounter > 0) {
         const getBlockButton = document.getElementById("block-button");
         
@@ -923,62 +806,171 @@ async function blockEnemy() {
 }
 
 async function doubleShot() {
-    saPopup();
+    saPopup(true);
+    if (player.mp < abilities.DoubleShot.cost) {
+        player.update("Not enough MP");
+    } else {
+        player.mp -= abilities.DoubleShot.cost;
+        attackEnemy(false, false)
+        updateBar(`${player.name} used Double Shot`, "lightgreen")
+        enemy.update();
+        await sleep(1500) //
+        attackEnemy(true, false)
+    }
+}
+// 443
+function splAtk(clicked_id) {
+    saPopup(true);
+    clicked_id = clicked_id.srcElement.id;
+    let cost;
+    let dam;
+    let text;
+    let canStun = false;
+    switch(clicked_id) {
+        case "fire-button":
+            cost = spells.Fire.stats.cost;
+            dam = spells.Fire.stats.dam;
+            text = spells.Fire.name;
+            break;
+        case "ice-button":
+            cost = spells.Ice.stats.cost;
+            dam = spells.Ice.stats.dam;
+            text = spells.Ice.name
+            break;
+        case "earth-button":
+            cost = spells.Earth.stats.cost;
+            dam = spells.Earth.stats.dam;
+            text = spells.Earth.name
+            canStun = true;
+            break;
+        case "heal-button":
+            cost = spells.Heal.stats.cost;
+            dam = spells.Heal.stats.dam;
+            text = spells.Heal.name
+            break;   
+    }
     
-    attackEnemy(false, false)
-    updateBar(`${player.name} used Double Shot`, "lightgreen")
-    enemy.update();
-    await sleep(1500) //
-    attackEnemy(true, false)
+    if (player.mp < cost) {
+        player.update("Not enough MP")
+    } else {
+        if (clicked_id == "heal-button") {
+            if (player.hp == player.max_hp) {
+                player.update("Already full HP")
+            } else {
+                updateBar(`${player.name} casts ${text}!`, "lightgreen")
+                player.hp -= dam;
+                player.mp -= cost;
+                if (player.hp > player.max_hp) {
+                    player.hp = player.max_hp;
+                }
+                enemyAttack();
+                checkVictory();
+            }
+            
+        } else {
+            if (canStun) {
+                if(stunFlag) {
+                    enemy.update("Enemy already stunned", true)
+                } else {
+                    stunEnemy()
+                }
+            }
+            canStun = false;
+            spriteContainerHit("eSprite");
+            updateBar(`${player.name} casts ${text}!`, "lightgreen")
+            enemy.hp -= dam;
+            player.mp -= cost;
+            enemyAttack();
+            checkVictory();
+        }
+    }
+}
+                
+let abilities = {
+    "Block": {
+        name: "Block",
+        id: "block-button",
+        onclick: blockEnemy,
+        info: "Block & Heal damage",
+    },
+    "Stun": {
+        name: "Stun",
+        id: "stun-button",
+        onclick: stunEnemy,
+        info: "50% chance to Stun",
+        cost: 5
+    },
+    "DoubleShot": {
+        name: "Double Shot",
+        id: "ds-button",
+        onclick: doubleShot,
+        info: "Fire two arrows",
+        cost: 5
+    },
+    "null": {
+        name: "null",
+        id: "null",
+        onclick: "i am null",
+        info: "null"
+    }
+}
+let spells = {
+    "Fire": {
+        name: "Fire",
+        id: "fire-button",
+        onclick: splAtk,
+        info: "Throw a Fireball!",
+        stats: {
+            dam: 8,
+            cost: 8,
+        }
+    },
+    "Ice": {
+        name: "Ice",
+        id: "ice-button",
+        onclick: splAtk,
+        info: "Freeze the enemy!",
+        stats: {
+            dam: 4,
+            cost: 4,
+        }
+    },
+    "Earth": {
+        name: "Earth",
+        id: "earth-button",
+        onclick: splAtk,
+        info: "Fling large rocks!",
+        stats: {
+            dam: 5,
+            cost: 6,
+        }
+    },
+    "Heal": {
+        name: "Heal",
+        id: "heal-button",
+        onclick: splAtk,
+        info: "Cure wounds!",
+        stats: {
+            dam: -4,
+            cost: 4,
+        }
+    },
 }
 
-createAbilities()
+// createAbilities()
 function createAbilities() {
     const abilPop = document.getElementById("abilPopup");
     abilPop.innerHTML = "";
-
     const h2 = document.createElement("h2");
-    const table = document.createElement("table");
     h2.innerHTML = "Abilities";
     h2.id = "class";
+    if (player.name == "Mage") {
+        h2.innerHTML = "Spells";
+    }
     abilPop.append(h2);
-    abilPop.appendChild(table);
-    const header = table.createTHead();
-    let headNames = ["Name", "Info"]
-
-    for (let i = 0; i < headNames.length; i++) {
-        header.appendChild(document.createElement("th")).appendChild(document.createTextNode(headNames[i]))
-    }
-
-    const abilities = {
-        "Block": {
-            name: "Block",
-            id: "block-button",
-            onclick: blockEnemy,
-            info: "Block & Heal damage",
-            tag: "yes"
-        },
-        "Stun": {
-            name: "Stun",
-            id: "stun-button",
-            onclick: stunEnemy,
-            info: "50% chance to stun",
-            tag: "yes"
-        },
-        "DoubleShot": {
-            name: "Double Shot",
-            id: "ds-button",
-            onclick: doubleShot,
-            info: "testing"
-        },
-        "null": {
-            name: "null",
-            id: "null",
-            onclick: "i am null",
-            info: "null"
-        }
-    }
-
+    
+    
+    
     let abilityNames = []
     // maybe add tag to ability info and iterate through that ranger, mage etc
     if (!player) {
@@ -989,12 +981,25 @@ function createAbilities() {
         } else if (player.name == "Ranger") {
             abilityNames = [abilities.Stun, abilities.DoubleShot]
         } else if (player.name == "Mage") {
-            abilityNames = [abilities.null]
+            abilityNames = [spells.Fire, spells.Ice, spells.Earth, spells.Heal]
         } else {
             throw new Error(`Error: ${player.name} is not a valid class`)
         }
     }
 
+    const table = document.createElement("table");
+    abilPop.appendChild(table);
+    const header = table.createTHead();
+    let headNames = ["Name", "Cost", "Info"]
+    if (player.name == "Mage") {
+        headNames = ["Name", "Damage", "Cost", "Info"]
+    }
+    
+    for (let i = 0; i < headNames.length; i++) {
+        header.appendChild(document.createElement("th")).appendChild(document.createTextNode(headNames[i]))
+    }
+    
+    
     for (let i = 0; i < abilityNames.length; i++) {
         const tr = table.insertRow();
         let ability = abilityNames[i];
@@ -1008,8 +1013,27 @@ function createAbilities() {
                 abilButt.onclick = ability.onclick
                 td.appendChild(abilButt)
             }
-            if (j == 1) {
-                td.appendChild(document.createTextNode(`${ability.info}`))
+            if (player.name == "Mage"){
+                if (j == 1) {
+                    td.appendChild(document.createTextNode(`${ability.stats.dam}`))
+                }
+                if (j == 2) {
+                    td.appendChild(document.createTextNode(`${ability.stats.cost}`))
+                }
+                if (j == 3) {
+                    td.appendChild(document.createTextNode(`${ability.info}`))
+                }
+            } else {
+                if (j == 1) {
+                    if (ability.cost == undefined) {
+                        td.appendChild(document.createTextNode(`0`))
+                    } else {
+                        td.appendChild(document.createTextNode(`${ability.cost}`))
+                    }
+                }
+                if (j == 2) {
+                    td.appendChild(document.createTextNode(`${ability.info}`))
+                }
             }
         }
     }
@@ -1023,6 +1047,7 @@ function newGame() { // reset game state
     stunFlag = false;
     player = new Player("?", "?", "?", "?", "?", "?", "...");
     enemy = new Enemy("?", "?", "?", "...");
+    pCheck()
     disableActionButtons(true)
     updateCharacters("...", "...");
     classPopup();
@@ -1040,7 +1065,7 @@ function disableActionButtons(bool) {
 
 // Audio
 const audioElement = new Audio("audio/8_Bit_Nostalgia.mp3"); // Background music
-const soundEffect = new Audio("audio/8-bit-explosion.mp3"); // Hit effect
+const soundEffect = new Audio("audio/8-bit-explosion.mp3"); // Hit sound
 
 const volSlider = document.getElementById("volumeSlider");
 
@@ -1070,4 +1095,4 @@ function muteAudio() {
 
 // starts new game on page load
 newGame();
-// helpPopup();
+helpPopup();
