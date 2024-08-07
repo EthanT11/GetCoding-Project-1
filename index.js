@@ -23,6 +23,7 @@ function dropDown() {
 // Adds closing button to popups
 function genButton(popup) {
     const button = document.createElement("button");
+    button.innerHTML = "x"
     button.classList.add("closebtn");
     button.onclick = _close;
     popup.append(button)

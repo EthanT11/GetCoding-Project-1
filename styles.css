@@ -446,8 +446,9 @@ body {
   position: absolute;
   cursor: pointer;
   background-color: rgb(165, 165, 165);
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   font-size: 12px;
-  padding: 0.5rem;
+  padding: 0.25rem 0.50rem 0.25rem 0.50rem;
 
   border-color: rgb(82, 82, 82);
   border-radius: 50%;
