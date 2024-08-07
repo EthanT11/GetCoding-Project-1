@@ -94,16 +94,40 @@ function levelPopup() {
     pCheck()
 }
 
+function playPopup() {
+    const popup = document.getElementById("playPopup");
+    const btnDiv = document.createElement("div")
+    btnDiv.id = "playBtnCont"
+    popup.classList.toggle("show");
+    _genHeader("Welcome to Retro Quest");
+    popup.append(btnDiv)
+    _genButton("Play", newGame, btnDiv);
+    _genButton("Help", helpPopup, btnDiv);
+
+    function _genButton(text, onclck, tgt) {
+        const btn = document.createElement("button");
+        btn.classList.add("popButton");
+        btn.innerHTML = text;
+        btn.onclick = onclck;
+        tgt.append(btn)
+    }
+
+    function _genHeader(text) {
+        const h2 = document.createElement("h2");
+        h2.classList.add("class");
+        h2.innerHTML = text;
+        popup.append(h2);
+    }
+}
+
 
 function helpPopup() {
-    pCheck()
     const popup = document.getElementById("helpPopup");
     popup.innerHTML = "";
     genButton(popup);
     _genHeader();
     _genText();
     popup.classList.toggle("show");
-    pCheck()
 
     // create h2 element
     function _genHeader() {
@@ -1070,7 +1094,7 @@ const soundEffect = new Audio("audio/8-bit-explosion.mp3"); // Hit sound
 
 const volSlider = document.getElementById("volumeSlider");
 
-audioElement.volume = 0.25;
+audioElement.volume = 0.0; // 0.25
 soundEffect.volume = 0.25;
 volSlider.oninput = function() {
     const value = volSlider.value;
@@ -1095,5 +1119,6 @@ function muteAudio() {
 }
 
 // starts new game on page load
-newGame();
-helpPopup();
+// newGame();
+playPopup();
+// helpPopup();

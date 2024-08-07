@@ -441,6 +441,16 @@ body {
 }
 #helpPopup {
   white-space: pre-wrap;
+  z-index: 999;
+}
+#playPopup {
+  display: flex;
+  flex-direction: column;
+}
+#playBtnCont {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 0.5rem;
 }
 .closebtn {
   position: absolute;
@@ -448,6 +458,7 @@ body {
   background-color: rgb(165, 165, 165);
   font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   font-size: 12px;
+  text-align: center;
   padding: 0.25rem 0.50rem 0.25rem 0.50rem;
 
   border-color: rgb(82, 82, 82);
