@@ -689,10 +689,9 @@ async function playerDeath() {
 let intId;
 async function spriteContainerHit(spriteContainerId) {
     _setAnim();
-    soundEffect.play();
     await sleep(1000)
     _reset();
-
+    
     function _setAnim() {
         if (!intId) {intId = setInterval(_flashCont, 500);}
     }
@@ -704,11 +703,13 @@ async function spriteContainerHit(spriteContainerId) {
         switch(spriteContainerId) {
             // Attack player anim
             case "pSprite":
+                soundEffect.play();
                 eContainer.className = eContainer.className === "enemySprite" ? "eSpriteAtk" : "enemySprite";
                 container.className = container.className === "playerSprite" ? "pSpriteHit" : "playerSprite";
                 break;
                 // Attack enemy anim
                 case "eSprite":
+                soundEffect.play();
                 pContainer.className = pContainer.className === "playerSprite" ? "pSpriteAtk" : "playerSprite";
                 container.className = container.className === "enemySprite" ? "eSpriteHit" : "enemySprite";
                 break;
