@@ -686,8 +686,9 @@ async function enemyAttack() {
     
 }
 async function playerDeath() {
+    const getPlayerSprite = document.getElementById("pSprite")
+    getPlayerSprite.hidden = true
     updateCharacters("Piles of bones", "Victory laugh", true, true);
-  
 
     newGame();
 }
