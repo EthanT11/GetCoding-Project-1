@@ -35,20 +35,44 @@ function genButton(popup) {
 // TODO: Fix stats popup close button from being in the middle
 // pretty sure its appending itself to the last made div holding
 // the enemy container
-async function pCheck () {
+async function pCheck(close = false) {
     let arr;
     let getClasses = document.getElementsByClassName("show")
     arr = Array.prototype.slice.call(getClasses)
-    if (arr == "") {
-        // skip
-    } else {
-        let objId = arr[0].id
-        let pop = document.getElementById(objId)
-        if (objId == "classPopup" || objId == "levelPopup" || objId == undefined) {
-            // skip so we don't close important popups
+
+    if (!close) {
+        if (arr == "") {
+            // skip
         } else {
-            pop.classList.toggle("show");
+            let objId = arr[0].id
+            let pop = document.getElementById(objId)
+            if (objId == "classPopup" || objId == "levelPopup" || objId == undefined) {
+                console.log(objId)
+            } else {
+                pop.classList.toggle("show");
+            }
         }
+    } else {
+        for (let i = 0; i < arr.length; i++) {
+            let objId = arr[i].id;
+            let pop = document.getElementById(objId)
+            if (objId == undefined) {
+                console.log("Couldn't close: ", objId)
+            } else {
+                pop.classList.remove("show")
+            }
+        }
+        // if (arr == "") {
+            //     // skip
+            // } else {
+                //     let objId = arr[0].id
+                //     let pop = document.getElementById(objId)
+                //     if (objId == undefined) {
+                    //         console.log("Couldn't close: ", objId)
+                    //     } else {
+        //         pop.classList.toggle("show");
+        //     }
+        // }
     }
 }
 
@@ -97,13 +121,15 @@ function levelPopup() {
 function playPopup() {
     const popup = document.getElementById("playPopup");
     const btnDiv = document.createElement("div")
-    btnDiv.id = "playBtnCont"
+    pCheck(true)
+    popup.innerHTML = "";
     popup.classList.toggle("show");
+    btnDiv.id = "playBtnCont";
+
     _genHeader("Welcome to Retro Quest");
-    popup.append(btnDiv)
+    popup.append(btnDiv);
     _genButton("Play", newGame, btnDiv);
     _genButton("Help", helpPopup, btnDiv);
-    _genButton("zoom", searchAnim, btnDiv);
 
     function _genButton(text, onclck, tgt) {
         const btn = document.createElement("button");
@@ -1096,10 +1122,11 @@ function newGame() { // reset game state
     stunFlag = false;
     player = new Player("?", "?", "?", "?", "?", "?", "...");
     enemy = new Enemy("?", "?", "?", "...");
-    pCheck()
+
+    pCheck(true)
+    classPopup()
     disableActionButtons(true)
     updateCharacters("...", "...");
-    classPopup();
     updateBar("Choose your Class", "lightgreen");
     genLevelCircle();
     
@@ -1143,6 +1170,4 @@ function muteAudio() {
 }
 
 // starts new game on page load
-// newGame();
 playPopup();
-// helpPopup();
