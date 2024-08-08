@@ -103,6 +103,7 @@ function playPopup() {
     popup.append(btnDiv)
     _genButton("Play", newGame, btnDiv);
     _genButton("Help", helpPopup, btnDiv);
+    _genButton("zoom", searchAnim, btnDiv);
 
     function _genButton(text, onclck, tgt) {
         const btn = document.createElement("button");
@@ -520,7 +521,7 @@ async function levelUp(clicked_id) {
         getBlockButton.innerText = `Block (${blockCounter})`
         player.update("Neat! A shield!", true)
     }
-
+    genEnemy();
     levelPopup();
     player.update("Ready");
 }
@@ -551,7 +552,10 @@ async function genEnemy() {
     updateBar("Searching...", "lightgreen")
 
     genFlag = true;
+    searchAnim()
     await sleep(GENTIME);
+    const getEnemySprite = document.getElementById("eSprite");
+    getEnemySprite.hidden = false;
     genFlag = false;
 
     updateCharacters("Ready", "Ready");
@@ -591,6 +595,8 @@ function setClass(clicked_id) {
         abilButton.classList.toggle("splimg");
     }
     createAbilities()
+    const getPlayerSprite = document.getElementById("pSprite");
+    getPlayerSprite.hidden = false;
     genEnemy();
     classPopup();
     audioElement.play();
@@ -687,16 +693,24 @@ async function playerDeath() {
 }
 
 let intId;
+function _setAnim(anim, time) {
+    if (!intId) {
+        intId = setInterval(anim, time);
+    }
+}
+
+function _reset() {
+    clearInterval(intId);
+    intId = null;
+}
+
 async function spriteContainerHit(spriteContainerId) {
-    _setAnim();
+    _setAnim(_hitCont, 500);
     await sleep(1000)
     _reset();
     
-    function _setAnim() {
-        if (!intId) {intId = setInterval(_flashCont, 500);}
-    }
     
-    function _flashCont() {
+    function _hitCont() {
         const container = document.getElementById(spriteContainerId);
         const pContainer = document.getElementById("pSprite");
         const eContainer = document.getElementById("eSprite");
@@ -715,11 +729,19 @@ async function spriteContainerHit(spriteContainerId) {
                 break;
         }
     }
-    function _reset() {
-        clearInterval(intId);
-        intId = null;
-    }
 
+}
+
+// searchAnim()
+async function searchAnim() {
+    _setAnim(_anim, 500);
+    await sleep(500)
+    _reset();
+
+    function _anim() {
+        const pContainer = document.getElementById("pSprite")
+        pContainer.className = pContainer.className === "playerSprite" ? "pSpriteSearch" : "playerSprite";
+    }
 }
 
 function updateBar(text, color, style) {
@@ -789,10 +811,10 @@ async function checkVictory() {
         winCounter ++;
         updateCharacters("Victory Dance", "Pile of bones", true, true);
         if (winCounter < winsNeeded) {
+            const getEnemySprite = document.getElementById("eSprite")
+            getEnemySprite.hidden = true
             updateBar("Victorious!!", "lightgreen");
             levelPopup();
-            await sleep(4000)
-            genEnemy();
             genLevelCircle();
         } else { // victory condition
 

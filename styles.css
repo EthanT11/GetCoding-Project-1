@@ -304,6 +304,10 @@ body {
   animation: slide-right 1s;
   content: url("icons/goblin.svg");
 }
+.pSpriteSearch {
+  animation: search 4s;
+  content: url("icons/mageSprite.svg")
+}
 
 /* ----------- TEXT ------------ */
 .charName {
@@ -636,3 +640,47 @@ body {
     opacity: 50%;
   }
 }
+
+
+@keyframes search {
+  0%{
+    transform: translateX(0);
+  }
+  50%{
+    transform: translateX(40rem);
+  }
+  90%{
+    transform: translateX(-15rem);
+  }
+  100%{
+    transform: translateX(-15rem);
+  }
+}
+/* @keyframes search {
+  0%{
+    transform: translateX(0);
+    scale: 0;
+  }
+  15%{
+    transform: translateX(0);
+  }
+  30%{
+  
+  }
+  45%{
+    transform: translateX(40rem);
+    scale: 1;
+   
+  }
+  60%{
+    
+  }
+  75%{
+  }
+  90%{
+
+  }
+  100%{
+    transform: translateX(0rem);
+  }
+} */
