@@ -1145,7 +1145,7 @@ const soundEffect = new Audio("audio/8-bit-explosion.mp3"); // Hit sound
 
 const volSlider = document.getElementById("volumeSlider");
 
-audioElement.volume = 0.0; // 0.25
+audioElement.volume = 0.25;
 soundEffect.volume = 0.25;
 volSlider.oninput = function() {
     const value = volSlider.value;
