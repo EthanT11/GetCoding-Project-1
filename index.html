@@ -14,7 +14,7 @@
             <div id="dropdown">
                 <input type="image" src="icons/menuIcon2-fonts.google.svg", onclick="dropDown()", class="dropbtn">
                 <div id="myDropdown" class="dropdown-content">
-                    <a onclick="newGame()">New Game</a>
+                    <a onclick="playPopup()">New Game</a>
                     <a onclick="helpPopup()">Help</a>
                     <a href="https://github.com/EthanT11">Github</a>
                     <div class="volumeCont" id="volumeCont">
@@ -67,11 +67,9 @@
             <span class="popuptext" id="spellPopup">
                 <h2 id="class">Spellbook</h2>
             </span>
-            <span class="popuptext" id="levelPopup">
-            </span>
-            <span class="popuptext" id="helpPopup">
-                <h2 id="class">How to Play</h2>
-            </span>
+            <span class="popuptext" id="levelPopup"></span>
+            <span class="popuptext" id="helpPopup"></span>
+            <span class="popuptext" id="playPopup"></span>
         </div>
         <div id="main">
             <div id="progressContainer">
@@ -100,8 +98,8 @@
 
             <div class="sprites">
                 <span class="spritesCont">
-                    <img class="playerSprite" id="pSprite">
-                    <img class="enemySprite" id="eSprite">
+                    <img class="playerSprite" id="pSprite" hidden>
+                    <img class="enemySprite" id="eSprite" hidden="true">
                 </span>
             </div>
 

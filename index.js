@@ -23,6 +23,7 @@ function dropDown() {
 // Adds closing button to popups
 function genButton(popup) {
     const button = document.createElement("button");
+    button.innerHTML = "x"
     button.classList.add("closebtn");
     button.onclick = _close;
     popup.append(button)
@@ -34,20 +35,44 @@ function genButton(popup) {
 // TODO: Fix stats popup close button from being in the middle
 // pretty sure its appending itself to the last made div holding
 // the enemy container
-async function pCheck () {
+async function pCheck(close = false) {
     let arr;
     let getClasses = document.getElementsByClassName("show")
     arr = Array.prototype.slice.call(getClasses)
-    if (arr == "") {
-        // skip
-    } else {
-        let objId = arr[0].id
-        let pop = document.getElementById(objId)
-        if (objId == "classPopup" || objId == "levelPopup" || objId == undefined) {
-            // skip so we don't close important popups
+
+    if (!close) {
+        if (arr == "") {
+            // skip
         } else {
-            pop.classList.toggle("show");
+            let objId = arr[0].id
+            let pop = document.getElementById(objId)
+            if (objId == "classPopup" || objId == "levelPopup" || objId == undefined) {
+                console.log(objId)
+            } else {
+                pop.classList.toggle("show");
+            }
         }
+    } else {
+        for (let i = 0; i < arr.length; i++) {
+            let objId = arr[i].id;
+            let pop = document.getElementById(objId)
+            if (objId == undefined) {
+                console.log("Couldn't close: ", objId)
+            } else {
+                pop.classList.remove("show")
+            }
+        }
+        // if (arr == "") {
+            //     // skip
+            // } else {
+                //     let objId = arr[0].id
+                //     let pop = document.getElementById(objId)
+                //     if (objId == undefined) {
+                    //         console.log("Couldn't close: ", objId)
+                    //     } else {
+        //         pop.classList.toggle("show");
+        //     }
+        // }
     }
 }
 
@@ -93,16 +118,43 @@ function levelPopup() {
     pCheck()
 }
 
+function playPopup() {
+    const popup = document.getElementById("playPopup");
+    const btnDiv = document.createElement("div")
+    pCheck(true)
+    popup.innerHTML = "";
+    popup.classList.toggle("show");
+    btnDiv.id = "playBtnCont";
+
+    _genHeader("Welcome to Retro Quest");
+    popup.append(btnDiv);
+    _genButton("Play", newGame, btnDiv);
+    _genButton("Help", helpPopup, btnDiv);
+
+    function _genButton(text, onclck, tgt) {
+        const btn = document.createElement("button");
+        btn.classList.add("popButton");
+        btn.innerHTML = text;
+        btn.onclick = onclck;
+        tgt.append(btn)
+    }
+
+    function _genHeader(text) {
+        const h2 = document.createElement("h2");
+        h2.classList.add("class");
+        h2.innerHTML = text;
+        popup.append(h2);
+    }
+}
+
 
 function helpPopup() {
-    pCheck()
     const popup = document.getElementById("helpPopup");
     popup.innerHTML = "";
     genButton(popup);
     _genHeader();
     _genText();
     popup.classList.toggle("show");
-    pCheck()
 
     // create h2 element
     function _genHeader() {
@@ -495,7 +547,7 @@ async function levelUp(clicked_id) {
         getBlockButton.innerText = `Block (${blockCounter})`
         player.update("Neat! A shield!", true)
     }
-
+    genEnemy();
     levelPopup();
     player.update("Ready");
 }
@@ -526,7 +578,10 @@ async function genEnemy() {
     updateBar("Searching...", "lightgreen")
 
     genFlag = true;
+    searchAnim()
     await sleep(GENTIME);
+    const getEnemySprite = document.getElementById("eSprite");
+    getEnemySprite.hidden = false;
     genFlag = false;
 
     updateCharacters("Ready", "Ready");
@@ -566,6 +621,8 @@ function setClass(clicked_id) {
         abilButton.classList.toggle("splimg");
     }
     createAbilities()
+    const getPlayerSprite = document.getElementById("pSprite");
+    getPlayerSprite.hidden = false;
     genEnemy();
     classPopup();
     audioElement.play();
@@ -655,45 +712,63 @@ async function enemyAttack() {
     
 }
 async function playerDeath() {
+    const getPlayerSprite = document.getElementById("pSprite")
+    getPlayerSprite.hidden = true
     updateCharacters("Piles of bones", "Victory laugh", true, true);
-  
 
     newGame();
 }
 
 let intId;
+function _setAnim(anim, time) {
+    if (!intId) {
+        intId = setInterval(anim, time);
+    }
+}
+
+function _reset() {
+    clearInterval(intId);
+    intId = null;
+}
+
 async function spriteContainerHit(spriteContainerId) {
-    _setAnim();
-    soundEffect.play();
+    _setAnim(_hitCont, 500);
     await sleep(1000)
     _reset();
-
-    function _setAnim() {
-        if (!intId) {intId = setInterval(_flashCont, 500);}
-    }
     
-    function _flashCont() {
+    
+    function _hitCont() {
         const container = document.getElementById(spriteContainerId);
         const pContainer = document.getElementById("pSprite");
         const eContainer = document.getElementById("eSprite");
         switch(spriteContainerId) {
             // Attack player anim
             case "pSprite":
+                soundEffect.play();
                 eContainer.className = eContainer.className === "enemySprite" ? "eSpriteAtk" : "enemySprite";
                 container.className = container.className === "playerSprite" ? "pSpriteHit" : "playerSprite";
                 break;
                 // Attack enemy anim
                 case "eSprite":
+                soundEffect.play();
                 pContainer.className = pContainer.className === "playerSprite" ? "pSpriteAtk" : "playerSprite";
                 container.className = container.className === "enemySprite" ? "eSpriteHit" : "enemySprite";
                 break;
         }
     }
-    function _reset() {
-        clearInterval(intId);
-        intId = null;
-    }
 
+}
+
+// searchAnim()
+async function searchAnim() {
+    _setAnim(_anim, 500);
+    await sleep(500)
+    _reset();
+
+    function _anim() {
+        const pContainer = document.getElementById("pSprite")
+        pContainer.className = pContainer.className === "playerSprite" ? "pSpriteSearch" : "playerSprite";
+    }
 }
 
 function updateBar(text, color, style) {
@@ -763,10 +838,10 @@ async function checkVictory() {
         winCounter ++;
         updateCharacters("Victory Dance", "Pile of bones", true, true);
         if (winCounter < winsNeeded) {
+            const getEnemySprite = document.getElementById("eSprite")
+            getEnemySprite.hidden = true
             updateBar("Victorious!!", "lightgreen");
             levelPopup();
-            await sleep(4000)
-            genEnemy();
             genLevelCircle();
         } else { // victory condition
 
@@ -1047,10 +1122,11 @@ function newGame() { // reset game state
     stunFlag = false;
     player = new Player("?", "?", "?", "?", "?", "?", "...");
     enemy = new Enemy("?", "?", "?", "...");
-    pCheck()
+
+    pCheck(true)
+    classPopup()
     disableActionButtons(true)
     updateCharacters("...", "...");
-    classPopup();
     updateBar("Choose your Class", "lightgreen");
     genLevelCircle();
     
@@ -1069,7 +1145,7 @@ const soundEffect = new Audio("audio/8-bit-explosion.mp3"); // Hit sound
 
 const volSlider = document.getElementById("volumeSlider");
 
-audioElement.volume = 0.25;
+audioElement.volume = 0.0; // 0.25
 soundEffect.volume = 0.25;
 volSlider.oninput = function() {
     const value = volSlider.value;
@@ -1094,5 +1170,4 @@ function muteAudio() {
 }
 
 // starts new game on page load
-newGame();
-helpPopup();
+playPopup();

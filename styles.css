@@ -304,6 +304,10 @@ body {
   animation: slide-right 1s;
   content: url("icons/goblin.svg");
 }
+.pSpriteSearch {
+  animation: search 4s;
+  content: url("icons/mageSprite.svg")
+}
 
 /* ----------- TEXT ------------ */
 .charName {
@@ -441,13 +445,25 @@ body {
 }
 #helpPopup {
   white-space: pre-wrap;
+  z-index: 999;
+}
+#playPopup {
+  display: flex;
+  flex-direction: column;
+}
+#playBtnCont {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 0.5rem;
 }
 .closebtn {
   position: absolute;
   cursor: pointer;
   background-color: rgb(165, 165, 165);
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   font-size: 12px;
-  padding: 0.5rem;
+  text-align: center;
+  padding: 0.25rem 0.50rem 0.25rem 0.50rem;
 
   border-color: rgb(82, 82, 82);
   border-radius: 50%;
@@ -624,3 +640,47 @@ body {
     opacity: 50%;
   }
 }
+
+
+@keyframes search {
+  0%{
+    transform: translateX(0);
+  }
+  50%{
+    transform: translateX(40rem);
+  }
+  90%{
+    transform: translateX(-15rem);
+  }
+  100%{
+    transform: translateX(-15rem);
+  }
+}
+/* @keyframes search {
+  0%{
+    transform: translateX(0);
+    scale: 0;
+  }
+  15%{
+    transform: translateX(0);
+  }
+  30%{
+  
+  }
+  45%{
+    transform: translateX(40rem);
+    scale: 1;
+   
+  }
+  60%{
+    
+  }
+  75%{
+  }
+  90%{
+
+  }
+  100%{
+    transform: translateX(0rem);
+  }
+} */
